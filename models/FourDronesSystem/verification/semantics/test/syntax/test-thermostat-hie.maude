@@ -1,0 +1,23 @@
+
+set show timing off .
+
+load ../../syntax/abstract-exp.maude
+load ../../syntax/identifiers.maude
+load ../../syntax/aadl-value-property.maude
+load ../../syntax/ba-syntax.maude
+load ../../syntax/env-syntax.maude
+load ../../syntax/features.maude
+load ../../syntax/component.maude
+load ../../syntax/flatten-ensemble.maude
+
+load module-thermostat-hie.maude
+
+
+mod TEST-THERMOSTAT-SYSTEM-HIE-MOD is
+  including THERMOSTAT-SYSTEM-SYNTAX .
+  including COLLAPSE-SINGLE-ENSEMBLE .
+endm
+
+red model .
+
+red collapse(model) .

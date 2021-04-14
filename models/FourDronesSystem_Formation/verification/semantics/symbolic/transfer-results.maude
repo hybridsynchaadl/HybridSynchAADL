@@ -1,0 +1,42 @@
+
+--- transfer outputs to the ensemble' ontput ports
+mod TRANSFER-RESULTS is
+  protecting TRANSFER-FUNCTIONS .
+
+  var CR : ComponentRef . 
+  var P : FeatureId .
+  var E : Exp .
+  var D : DataContent .
+  vars B : BoolExp .
+  vars PORTS COMPS : Configuration . 
+  var CONXS : Set{Connection} .
+  var NPS : NeSet{FeatureRef} . 
+  vars ICTB OCTB : ConxTable .
+  vars ATTS ATTS' : AttributeSet .
+
+  op transferResults : Object ~> Object [format (m! o)] .
+  eq transferResults(
+      < CR : C:Ensemble | 
+          subcomponents : COMPS, 
+          connections : CONXS, ATTS >)
+   = 
+      < CR : C:Ensemble | 
+          subcomponents : transEnvOut(COMPS,outer-tb(CONXS),inner-tb(CONXS)), 
+          connections : CONXS, ATTS > .
+
+  op transEnvOut : Configuration ConxTable ConxTable ~> Configuration [format (m! o)] .
+ ceq transEnvOut(
+       < CR : C:Component | 
+           features : < P : C:OutPort | content : E # B, ATTS > PORTS, ATTS' > 
+        COMPS,
+       (CR .. P |-> NPS) OCTB, ICTB)
+   =
+     transOut(E # B,NPS)
+     transEnvOut(
+       < CR : C:Component | 
+           features : < P : C:OutPort | content : D, ATTS > PORTS, ATTS' > COMPS,
+       OCTB, ICTB) 
+   if D := (if contains?(CR .. P, ICTB) then E # B else bot(type(E)) fi) .  --- feedback output?
+
+  eq transEnvOut(COMPS, OCTB, ICTB) = COMPS [owise] .
+endm

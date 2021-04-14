@@ -1,0 +1,136 @@
+
+mod THERMOSTAT-SYSTEM-SYNTAX is
+  including ENSEMBLE-COMPONENT .
+  including THREAD-COMPONENT .
+  including DATA-COMPONENT .
+  including ENV-COMPONENT .
+  including DEFAULT-PROPERTIES .
+  including HYBRID-SYNCHAADL-PROPERTIES .
+
+  ops top controller environment lower upper curr x e : -> ComponentId .
+  ops x t : -> VarId .
+  ops on off temp out ce ee : -> FeatureId .
+  ops init state : -> Location .
+
+  op model : -> Object .
+  eq model =
+        < top : System |
+                features : none,
+                subcomponents :
+                    < controller : Thread |
+                        features :
+                            < temp : DataInPort | content : null(Real),
+                                                  cache : null(Real),
+                                                  properties : DataModel::InitialValue => {{15}} >
+                            < ce  : DataOutPort | content : null(Real),
+                                                  properties : DataModel::InitialValue => {{0}} >
+                            < on  : DataOutPort | content : null(Unit),
+                                                  properties : none >
+                            < off : DataOutPort | content : null(Unit),
+                                                  properties : none >,
+                        subcomponents :
+                            < lower : Data | value : null(Real),
+                                             features : none,
+                                             subcomponents : none,
+                                             properties : DataModel::InitialValue => {{10}},
+                                             connections : empty >
+                            < upper : Data | value : null(Real),
+                                             features : none,
+                                             subcomponents : none,
+                                             properties : DataModel::InitialValue => {{20}},
+                                             connections : empty >
+                            < curr : Data | value : null(Real),
+                                            features : none,
+                                            subcomponents : none,
+                                            properties : DataModel::InitialValue => {{15}},
+                                            connections : empty >,
+                        properties : (TimingProperties::Period => {{5}}) ;
+                                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+                        currState : init,
+                        completeStates : init,
+                        variables : (x : Real),
+                        transitions :
+                            (init -[ on dispatch ]-> state {
+                                (v{x} := (c[curr] + f[temp]) / [[2]])
+                                ;
+                                if (v[x] < c[lower]) {
+                                    (on !)
+                                    ;
+                                    f{ce} := ([[1]])
+                                }
+                                (elsif (v[x] > c[upper]) {
+                                    (off !)
+                                    ;
+                                    f{ce} := ([[-1]])
+                                })
+                                end if
+                                ;
+                                c{curr} := v[x]
+                            })
+                            ;
+                            (state -[ otherwise ]-> init {
+                                skip
+                            }),
+                        loopBound : 0,
+                        transBound : 5,
+                        varGen : < "top.controller" >,
+                        connections : empty >
+                    < environment : Env |
+                        features :
+                            < on  :  EnvInPort | content  : null(Unit),
+                                                 properties : none,
+                                                 envCache : null(Unit),
+                                                 target : controller >
+                            < off :  EnvInPort | content  : null(Unit),
+                                                 properties : none,
+                                                 envCache : null(Unit),
+                                                 target : controller >
+                            < ee  : EnvInPort | content : null(Real),
+                                                properties : none,
+                                                envCache : null(Real),
+                                                target : controller >
+                            < out : EnvOutPort | content  : null(Real),
+                                                 envCache : null(Real),
+                                                 properties : none,
+                                                 target : controller >,
+                        subcomponents :
+                            < x : Data | value : param(Real),
+                                         features : none,
+                                         subcomponents : none,
+                                         properties : none,
+                                         connections : empty >
+                            < e : Data | value : null(Real),
+                                         features : none,
+                                         subcomponents : none,
+                                         properties : DataModel::InitialValue => {{0}},
+                                         connections : empty >,
+                        connections :
+                            (x ==> out) ;
+                            (ee =>> e),
+                        properties : (HybridSynchAADL::MaxClockDeviation => {{0.1}}) ;
+                                     (TimingProperties::Period => {{5}}),
+                        currMode : init,
+                        jumps :
+                            (init -[ on  ]-> init)
+                            ;
+                            (init -[ off ]-> state)
+                            ;
+                            (state -[ on  ]-> init)
+                            ;
+                            (state -[ off ]-> state),
+                        flows :
+                            ((init)[(x(t) = (c[x] + c[e]) + (v[t] * [[0.5]]))])
+                            ;
+                            ((state)[(x(t) = (c[x] + c[e]) - (v[t] * [[0.5]]))]),
+                        varGen : < "top.environment" >,
+                        sampling : ((controller : (0,2))),
+                        response : ((controller : (3,4))) >,
+                connections :
+                    (controller .. on --> environment .. on) ;
+                    (controller .. off --> environment .. off) ;
+                    (controller .. ce --> environment .. ee) ;
+                    (environment .. out --> controller .. temp),
+                properties : (TimingProperties::Period => {{5}}) >
+        .
+endm

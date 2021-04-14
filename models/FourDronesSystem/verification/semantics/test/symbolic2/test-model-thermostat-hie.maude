@@ -1,0 +1,42 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load ../syntax/module-thermostat-hie-symbolic.maude
+
+
+---------------------------------------------
+mod TEST-THERMOSTAT-SYSTEM-HIE-MOD is
+  including THERMOSTAT-SYSTEM .
+  including BEHAVIOR-SYMBOLIC-LOCATION . 
+  including MODEL-TRANSITION-SYSTEM .
+  including SMT-REAL-EXP .
+  
+  eq init  = loc(real(0)) .
+  eq state = loc(real(1)) .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+
+  op cinitState : -> Object .
+  eq cinitState = initialize(collapse(model)) .
+endm
+
+--- Test1 : No jump occurs
+--- # Solutions : 4
+search [,2] 
+	{bool(true) || initState | 0 | infty} 
+	=>+ 
+	{B:BoolExp || OBJ:Object | T:Time | infty} 
+		such that 
+		check-sat(B:BoolExp and finalConst(OBJ:Object)) .
+
+--- Test2 : Jump occurs
+--- # Solutions : 9
+--- In case of T:Time --> (35).NzNat, env-resp-move and env-resp-stay both can occur.  
+search [,3] 
+	{bool(true) || initState | 0 | infty} 
+	=>+ 
+	{B:BoolExp || OBJ:Object | T:Time | infty} 
+		such that 
+		check-sat(B:BoolExp and finalConst(OBJ:Object)) .

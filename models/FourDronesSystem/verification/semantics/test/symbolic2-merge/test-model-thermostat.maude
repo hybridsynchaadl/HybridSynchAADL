@@ -1,0 +1,81 @@
+set show timing off .
+
+load ../../interpreter-symbolic2-merge.maude
+load ../syntax/module-thermostat-symbolic.maude
+
+---------------------------------------------
+mod TEST-THERMOSTAT-SYSTEM-MOD is
+  including THERMOSTAT-SYSTEM .
+  including MODEL-TRANSITION-SYSTEM .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+endm
+
+mod TEST-THERMOSTAT-SYSTEM is
+  including TEST-THERMOSTAT-SYSTEM-MOD .
+
+  eq @m@ = ['TEST-THERMOSTAT-SYSTEM-MOD] .
+endm
+
+
+red initState .
+
+red finalConst(initState) .
+
+
+search [,3]
+    {bool(true) || initState | 0 | infty}
+    =>+
+    {B:BoolExp || OBJ:Object | T:Time | infty}
+    such that
+        check-sat(B:BoolExp and finalConst(OBJ:Object)) .
+
+---(
+< Step 2 >
+Solution 1
+init - on - init - on - init
+
+Solution 2
+init - off - state - off - state
+
+Solution 3
+init - stay - init - on - init
+
+Solution 4
+init - stay - init - off - state
+
+Solution 5
+init - stay - init - stay - init
+
+< Step 3 >
+Solution 1
+init - on - init - on - init - on - init
+
+Solution 2
+init - off - state - off - state - off - state
+
+Solution 3
+init - stay - init - on - init - on - init
+
+Solution 4
+init - stay - init - off - state - off - state
+
+Solution 5
+init - stay - init - stay - init - on - init
+
+Solution 6
+init - stay - init - stay - init - off - state
+
+Solution 7
+init - stay - init - stay - init - stay - init
+---)
+
+
+--- In case of T:Time --> (25).NzNat, on -> off and off -> on case occur .
+search [,5]
+    {bool(true) || initState | 0 | infty}
+    =>+
+    {B:BoolExp || OBJ:Object | T:Time | infty}
+    such that
+        check-sat(B:BoolExp and finalConst(OBJ:Object)) .

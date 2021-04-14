@@ -1,0 +1,52 @@
+
+--- In this version, we add Boolean variables to distinguish different cases.
+
+load symbolic-merge.maude
+
+
+mod SYM-MERGE-TRANSITION-RESULT is
+  protecting SET{BATransResult} * (op _,_ : Set{BATransResult} Set{BATransResult} -> Set{BATransResult} to _;;_) .
+  including SYM-MERGE-LOCATION .
+  including SYM-MERGE-FEATURE-MAP .
+  including SYM-MERGE-DATA-VALUATION .
+
+  vars BTR BTR' BTR'' : BATransResult .
+  var BTRS : Set{BATransResult} .
+  vars L L' L'' : Location .
+  vars FMAP FMAP' FMAP'' : FeatureMap .
+  vars DATA DATA' DATA'' : DataValuation .
+  vars BV CS CS' CS1 CS1' CS2 CS2' CS3 CS3' : BoolExp .
+  var GEN GEN' GEN0 GEN1 GEN2 GEN3 GEN4 GEN# : VarGen .
+
+
+--- symbolically merge transition results
+  op symMerge : NeSet{BATransResult} ~> BATransResult [format (m! o)] .
+  op symMerge : BATransResult Set{BATransResult} VarGen VarGen ~> BATransResult [format (m! o)] .
+
+  ceq symMerge(BTR ;; BTRS) = symMerge(BTR, BTRS, GEN, GEN)
+   if GEN := maxGen(BTR ;; BTRS) .
+
+  ceq symMerge(
+       (L  | FMAP  | DATA  | CS  | GEN), 
+       (L' | FMAP' | DATA' | CS' | GEN') ;; BTRS, GEN0, GEN#) 
+    =
+      symMerge(
+       (L'' | FMAP'' | DATA'' | 
+         (CS  and      BV  and CS1  and CS2  and CS3) or 
+         (CS' and (not BV) and CS1' and CS2' and CS3') | GEN4), 
+       BTRS, GEN4, GEN#)
+  if {L'',   CS1,CS1',GEN1} := symMerge(L,    L',    GEN0, GEN#) 
+  /\ {FMAP'',CS2,CS2',GEN2} := symMerge(FMAP, FMAP', GEN1, GEN#)
+  /\ {DATA'',CS3,CS3',GEN3} := symMerge(DATA, DATA', GEN2, GEN#)
+  /\ {BV,GEN4} := gen(GEN3,Boolean) .
+
+  eq symMerge(BTR, empty, GEN', GEN#) = BTR .
+
+--- find maximal vargen
+  op maxGen : NeSet{BATransResult} ~> VarGen [format (m! o)] .
+  op maxGen : Set{BATransResult} VarGen ~> VarGen [format (m! o)] .
+
+  eq maxGen((L | FMAP | DATA | CS | GEN) ;; BTRS) = maxGen(BTRS, GEN) .
+  eq maxGen((L | FMAP | DATA | CS | GEN) ;; BTRS, GEN') = maxGen(BTRS, max(GEN,GEN')) .
+  eq maxGen(empty, GEN) = GEN .
+endm

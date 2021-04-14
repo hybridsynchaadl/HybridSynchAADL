@@ -1,0 +1,44 @@
+package Environment
+public
+	with Hybrid_SynchAADL;	
+	with Base_Types;
+	
+	system Environment
+		features
+			currX : out data port Base_Types::Float;
+			currY : out data port Base_Types::Float;
+			
+			currVX : out data port Base_Types::Float;
+			currVY : out data port Base_Types::Float;
+			
+			accX : in data port Base_Types::Float;
+			accY : in data port Base_Types::Float;		
+		properties
+			Hybrid_SynchAADL::isEnvironment => true;
+	end Environment;
+
+	system implementation Environment.impl
+		subcomponents
+			x : data Base_Types::Float;
+			y : data Base_Types::Float;
+			
+			dotx : data Base_Types::Float;
+			doty : data Base_Types::Float;
+
+			dotdotx : data Base_Types::Float;
+			dotdoty : data Base_Types::Float;		
+		connections
+			C1 : port x -> currX;
+			C2 : port y -> currY;
+			
+			C3 : port dotx -> currVX;
+			C4 : port doty -> currVY;
+			
+			C5 : port accX -> dotdotx;
+			C6 : port accY -> dotdoty;		
+		properties
+			Hybrid_SynchAADL::ContinuousDynamics =>
+			 	 "dotx(t) = ((0.001) * dotdotx * t) + dotx(0); x(t) = (x(0) + (0.001 * dotx(0) * t) + ((0.000001) * dotdotx * t * t) / 2); doty(t) = ((0.001) * dotdoty * t) + doty(0); y(t) = (y(0) + (0.001 * doty(0) * t) + ((0.000001) * dotdoty * t * t) / 2);";
+	end Environment.impl;
+
+end Environment;

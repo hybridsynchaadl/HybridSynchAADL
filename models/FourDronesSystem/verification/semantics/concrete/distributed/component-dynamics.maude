@@ -1,0 +1,377 @@
+
+mod COMPONENT-DYNAMICS is
+  protecting ASYNC-COMPONENT .
+  protecting ASYNC-PORT .
+  protecting ASYNC-MSG .
+
+  var E : Exp .
+  var BB : Bool .
+  var B : BoolExp .
+  var P : FeatureId .
+  var CR : ComponentRef .
+  var PN : FeatureRef .
+  var PNS : Set{FeatureRef} .
+  vars D D' : DataContent .
+  var T : Time .
+  var MSG : Msg .
+  vars OBJ OBJ' : Object .
+  vars PORTS PORTS' MSGS CF CF' : Configuration .
+  vars ATTS ATTS' : AttributeSet .
+ 
+--- common operations (to be defined by subclasses)
+  op timeEffect : Configuration Time ~> Configuration [frozen format (m! o)] .  --- time advance
+ ceq timeEffect(CF CF', T) = timeEffect(CF, T) timeEffect(CF', T) if CF =/= none /\ CF' =/= none .
+  eq timeEffect(none, T) = none .
+  eq timeEffect(MSG, T) = MSG .
+
+  op mte : Configuration ~> TimeInf [frozen format (m! o)] .  --- maximal time elapse
+ ceq mte(CF CF') = min(mte(CF), mte(CF')) if CF =/= none /\ CF' =/= none .
+  eq mte(none) = infty .
+  eq mte(MSG) = 0 . --- no message delays
+
+--- receive a message
+  rl [recv]:
+     (msg D to CR .. P)
+     < CR : C:AsyncComponent | features : < P : C:InPort | content : D', ATTS > PORTS, ATTS' > 
+  => 
+     < CR : C:AsyncComponent | features : < P : C:InPort | content : D,  ATTS > PORTS, ATTS' > 
+   [print "recv " D " at " P " by " CR] .
+
+--- send messages from ports when msgTimer expires
+ crl [send]:
+     < CR : C:AsyncComponent | features : PORTS,  msgTimer : 0,     ATTS >
+  => 
+     < CR : C:AsyncComponent | features : PORTS', msgTimer : infty, ATTS > MSGS
+  if {PORTS',MSGS} := send(PORTS,none,none,false) 
+   [print "send " MSGS " by " CR] .
+
+  --- generate messages
+  sort MsgResultPair .
+  op {_,_} : Configuration Configuration -> MsgResultPair [ctor] .
+
+  --- the last argument is true for feedback
+  op send : Configuration Configuration Configuration Bool ~> MsgResultPair [format (m! o)] .
+  eq send(
+      < P : C:AsyncOutPort | content : E # B, 
+                             destination : PNS, ATTS > PORTS, PORTS', MSGS, BB)
+   = send(PORTS, 
+       < P : C:AsyncOutPort | content : bot(type(E)), 
+                              destination : PNS, ATTS > PORTS', MSGS send(E # B, PNS, BB), BB) .
+  eq send(PORTS, PORTS', MSGS, BB) = {PORTS PORTS', MSGS} [owise] .
+  
+  op send : DataContent Set{FeatureRef} Bool ~> Configuration [format (m! o)] .
+  eq send(D, (PN, PNS), BB) = genMsg(D, PN, BB) send(D, PNS, BB) .
+  eq send(D, empty, BB) = none .
+
+  op genMsg : DataContent FeatureRef Bool ~> Msg [format (m! o)] .
+  eq genMsg(D, PN,      false) = msg D to PN .
+  eq genMsg(D, CR .. P, true)  = msg D to CR .. P .
+  eq genMsg(D, P      , true)  = none .
+endm
+
+
+--- ensembles are just syntactic objects that re-route messages
+mod ENSEMBLE-DYNAMICS is
+  protecting ENSEMBLE-COMPONENT .
+  including COMPONENT-DYNAMICS .
+
+  var T : Time .
+  var P : FeatureId .
+  var CR : ComponentRef .
+  var D : DataContent .
+  var PNS : Set{FeatureRef} .
+  vars PORTS COMPS : Configuration .
+  vars ATTS ATTS' : AttributeSet .
+
+--- re-route messages
+  eq (msg D to CR .. P)
+     < CR : C:Ensemble | features : < P : C:InPort | destination : PNS, ATTS > PORTS, 
+                         subcomponents : COMPS, ATTS' > 
+   =  
+     < CR : C:Ensemble | features : < P : C:InPort | destination : PNS, ATTS > PORTS, 
+                         subcomponents : COMPS send(D, PNS, false), ATTS' > 
+   [print "re-route " D " from " CR " .. " P " to " PNS] .
+
+  eq < CR : C:Ensemble | features : < P : C:OutPort | destination : PNS, ATTS > PORTS, 
+                         subcomponents : (msg D to P) COMPS, ATTS' >
+   = 
+     < CR : C:Ensemble | features : < P : C:OutPort | destination : PNS, ATTS > PORTS, 
+                         subcomponents : COMPS, ATTS' >
+     send(D, PNS, false) 
+   [print "re-route " D " from " P " to " PNS " in " CR] .
+
+--- time advance
+  eq timeEffect(< CR : C:Ensemble | subcomponents : COMPS, ATTS >, T)
+   = < CR : C:Ensemble | subcomponents : timeEffect(COMPS, T), ATTS > .
+
+--- maximal time elapse
+  eq mte(< CR : C:Ensemble | subcomponents : COMPS, ATTS >) = mte(COMPS) .
+endm
+
+
+--- 
+mod THREAD-DYNAMICS is
+  including DATA-OPERATION .
+  including FEATURE-OPERATION .
+  including ASYNC-THREAD-COMPONENT .
+  including COMPONENT-DYNAMICS .
+  including BEHAVIOR-TRANSITION-SEMANTICS .
+  including BEHAVIOR-CHOOSE-TRANS .
+
+  var CR : ComponentRef .
+  vars T T' : Time .
+  vars TI1 TI2 TI3 : TimeInf .
+  vars L L' : Location .
+  vars PORTS PORTS' COMPS : Configuration .
+  vars DATA DATA' : DataValuation .
+  vars FMAP FMAP' : FeatureMap .
+  var PROPS : PropertyAssociation .
+  var LS : Set{Location} .
+  var VIS : Map{VarId,DataType} .
+  var TRS : Set{Transition} .  
+  var ATTS : AttributeSet .
+  var BCF : BehaviorConf .
+
+--- schedule to execute the thread when perTimer expires
+  rl [startThread]:
+     < CR : C:AsyncThread | period  : T, execTime  : T',
+                            perTimer : 0, execTimer : infty, ATTS >
+  => 
+     < CR : C:AsyncThread | period  : T, execTime  : T',
+                            perTimer : T, execTimer : T', ATTS > 
+   [print "start thread " CR] .
+
+--- execute the thread when execTimer expires
+ crl [execThread]:
+     < CR : C:AsyncThread | execTimer : 0,
+                            msgTimer : infty,
+                            features : PORTS,
+                            currState : L,
+                            subcomponents : COMPS, ATTS >
+  =>
+     < CR : C:AsyncThread | execTimer : infty,
+                            msgTimer : 0,           --- send msgs immediately
+                            features : writeFeature(FMAP',PORTS'),
+                            subcomponents : writeData(DATA',COMPS),
+                            currState : L', ATTS >
+  if {PORTS',FMAP} := readFeature(PORTS)
+  /\ DATA := readData(COMPS)
+  /\ execTrans(location(L) feature(FMAP) data(DATA) threadConf(ATTS)) => {location(L') feature(FMAP') data(DATA') BCF} 
+   [print "exec thread " CR] .
+
+  op threadConf : AttributeSet ~> BehaviorConf [format (m! o)] .
+  eq threadConf((properties : PROPS,  transitions : TRS, 
+                 completeStates : LS, variables : VIS, ATTS))
+   = 
+     local(defaultVal(VIS)) prop(PROPS) complete(LS) trans(TRS) lbound(unbounded) tbound(unbounded) const(bool(true)) .
+
+--- time advance
+  eq timeEffect(
+      < CR : C:AsyncThread | perTimer : TI1, 
+                             msgTimer : TI2, 
+                             execTimer : TI3, ATTS >, T)
+   = 
+      < CR : C:AsyncThread | perTimer : TI1 monus T, 
+                             msgTimer : TI2 monus T, 
+                             execTimer : TI3 monus T, ATTS > .
+
+--- maximal time elapse
+  eq mte(< CR : C:AsyncThread | perTimer : TI1, msgTimer : TI2, execTimer : TI3, ATTS >)
+   = min(TI1, TI2, TI3) .
+endm
+
+
+
+mod ENV-DYNAMICS is
+  including DATA-OPERATION .
+  including ENV-FEATURE-OPERATION .
+  including ASYNC-ENV-COMPONENT .
+  including COMPONENT-DYNAMICS .
+  including ENV-TRANSITION-SEMANTICS .
+
+  var CI : ComponentId .
+  var CR : ComponentRef .
+  vars T T' : Time .
+  vars TI1 TI2 TI3 : TimeInf .
+  var E : Exp .
+  vars B CONST : BoolExp .
+  vars D D' : DataContent .
+  var TS : Set{Time} .
+  vars STS RTS : Set{InterTime} .
+  var ECF : BehaviorConf .
+  var FMAP : FeatureMap .
+  var FLOW : FlowItem .
+  var FLOWS : Set{EnvFlow} .
+  var JUMPS : Set{EnvJump} .
+  var CONXS : Set{Connection} .
+  var PROPS : PropertyAssociation .
+  vars DATA : DataValuation .
+  var PI : FeatureId .
+  var PRS : Set{FeatureRef} .
+  vars L L' : Location .
+  vars PORTS PORTS' COMPS : Configuration .
+  vars ATTS ATTS' : AttributeSet .
+  var ET : EnvJobType .
+  vars ES ES' : EnvState .
+
+  op makePlan : EnvJobType Set{InterTime} EnvState ~> EnvState .
+
+ crl makePlan(ET, (CI : (T,TS)) ; STS, ES) => makePlan(ET, STS, ES [ET,CI,T])
+  if lasttime(ES) <= T .
+
+  eq makePlan(ET, empty, ES) = ES .
+
+--- schedule to run sampling operation when perTimer expires
+ crl [startEnvSample]:
+     < CR : C:AsyncEnv | period  : T,  perTimer : 0,   envTimer : infty,
+                         envState : idle, 
+                         samplingTimes : STS,
+                         responseTimes : RTS, ATTS >
+  => 
+     < CR : C:AsyncEnv | period  : T,  perTimer : T,   envTimer : 0,
+                         envState : ES ES',
+                         samplingTimes : STS,
+                         responseTimes : RTS, ATTS >
+  if makePlan(sampling, STS, idle) => ES
+  /\ makePlan(response, RTS, idle) => ES' 
+   [print "start env " CR] .
+
+--- when envTimer expires, schedule to run a next operation (either sampling
+--- or response, nondeterministically chosen)
+  rl [stepEnvInter]:
+     < CR : C:AsyncEnv | envTimer : 0,
+                         envState : [ET,CI,T] ES, ATTS >
+  => 
+     < CR : C:AsyncEnv | envTimer  : T, 
+                         envState : [ET,CI] ES, ATTS > 
+   [print "env step [" ET ", " CI ", " T "] by " CR] .
+
+
+--- perform sampling operation
+ crl [sampling]:
+     < CR : C:AsyncEnv | envTimer : 0,
+                         msgTimer : infty,
+                         envState : [sampling, CI] ES, 
+                         features : PORTS,
+                         connections : CONXS, 
+                         subcomponents : COMPS, ATTS >
+  =>  
+     < CR : C:AsyncEnv | envTimer : 0,
+                         msgTimer : 0,           --- send msgs immediately
+                         envState : ES, 
+                         features : writeEnvFeature(FMAP,PORTS),
+                         connections : CONXS, 
+                         subcomponents : COMPS, ATTS >
+  if feature(FMAP) ECF := updateEnvFeature(CONXS, CI, envcon(CONXS,PORTS) feature(empty) data(readData(COMPS))) 
+   [print "env sampling " FMAP " by " CR] .
+
+
+--- perform response operation
+ crl [response-step]:
+     < CR : C:AsyncEnv | envTimer : 0,
+                         envState : [response, CI] ES, 
+                         currMode : L,
+                         jumps : (L -[ PI, PRS ]-> L') ; JUMPS,
+                         features : PORTS, 
+                         connections : CONXS, 
+                         subcomponents : COMPS, ATTS' >
+  =>  
+     < CR : C:AsyncEnv | envTimer : 0,
+                         envState : ES, 
+                         currMode : L',
+                         jumps : (L -[ PI, PRS ]-> L') ; JUMPS,
+                         features : PORTS, 
+                         connections : CONXS, 
+                         subcomponents : updateResponseData(CONXS,CI,PORTS,COMPS), ATTS' >
+  if < PI : C:EnvInPort | content : E # B, target : CI, ATTS > PORTS' := PORTS
+  /\ check-true(B) 
+   [print "env response " L " to " L' " with " CI " .. " PI " by " CR] .
+
+
+ crl [response-idle]:
+     < CR : C:AsyncEnv | envTimer : 0,
+                         envState : [response, CI] ES, 
+                         currMode : L,
+                         jumps : JUMPS,
+                         features : PORTS, 
+                         connections : CONXS, 
+                         subcomponents : COMPS, ATTS' >
+  =>
+     < CR : C:AsyncEnv | envTimer : 0,
+                         envState : ES, 
+                         currMode : L,
+                         jumps : JUMPS,
+                         features : PORTS, 
+                         connections : CONXS, 
+                         subcomponents : updateResponseData(CONXS,CI,PORTS,COMPS), ATTS' >
+  if check-true(allPortsAbsent(L, JUMPS, CR, PORTS)) 
+   [print "env response idle at " L " with " CR] .
+
+--- envTimer is turned off when all response operations are done
+  rl [stepEnvFinal]:
+     < CR : C:AsyncEnv | envTimer : 0,
+                         envState : idle, ATTS >
+  => 
+     < CR : C:AsyncEnv | envTimer  : infty, 
+                         envState : idle, ATTS > 
+   [print "env final by " CR] .
+
+  --- aux function
+  op allPortsAbsent : Location Set{EnvJump} ComponentRef Configuration ~> BoolExp [format (m! o)] .
+  op allPortsAbsent : Location Set{EnvJump} ComponentRef Configuration BoolExp ~> BoolExp [format (m! o)] .
+
+  eq allPortsAbsent(L, JUMPS, CR, PORTS) = allPortsAbsent(L, JUMPS, CR, PORTS, bool(true)) .
+  eq allPortsAbsent(L, (L -[ PRS ]-> L') ; JUMPS, CR, PORTS, CONST)
+   = allPortsAbsent(L, JUMPS, CR, PORTS, CONST and allPortsAbsent(PRS, CR, PORTS)) .
+  eq allPortsAbsent(L, JUMPS, CR, PORTS, CONST) = CONST [owise] .
+
+
+  op allPortsAbsent : Set{FeatureRef} ComponentRef Configuration ~> BoolExp [format (m! o)] .
+  eq allPortsAbsent((PI, PRS), CR,
+                    < PI : C:EnvInPort | content : E # B, target : CR, ATTS > PORTS)
+   = not B and 
+     allPortsAbsent(PRS, CR, 
+                    < PI : C:EnvInPort | content : E # B, target : CR, ATTS > PORTS) .
+  eq allPortsAbsent(PRS, CR, PORTS) = bool(true) [owise] .
+
+
+  --- update the data from input ports connected to CR; for absent data ports,
+  --- previous values are used (i.e. no change on data components)
+  op updateResponseData : Set{Connection} ComponentRef Configuration Configuration ~> Configuration [format (m! o)] .
+
+  ceq updateResponseData((PI =>> CI) ; CONXS, CR, PORTS, 
+                         < CI : C:Data | value : D, ATTS > COMPS)
+    = updateResponseData(CONXS, CR, PORTS, 
+                         < CI : C:Data | value : D', ATTS > COMPS)
+   if < PI : C:EnvInPort | content : E # B, target : CR, ATTS > PORTS' := PORTS
+   /\ D' := if check-true(B) then E # bool(true) else D fi .
+
+  eq updateResponseData(CONXS, CR, PORTS, COMPS) = COMPS [owise] .
+
+
+--- time advance with continuous behavior (only data and properties are used for execFlow)
+ ceq timeEffect(
+      < CR : C:AsyncEnv | perTimer : TI1, 
+                          msgTimer : TI2, 
+                          envTimer : TI3, 
+                          envState : ES,
+                          currMode : L,
+                          flows : (L FLOW) ; FLOWS,
+                          subcomponents : COMPS, 
+                          properties : PROPS, ATTS >, T)
+   = 
+      < CR : C:AsyncEnv | perTimer : TI1 monus T, 
+                          msgTimer : TI2 monus T, 
+                          envTimer : TI3 monus T, 
+                          envState : timeEffect(ES, T),
+                          currMode : L,
+                          flows : (L FLOW) ; FLOWS,
+                          subcomponents : writeData(DATA,COMPS), 
+                          properties : PROPS, ATTS > 
+  if DATA := execFlow(FLOW, real(T), data(readData(COMPS)) prop(PROPS)) . 
+
+--- maximal time elapse
+  eq mte(< CR : C:AsyncEnv | perTimer : TI1, msgTimer : TI2, envTimer : TI3, ATTS >)
+   = min(TI1, TI2, TI3) .
+endm
+

@@ -1,0 +1,56 @@
+
+
+--- for concrete random semantics, env feature operations do not use envCache.
+mod ENV-FEATURE-OPERATION is
+  including ENV-PORT .
+  protecting FEATURE-MAP .
+
+  var FMAP : FeatureMap . 
+  vars FTS FTS' : Configuration .  
+  var PI : FeatureId .
+  vars D D' : DataContent .
+  vars E E' V : Exp .  
+  vars CONST B B' : BoolExp .
+  var ATTS : AttributeSet .
+
+  sort EnvFeatureReadResult .
+  op [_,_] : Configuration FeatureMap -> EnvFeatureReadResult [ctor] .
+
+  op readEnvFeature : Configuration ~> EnvFeatureReadResult [format (m! o)] .
+  op readEnvFeature : Configuration Configuration FeatureMap ~> EnvFeatureReadResult [format (m! o)] .
+
+  eq readEnvFeature(FTS) = readEnvFeature(FTS, none, empty) .
+
+  eq readEnvFeature(
+       < PI : C:EnvInPort | content  : E  # B, ATTS > FTS, FTS', 
+       FMAP)
+   = 
+     readEnvFeature(FTS, 
+       < PI : C:EnvInPort | content  : bot(type(E)), ATTS > FTS', 
+       insert(PI, E # B : bool(true), FMAP)) .
+
+  eq readEnvFeature(
+       < PI : C:EnvOutPort | content : E # B, ATTS > FTS, FTS', FMAP)
+   = 
+     readEnvFeature(FTS, 
+       < PI : C:EnvOutPort | content  : E # B, ATTS > FTS', insert(PI, bot(type(E)), FMAP)) .
+
+  eq readEnvFeature(none, FTS, FMAP) = [FTS, FMAP] [owise] .
+
+
+  op writeEnvFeature : FeatureMap Configuration ~> Configuration [format (m! o)] .
+  op writeEnvFeature : FeatureMap Configuration Configuration ~> Configuration [format (m! o)] .
+
+  eq writeEnvFeature(FMAP, FTS) = writeEnvFeature(FMAP, FTS, none) .
+
+ ceq writeEnvFeature(FMAP, 
+       < PI : C:EnvOutPort | content  : D, ATTS > FTS, FTS')
+   = 
+     writeEnvFeature(FMAP, FTS, 
+       < PI : C:EnvOutPort | content  : E # B, ATTS > FTS') 
+   if E # B := FMAP[PI] .
+
+  eq writeEnvFeature(FMAP, FTS, FTS') = FTS FTS' [owise] .
+endm
+
+

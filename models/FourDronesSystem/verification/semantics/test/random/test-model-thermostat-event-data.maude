@@ -1,0 +1,26 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+load ../syntax/module-thermostat-event-data-noparam.maude
+
+
+mod TEST-THERMOSTAT-SYSTEM is
+  including THERMOSTAT-SYSTEM-SYNTAX .
+  including MODEL-TRANSITION-SYSTEM .
+  
+  op initConst : -> BoolExp .
+  eq initConst = [true] .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+endm
+
+
+rew {{initState,0} | 0 | 500} .
+
+rew {{initState,400} | 0 | 500} .
+
+rew {{initState,800} | 0 | 500} .
+
+rew {{initState,1200} | 0 | 500} .

@@ -1,0 +1,35 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+load ../syntax/Airplane_nondet_Instance.maude
+
+
+
+mod TEST-AIRPLANE_NONDET_INSTANCE-MODEL is
+  including AIRPLANE_NONDET_INSTANCE-MODEL .
+
+  op initState : -> Object .
+  eq initState = initialize(initial) .
+
+  op cinitState : -> Object .
+  eq cinitState = initialize(collapse(initial)) .
+endm
+
+
+rew {{initState,0} | 0 | 6000} .
+
+rew {{initState,400} | 0 | 6000} .
+
+rew {{initState,800} | 0 | 6000} .
+
+rew {{initState,1200} | 0 | 6000} .
+
+
+rew {{cinitState,0} | 0 | 6000} .
+
+rew {{cinitState,400} | 0 | 6000} .
+
+rew {{cinitState,800} | 0 | 6000} .
+
+rew {{cinitState,1200} | 0 | 6000} .

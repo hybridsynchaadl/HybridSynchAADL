@@ -1,0 +1,34 @@
+package FourDronesSystem
+public
+    with Drone;
+    with Hybrid_SynchAADL;
+    with Data_Model;
+
+    system FourDronesSystem
+    end FourDronesSystem;
+
+system implementation FourDronesSystem.impl
+    subcomponents
+        dr1: system Drone::Drone.impl;
+        dr2: system Drone::Drone.impl;
+        dr3: system Drone::Drone.impl;
+        dr4: system Drone::Drone.impl;
+    connections
+        C1: port dr1.oX -> dr2.iX;
+        C2: port dr1.oY -> dr2.iY;
+        C3: port dr2.oX -> dr3.iX;
+        C4: port dr2.oY -> dr3.iY;
+        C5: port dr3.oX -> dr4.iX;
+        C6: port dr3.oY -> dr4.iY;
+        C7: port dr4.oX -> dr1.iX;
+        C8: port dr4.oY -> dr1.iY;
+        properties
+            Hybrid_SynchAADL::Synchronous => true;
+            Period => 100ms;
+            Hybrid_SynchAADL::Max_Clock_Deviation => 10ms;
+            Timing => Delayed applies to C1, C2, C3, C4, C5, C6, C7, C8;
+            Data_Model::Initial_Value => ("0.0") applies to
+                dr1.oX, dr2.oX, dr3.oX, dr4.oX,
+                dr1.oY, dr2.oY, dr3.oY, dr4.oY;
+    end FourDronesSystem.impl;
+end FourDronesSystem;

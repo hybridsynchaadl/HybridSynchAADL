@@ -1,0 +1,30 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+
+
+----------------------------------------
+mod TEST-ENV-FEATURE-OPERATION is
+  inc ENV-FEATURE-OPERATION .
+  pr CONC-REAL-EXP .
+  ops a b c d e : -> FeatureId .
+  ops cr1 cr2 : -> ComponentId .
+endm
+
+red readEnvFeature(
+    < a :  EnvInPort | content : (real(0) # bool(true)),    envCache : (real(0) # bool(true)) >
+    < b :  EnvInPort | content : (bool(true) # bool(true)), envCache : (bool(false) # bool(true))  >
+    < c :  EnvInPort | content : (real(1) # bool(false)),   envCache : (real(2) # bool(false))    >
+    < d : EnvOutPort | content : (real(0) # bool(false)) ,  envCache : (real(3) # bool(true)), target : cr1 >
+    < e : EnvOutPort | content : (bool(true) # bool(true)), envCache : (real(4) # bool(false)), target : cr2 >) .
+
+
+red writeEnvFeature(
+    (e |-> (real(10000) # bool(true)))
+,
+    < a :  EnvInPort | content : (real(0) # bool(true)),    envCache : (real(0) # bool(true)) >
+    < b :  EnvInPort | content : (bool(true) # bool(true)), envCache : (bool(false) # bool(true))  >
+    < c :  EnvInPort | content : (real(1) # bool(false)),   envCache : (real(2) # bool(false))    >
+    < d : EnvOutPort | content : (real(0) # bool(false)) ,  envCache : (real(3) # bool(true)), target : cr1 >
+    < e : EnvOutPort | content : (bool(true) # bool(true)), envCache : (real(4) # bool(false)), target : cr2 >) .

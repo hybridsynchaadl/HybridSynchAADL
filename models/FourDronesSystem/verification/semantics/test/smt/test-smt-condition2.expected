@@ -1,0 +1,145 @@
+==========================================
+reduce in SMT-BOOL-EXP : [true] .
+rewrites: 0
+result SMTBoolValue: [true]
+==========================================
+reduce in SMT-BOOL-EXP : b(2) .
+rewrites: 6
+result SMTBoolVar: [b("#$#2")]
+==========================================
+reduce in SMT-BOOL-EXP : b("a", 2) .
+rewrites: 6
+result SMTBoolVar: [b("a#$#2")]
+==========================================
+reduce in SMT-BOOL-EXP : getIndex(b(2)) .
+rewrites: 17
+result NzNat: 2
+==========================================
+reduce in SMT-BOOL-EXP : getIndex(b(21)) .
+rewrites: 15
+result NzNat: 21
+==========================================
+reduce in SMT-BOOL-EXP : getIndex(b("a", 2)) .
+rewrites: 15
+result NzNat: 2
+==========================================
+reduce in SMT-BOOL-EXP : getIndex(b("ab", 21)) .
+rewrites: 15
+result NzNat: 21
+==========================================
+reduce in SMT-BOOL-EXP : b(2) and [true] or b(4) === [false] .
+rewrites: 15
+result SMTBoolExp: [true and b("#$#2") or b("#$#4") === false]
+==========================================
+reduce in SMT-BOOL-EXP : b(2) or b(4) === [false] ? [true] : [false] or b("a",
+    3) .
+rewrites: 22
+result SMTBoolExp: [b("#$#2") or b("#$#4") === false ? true : false or b(
+    "a#$#3")]
+==========================================
+reduce in SMT-BOOL-EXP : bool(true) .
+rewrites: 1
+result SMTBoolValue: [true]
+==========================================
+reduce in SMT-BOOL-EXP : bool(false) .
+rewrites: 1
+result SMTBoolValue: [false]
+==========================================
+reduce in SMT-BOOL-EXP : bval([true]) .
+rewrites: 1
+result Bool: (true).Bool
+==========================================
+reduce in SMT-BOOL-EXP : bval([false]) .
+rewrites: 1
+result Bool: (false).Bool
+==========================================
+reduce in SMT-REAL-EXP : [(2/3).Real] .
+rewrites: 0
+result SMTRealValue: [(2/3).Real]
+==========================================
+reduce in SMT-REAL-EXP : b(0) + [(4/3).Real] .
+rewrites: 6
+result [Exp]: [b("#$#0")] + [(4/3).Real]
+==========================================
+reduce in SMT-REAL-EXP : r(0) + [(4/3).Real] .
+rewrites: 7
+result SMTRealExp: [(4/3).Real + r("#$#0")]
+==========================================
+reduce in SMT-REAL-EXP : r("b", 2) .
+rewrites: 6
+result SMTRealVar: [r("b#$#2")]
+==========================================
+reduce in SMT-REAL-EXP : getIndex(r(2)) .
+rewrites: 17
+result NzNat: 2
+==========================================
+reduce in SMT-REAL-EXP : getIndex(r(21)) .
+rewrites: 15
+result NzNat: 21
+==========================================
+reduce in SMT-REAL-EXP : getIndex(r("a", 2)) .
+rewrites: 15
+result NzNat: 2
+==========================================
+reduce in SMT-REAL-EXP : getIndex(r("ab", 21)) .
+rewrites: 15
+result NzNat: 21
+==========================================
+reduce in SMT-REAL-EXP : r(4) === r(5) or [(0/1).Real] > r(2) .
+rewrites: 21
+result SMTBoolExp: [(0/1).Real > r("#$#2") or r("#$#4") === r("#$#5")]
+==========================================
+reduce in SMT-REAL-EXP : r(4) === r(5) ? [(1/2).Real] + r("a", 1) : r(4) * r(5)
+    .
+rewrites: 22
+result SMTRealExp: [r("#$#4") === r("#$#5") ? (1/2).Real + r("a#$#1") : r(
+    "#$#4") * r("#$#5")]
+==========================================
+reduce in SMT-REAL-EXP : real(0) .
+rewrites: 8
+result SMTRealValue: [(0/1).Real]
+==========================================
+reduce in SMT-REAL-EXP : real(1) .
+rewrites: 8
+result SMTRealValue: [(1/1).Real]
+==========================================
+reduce in SMT-REAL-EXP : real((3/4).Rat) .
+rewrites: 12
+result SMTRealValue: [(3/4).Real]
+==========================================
+reduce in SMT-REAL-EXP : real((-1/10).Rat) .
+rewrites: 12
+result SMTRealValue: [(-1/10).Real]
+==========================================
+reduce in SMT-REAL-EXP : rval([(0/1).Real]) .
+rewrites: 12
+result Zero: 0
+==========================================
+reduce in SMT-REAL-EXP : rval([(1/1).Real]) .
+rewrites: 13
+result NzNat: 1
+==========================================
+reduce in SMT-REAL-EXP : rval([(3/4).Real]) .
+rewrites: 13
+result PosRat: (3/4).PosRat
+==========================================
+reduce in SMT-REAL-EXP : rval([(-1/10).Real]) .
+rewrites: 13
+result NzRat: (-1/10).NzRat
+==========================================
+reduce in SMT-REAL-EXP : fval([(0/1).Real]) .
+rewrites: 14
+result FiniteFloat: 0.0
+==========================================
+reduce in SMT-REAL-EXP : fval([(1/1).Real]) .
+rewrites: 15
+result FiniteFloat: 1.0
+==========================================
+reduce in SMT-REAL-EXP : fval([(3/4).Real]) .
+rewrites: 15
+result FiniteFloat: 7.5e-1
+==========================================
+reduce in SMT-REAL-EXP : fval([(-1/10).Real]) .
+rewrites: 15
+result FiniteFloat: -9.9999999999999992e-2
+Bye.

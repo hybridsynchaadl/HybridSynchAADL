@@ -1,0 +1,92 @@
+
+--- Boolean expressions 
+fmod CONC-BOOL-EXP is
+  protecting STRING .
+  including BOOL-EXP .
+
+  op [_] : Bool -> BoolExp [ctor] .
+
+  vars C C1 C2 : Bool .
+
+  eq bool(C) = [C] .
+  eq bval([C]) = C .
+
+  eq not [C]       = [not C] .
+  eq [C1] and [C2] = [C1 and C2] .
+  eq [C1] xor [C2] = [C1 xor C2] .
+  eq [C1] or  [C2] = [C1 or  C2] .
+
+  eq [C1] implies [C2] = [C1 implies C2] .
+  eq [C1] ===     [C2] = [C1 ==  C2] .
+  eq [C1] =/==    [C2] = [C1 =/= C2] .
+  eq [C] ? [C1] : [C2] = [if C then C1 else C2 fi] .
+endfm
+
+
+--- Real expressions (Float values are used)
+fmod CONC-REAL-EXP is
+  including REAL-EXP .
+  protecting CONC-BOOL-EXP .
+  protecting CONVERSION .
+
+  op [_] : Float -> RealExp [ctor] .
+
+  var R : Rat .
+  var C : Bool .
+  vars F F1 F2 : Float .
+
+  eq real(R) = [float(R)] .
+  eq real(F) = [F] .
+
+  eq fval([F]) = F .
+  eq rval([F]) = rat(F) .
+
+  eq - [F] = [- F] .
+
+  eq [F1] + [F2] = [F1 + F2] .
+  eq [F1] * [F2] = [F1 * F2] .
+  eq [F1] - [F2] = [F1 - F2] .
+  eq [F1] / [F2] = [F1 / F2] .
+
+  eq [F1] <  [F2] = [F1 <  F2] .
+  eq [F1] <= [F2] = [F1 <= F2] .
+  eq [F1] >  [F2] = [F1 >  F2] .
+  eq [F1] >= [F2] = [F1 >= F2] .
+
+  eq [F1] ===     [F2] = [F1 ==  F2] .
+  eq [F1] =/==    [F2] = [F1 =/= F2] .
+  eq [C] ? [F1] : [F2] = [if C then F1 else F2 fi] .
+endfm
+
+
+fmod CONC-CHECKSAT is
+  protecting CONC-REAL-EXP .
+  including CHECKSAT .
+
+  vars B : BoolExp .
+  vars E : Exp .
+
+  --- checks if the given Boolean expression is satisfiable
+  eq check-sat([false]) = false .
+  eq check-sat([true])  = true .
+  
+  --- the simplify function does nothing 
+  eq simplify(E) = E .
+endfm
+
+fmod BEHAVIOR-LOCATION-CONST is
+  including BEHAVIOR-LOCATION-ID .
+  including CONC-BOOL-EXP .
+  including CONC-REAL-EXP .
+
+  --- This operator is not used in concrete. 
+  --- should be removed after syntax test case changed
+  op loc : RealExp -> Location [ctor] .
+
+  vars L L' : Location .
+
+  --- asserts two locations are the same
+  op locConst : Location Location ~> BoolExp .
+  eq locConst(L, L') = bool(L == L') .
+
+endfm

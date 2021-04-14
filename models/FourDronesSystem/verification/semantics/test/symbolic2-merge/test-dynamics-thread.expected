@@ -1,0 +1,64 @@
+==========================================
+reduce in TEST-THREAD-DYNAMICS : finalConst(obj1) .
+rewrites: 34
+result SMTBoolValue: [(true).Boolean]
+==========================================
+reduce in TEST-THREAD-DYNAMICS : finalConst(obj2) .
+rewrites: 34
+result SMTBoolValue: [(true).Boolean]
+==========================================
+search in TEST-THREAD-DYNAMICS : executeStep(bool(true), obj1 transIn(r(4) #
+    bool(true), c1 .. inp)) =>* C:ConstConfig .
+
+Solution 1 (state 0)
+states: 1  rewrites: 276
+C:ConstConfig --> [not r("#$#1") <= (-1/1).Real + r("#$#4")] || < c1 : Thread |
+    properties : none,features : (< inp : DataInPort | properties : none,
+    content : [(0/1).Real] # [(false).Boolean],cache : [r("#$#4")] # [(
+    true).Boolean] > < outp : DataOutPort | properties : none,content : [(
+    1/1).Real + ((1/1).Real + r("#$#4"))] # [(true).Boolean] >),subcomponents :
+    (< x : Data | properties : none,features : none,subcomponents : none,
+    connections : empty,value : [(1/1).Real + r("#$#1")] # [(true).Boolean] > <
+    y : Data | properties : none,features : none,subcomponents : none,
+    connections : empty,value : [r("#$#4")] # [(true).Boolean] >),connections :
+    empty,varGen : < "c1",1,2 >,currState : loc([(0/1).Real]),completeStates :
+    loc([(0/1).Real]),variables : ((a : Real) ; b : Real),transitions : ((loc([
+    (0/1).Real]) -[on dispatch]-> loc([(1/1).Real]) {(c{x} := (c[x] + [[(
+    1).NzNat]])) ; (v{a} := f[inp]) ; c{y} := v[a]}) ; loc([(1/1).Real]) -[c[x]
+    > c[y]]-> loc([(0/1).Real]) {(v{b} := (c[y] + [[(1).NzNat]])) ; f{outp} :=
+    (v[b] + [[(1).NzNat]])}),loopBound : 10,transBound : 10 >
+
+No more solutions.
+states: 1  rewrites: 276
+==========================================
+search in TEST-THREAD-DYNAMICS : executeStep(bool(true), obj2 transIn(r(5) #
+    bool(true), c2 .. inp)) =>* C:ConstConfig .
+
+Solution 1 (state 0)
+states: 1  rewrites: 739
+C:ConstConfig --> [r("c2#$#11") === r("#$#3") and (r("c2#$#10") === (-2/1).Real
+    + r("#$#3") and (r("#$#3") <= (2/1).Real and r("#$#5") <= (0/1).Real)) or (
+    r("c2#$#11") === (1/2).Real * r("#$#5") and (r("c2#$#10") === (1/1).Real +
+    (1/2).Real * r("#$#5") and (not r("#$#5") <= (0/1).Real and not r("#$#5")
+    <= (4/1).Real) or r("c2#$#10") === (-2/1).Real + (1/2).Real * r("#$#5") and
+    (not r("#$#5") <= (0/1).Real and r("#$#5") <= (4/1).Real)) or r("c2#$#11")
+    === r("#$#3") and (r("c2#$#10") === (1/1).Real + r("#$#3") and (r("#$#5")
+    <= (0/1).Real and not r("#$#3") <= (2/1).Real)))] || < c2 : Thread |
+    properties : none,features : (< inp : DataInPort | properties : none,
+    content : [(0/1).Real] # [(false).Boolean],cache : [r("#$#5")] # [(
+    true).Boolean] > < outp : DataOutPort | properties : none,content : [r(
+    "c2#$#10")] # [(true).Boolean] >),subcomponents : < z : Data | properties :
+    none,features : none,subcomponents : none,connections : empty,value : [r(
+    "c2#$#11")] # [(true).Boolean] >,connections : empty,varGen : < "c2",12,20
+    >,currState : loc([(2/1).Real]),completeStates : (loc([(0/1).Real]) loc([(
+    2/1).Real])),variables : a : Real,transitions : ((loc([(0/1).Real]) -[on
+    dispatch]-> loc([(1/1).Real]) {(v{a} := f[inp]) ; if(v[a] > [[(0).Zero]])c{
+    z} := (v[a] * [[5.0e-1]]) end if}) ; (loc([(1/1).Real]) -[otherwise]-> loc(
+    [(2/1).Real]) {f{outp} := (c[z] - [[(2).NzNat]])}) ; (loc([(1/1).Real]) -[
+    c[z] > [[(2).NzNat]]]-> loc([(2/1).Real]) {f{outp} := (c[z] + [[(
+    1).NzNat]])}) ; loc([(2/1).Real]) -[on dispatch]-> loc([(0/1).Real]) {
+    skip}),loopBound : 10,transBound : 10 >
+
+No more solutions.
+states: 1  rewrites: 739
+Bye.

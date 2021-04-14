@@ -1,0 +1,30 @@
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+
+select SMT-CHECKSAT .
+
+red simplify(b(0) and ([false] or b(0))) .
+red simplify([true] and b(2) or (b(4) === [false])) .
+red simplify(b(0) === b(0) ? [true] and b(2) : b(3)) .
+red simplify([true]) .
+red simplify(not [true]) .
+red simplify([true] and [false]) .
+red simplify([true] xor [false]) .
+red simplify([true] or [false]) .
+red simplify([true] implies [false]) .
+red simplify([true] === [false]) .
+red simplify([true] =/== [false]) .
+
+red simplify(([3/1] * [3/4]) < r(0)) .
+red simplify(r(1) > r(1) ? [2/1] / [5/1] : [1/1] * [3/1] + [6/1]) .
+red simplify([1/1] + [2/1] + [3/1] + (- [2/1])) .
+red simplify([1/1] + [1/1]) .
+red simplify([1/1] * [1/1]) .
+red simplify([1/1] - [1/1]) .
+red simplify([1/1] / [1/1]) .
+
+red simplify([1/1] < [1/1]) .
+red simplify([1/1] <= [1/1]) .
+red simplify([1/1] > [1/1]) .
+red simplify([1/1] >= [1/1]) .

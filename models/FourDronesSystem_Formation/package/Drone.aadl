@@ -1,0 +1,56 @@
+package Drone
+public
+	with Environment;
+	with Base_Types;
+	with Data_Model;
+	with DroneControl;
+
+	system Drone
+		features
+			inX: in data port Base_Types::Float;
+			inY: in data port Base_Types::Float;
+			inVX: in data port Base_Types::Float;
+			inVY: in data port Base_Types::Float;
+			
+			outX: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			outY: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			outVY: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};	
+			outVX: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			
+			refX: in data port Base_Types::Float;
+			refY: in data port Base_Types::Float;
+			refVX: in data port Base_Types::Float;
+			refVY: in data port Base_Types::Float;					
+	end Drone;
+	system implementation Drone.impl
+		subcomponents
+			drone: system DroneControl::DroneControl.impl;
+			environment: system Environment::Environment.impl;
+		connections
+			C1 : port inX -> drone.inX;
+			C2 : port inY -> drone.inY;
+			C3 : port inVX -> drone.inVX;
+			C4 : port inVY -> drone.inVY;			
+			
+			C5 : port drone.outX -> outX;
+			C6 : port drone.outY -> outY;
+			C7 : port drone.outVX -> outVX;
+			C8 : port drone.outVY -> outVY;
+
+			C9 : port refX -> drone.refX;
+			C10: port refY -> drone.refY;
+			C11: port refVX -> drone.refVX;	
+			C12: port refVY -> drone.refVY;					
+			
+			--- internal
+			C13: port drone.accX -> environment.accX;
+			C14: port drone.accY -> environment.accY;
+			
+			C15: port environment.currX -> drone.currX;
+			C16: port environment.currY -> drone.currY;
+			C17: port environment.currVX -> drone.currVX;
+			C18: port environment.currVY -> drone.currVY;			
+		
+	end Drone.impl;
+	
+end Drone;

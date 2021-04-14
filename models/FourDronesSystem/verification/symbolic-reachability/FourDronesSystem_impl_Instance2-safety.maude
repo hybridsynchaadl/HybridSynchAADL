@@ -1,0 +1,37 @@
+load ../../../../3rdParty/maude/prelude.maude
+load ../../../../3rdParty/maude/smt.maude
+load ../../../../3rdParty/maude/semantics/interpreter-symbolic2-merge.maude
+load ../instance/FourDronesSystem_impl_Instance-symbolic.maude
+mod TEST-FOURDRONESSYSTEM_IMPL_INSTANCE is
+  including FOURDRONESSYSTEM_IMPL_INSTANCE-MODEL-SYMBOLIC .
+  including REACHABILITY-ANALYSIS .
+  including SPECIFICATION-LANGUAGE-SEMANTICS .
+
+  op initState : -> Object .
+  eq initState = initialize(collapse(initial)) .
+  
+  eq loopBoundNum = 10 .
+  eq transBoundNum = 10 .
+  
+  
+  eq @m@ = ['TEST-FOURDRONESSYSTEM_IMPL_INSTANCE] .
+  
+  op initial : -> PropSpec .
+  eq initial = ((((((((abs(((dr1 . env | c[x] ) - [[1.1]])) < [[0.01]]) and (abs(((dr1 . env | c[y] ) - [[1.5]])) < [[0.01]])) and (abs(((dr2 . env | c[x] ) + [[1.5]])) < [[0.01]])) and (abs(((dr2 . env | c[y] ) + [[1.1]])) < [[0.01]])) and (abs(((dr3 . env | c[x] ) - [[1.5]])) < [[0.01]])) and (abs(((dr3 . env | c[y] ) - [[1.1]])) < [[0.01]])) and (abs(((dr4 . env | c[x] ) + [[1.1]])) < [[0.01]])) and (abs(((dr4 . env | c[y] ) + [[1.5]])) < [[0.01]])) .
+  op velconst : -> PropSpec .
+  eq velconst = ((((((((abs((dr1 . env | c[velx] )) < [[0.01]]) and (abs((dr1 . env | c[vely] )) < [[0.01]])) and (abs((dr2 . env | c[velx] )) < [[0.01]])) and (abs((dr2 . env | c[vely] )) < [[0.01]])) and (abs((dr3 . env | c[velx] )) < [[0.01]])) and (abs((dr3 . env | c[vely] )) < [[0.01]])) and (abs((dr4 . env | c[velx] )) < [[0.01]])) and (abs((dr4 . env | c[vely] )) < [[0.01]])) .
+  op allClose : -> PropSpec .
+  eq allClose = ((((((((((((abs(((dr1 . env | c[x] ) - (dr2 . env | c[x] ))) < [[1.0]]) and (abs(((dr1 . env | c[y] ) - (dr2 . env | c[y] ))) < [[1.0]])) and (abs(((dr1 . env | c[x] ) - (dr3 . env | c[x] ))) < [[1.0]])) and (abs(((dr1 . env | c[y] ) - (dr3 . env | c[y] ))) < [[1.0]])) and (abs(((dr1 . env | c[x] ) - (dr4 . env | c[x] ))) < [[1.0]])) and (abs(((dr1 . env | c[y] ) - (dr4 . env | c[y] ))) < [[1.0]])) and (abs(((dr2 . env | c[x] ) - (dr3 . env | c[x] ))) < [[1.0]])) and (abs(((dr2 . env | c[y] ) - (dr3 . env | c[y] ))) < [[1.0]])) and (abs(((dr2 . env | c[x] ) - (dr4 . env | c[x] ))) < [[1.0]])) and (abs(((dr2 . env | c[y] ) - (dr4 . env | c[y] ))) < [[1.0]])) and (abs(((dr3 . env | c[x] ) - (dr4 . env | c[x] ))) < [[1.0]])) and (abs(((dr3 . env | c[y] ) - (dr4 . env | c[y] ))) < [[1.0]])) .
+  op collision : -> PropSpec .
+  eq collision = (((((((abs(((dr1 . env | c[x] ) - (dr2 . env | c[x] ))) < [[0.1]]) and (abs(((dr1 . env | c[y] ) - (dr2 . env | c[y] ))) < [[0.1]])) or ((abs(((dr1 . env | c[x] ) - (dr3 . env | c[x] ))) < [[0.1]]) and (abs(((dr1 . env | c[y] ) - (dr3 . env | c[y] ))) < [[0.1]]))) or ((abs(((dr1 . env | c[x] ) - (dr4 . env | c[x] ))) < [[0.1]]) and (abs(((dr1 . env | c[y] ) - (dr4 . env | c[y] ))) < [[0.1]]))) or ((abs(((dr2 . env | c[x] ) - (dr3 . env | c[x] ))) < [[0.1]]) and (abs(((dr2 . env | c[y] ) - (dr3 . env | c[y] ))) < [[0.1]]))) or ((abs(((dr2 . env | c[x] ) - (dr4 . env | c[x] ))) < [[0.1]]) and (abs(((dr2 . env | c[y] ) - (dr4 . env | c[y] ))) < [[0.1]]))) or ((abs(((dr3 . env | c[x] ) - (dr4 . env | c[x] ))) < [[0.1]]) and (abs(((dr3 . env | c[y] ) - (dr4 . env | c[y] ))) < [[0.1]]))) .
+  
+endm
+set verbose on .
+red reachAnalysis(
+    initState,
+    (FourDronesSystemimplInstance | (initial and velconst)),
+    FourDronesSystemimplInstance | not(not(collision)),
+    500
+    ) .
+
+quit

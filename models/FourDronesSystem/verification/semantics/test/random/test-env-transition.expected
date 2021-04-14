@@ -1,0 +1,87 @@
+==========================================
+reduce in TEST-ENV-TRANSITION-SEMANTICS : execSample(time(0) mode(st1)
+    sampling(cr1 :(0,1)) response(cr1 :(4/7,3)) jumps(trans) flows(flows) sIds(
+    cr1) rIds(cr1) randC(0) (bcf const(bool(true))) envcon(conx, envports)) .
+rewrites: 130
+result BATransResult: {feature((on1 |-> ([0.0] # [true] : [true]), on2 |-> ([
+    0.0] # [false] : [true]), off1 |-> ([0.0] # [false] : [true]), off2 |-> ([
+    0.0] # [true] : [true]), a |-> [6.3143107669461307e-1] # [true])) data((x
+    |=> [6.3143107669461307e-1] # [true], y |=> [1.0e+2] # [true])) prop((
+    TimingProperties::Period => {{5}}) ; HybridSynchAADL::MaxClockDeviation =>
+    {{5.0e-1}}) randC(2) const([true]) sampling(empty) response(cr1 :(4/7,3))
+    jumps((st1 -[on1]-> st2) ; st2 -[off1]-> st1) flows((st1 [x(t)= (c[x] - (v[
+    t] * [[1.0000000000000001e-1]]))]) ; st2 [x(t)= (c[x] + (v[t] * [[
+    2.0000000000000001e-1]]))]) mode(st1) time(1697498826/1431655765) sIds(nil)
+    rIds(cr1) envcon((x ==> a) ; y ==> b, < on1 : EnvInPort | content : [0.0] #
+    [false],envCache : [0.0] # [false],target : cr1 > < on2 : EnvInPort |
+    content : [0.0] # [false],envCache : [0.0] # [false],target : cr2 > < off1
+    : EnvInPort | content : [0.0] # [false],envCache : [0.0] # [false],target :
+    cr1 > < off2 : EnvInPort | content : [0.0] # [false],envCache : [0.0] # [
+    false],target : cr2 > < a : EnvOutPort | content : [0.0] # [false],envCache
+    : [0.0] # [false],target : cr1 > < b : EnvOutPort | content : [0.0] # [
+    false],envCache : [0.0] # [false],target : cr2 >)}
+==========================================
+reduce in TEST-ENV-TRANSITION-SEMANTICS : execSample(time(0) mode(st1)
+    sampling((cr1 :(0,1), cr2 :(3/2,5/2))) response((cr1 :(4/7,3), cr2 :(13/4,
+    4))) jumps(trans) flows(flows) sIds(cr1 cr2) rIds(cr1 cr2) randC(0) (bcf
+    const(bool(true))) envcon(conx, envports)) .
+rewrites: 305
+result BATransResult: {feature((on1 |-> ([0.0] # [true] : [true]), on2 |-> ([
+    0.0] # [false] : [true]), off1 |-> ([0.0] # [false] : [true]), off2 |-> ([
+    0.0] # [true] : [true]), a |-> [5.3932146976396989e-1] # [true], b |-> [
+    1.0e+2] # [true])) data((x |=> [5.3932146976396989e-1] # [true], y |=> [
+    1.0e+2] # [true])) prop((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{5.0e-1}}) randC(4) const([true])
+    sampling(empty) response((cr1 :(4/7,3), cr2 :(13/4,4))) jumps((st1 -[on1]->
+    st2) ; st2 -[off1]-> st1) flows((st1 [x(t)= (c[x] - (v[t] * [[
+    1.0000000000000001e-1]]))]) ; st2 [x(t)= (c[x] + (v[t] * [[
+    2.0000000000000001e-1]]))]) mode(st1) time(
+    1727259078790938883/819855291783094090) sIds(nil) rIds(cr1 cr2) envcon((x
+    ==> a) ; y ==> b, < on1 : EnvInPort | content : [0.0] # [false],envCache :
+    [0.0] # [false],target : cr1 > < on2 : EnvInPort | content : [0.0] # [
+    false],envCache : [0.0] # [false],target : cr2 > < off1 : EnvInPort |
+    content : [0.0] # [false],envCache : [0.0] # [false],target : cr1 > < off2
+    : EnvInPort | content : [0.0] # [false],envCache : [0.0] # [false],target :
+    cr2 > < a : EnvOutPort | content : [0.0] # [false],envCache : [0.0] # [
+    false],target : cr1 > < b : EnvOutPort | content : [0.0] # [false],envCache
+    : [0.0] # [false],target : cr2 >)}
+==========================================
+reduce in TEST-ENV-TRANSITION-SEMANTICS : execResp(time(3) mode(st1) sampling(
+    empty) response(cr1 :(4/7,3)) jumps(trans) flows(flows) sIds(cr1) rIds(cr1)
+    randC(0) (bcf const(bool(true))) envcon(conx, envports)) .
+rewrites: 185
+result BATransResult: {feature((on1 |-> ([0.0] # [true] : [true]), on2 |-> ([
+    0.0] # [false] : [true]), off1 |-> ([0.0] # [false] : [true]), off2 |-> ([
+    0.0] # [true] : [true]))) data((x |=> [1.1500000000000001] # [true], y |=>
+    [1.0e+2] # [true])) prop((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{5.0e-1}}) randC(2) const([true])
+    sampling(empty) jumps((st1 -[on1]-> st2) ; st2 -[off1]-> st1) mode(st2)
+    sIds(cr1) rIds(nil) envcon((x ==> a) ; y ==> b, < on1 : EnvInPort | content
+    : [0.0] # [false],envCache : [0.0] # [false],target : cr1 > < on2 :
+    EnvInPort | content : [0.0] # [false],envCache : [0.0] # [false],target :
+    cr2 > < off1 : EnvInPort | content : [0.0] # [false],envCache : [0.0] # [
+    false],target : cr1 > < off2 : EnvInPort | content : [0.0] # [false],
+    envCache : [0.0] # [false],target : cr2 > < a : EnvOutPort | content : [
+    0.0] # [false],envCache : [0.0] # [false],target : cr1 > < b : EnvOutPort |
+    content : [0.0] # [false],envCache : [0.0] # [false],target : cr2 >)}
+==========================================
+reduce in TEST-ENV-TRANSITION-SEMANTICS : execResp(time(3) mode(st1) sampling(
+    empty) response((cr1 :(4/7,3), cr2 :(13/4,4))) jumps(trans) flows(flows)
+    sIds(cr1 cr2) rIds(cr1 cr2) randC(0) (bcf const(bool(true))) envcon(conx,
+    envports)) .
+rewrites: 341
+result BATransResult: {feature((on1 |-> ([0.0] # [true] : [true]), on2 |-> ([
+    0.0] # [false] : [true]), off1 |-> ([0.0] # [false] : [true]), off2 |-> ([
+    0.0] # [true] : [true]))) data((x |=> [7.6375657632335958e-1] # [true], y
+    |=> [1.0e+2] # [true])) prop((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{5.0e-1}}) randC(4) const([true])
+    sampling(empty) jumps((st1 -[on1]-> st2) ; st2 -[off1]-> st1) mode(st2)
+    sIds(cr1 cr2) rIds(nil) envcon((x ==> a) ; y ==> b, < on1 : EnvInPort |
+    content : [0.0] # [false],envCache : [0.0] # [false],target : cr1 > < on2 :
+    EnvInPort | content : [0.0] # [false],envCache : [0.0] # [false],target :
+    cr2 > < off1 : EnvInPort | content : [0.0] # [false],envCache : [0.0] # [
+    false],target : cr1 > < off2 : EnvInPort | content : [0.0] # [false],
+    envCache : [0.0] # [false],target : cr2 > < a : EnvOutPort | content : [
+    0.0] # [false],envCache : [0.0] # [false],target : cr1 > < b : EnvOutPort |
+    content : [0.0] # [false],envCache : [0.0] # [false],target : cr2 >)}
+Bye.

@@ -1,0 +1,16 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2-merge.maude
+load module-component-dynamics.maude
+
+mod TEST-ENSEMBLE-DYNAMICS is
+  including TEST-ENSEMBLE-DYNAMICS-MOD .
+
+  eq @m@ = ['TEST-ENSEMBLE-DYNAMICS-MOD] .
+endm
+
+
+red finalConst(obj3) .
+
+search executeStep(bool(true), obj3) =>* C:ConstConfig .

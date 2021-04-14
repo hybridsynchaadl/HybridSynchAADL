@@ -1,0 +1,107 @@
+
+load module-component-dynamics.maude
+
+mod TEST-MODEL-TRANSITION-SYSTEM-MOD is
+  including MODEL-TRANSITION-SYSTEM .
+  including TEST-ENSEMBLE-DYNAMICS-MOD .
+  protecting HYBRID-SYNCHAADL-PROPERTIES .
+
+  op c4 : -> ComponentId [ctor] .
+
+  op con2 : -> Set{Connection} .
+  eq con2 =
+    (c1 .. outp --> c2 .. inp) ; 
+    (c2 .. outp --> c1 .. inp)
+  .
+
+  op props : -> PropertyAssociation .
+  eq props =
+    (TimingProperties::Period => {{60}}) ;
+    (HybridSynchAADL::Synchronous => {{true}}) .
+
+  op obj4 : -> Object [ctor] .
+  eq obj4
+   = < c4 : System |
+         features : none,
+         subcomponents : obj1 obj2,
+         properties : props,
+         connections : con2 > .
+endm
+
+mod TEST-MODEL-TRANSITION-SYSTEM-MOD2 is
+  including MODEL-TRANSITION-SYSTEM .
+  including BEHAVIOR-SYMBOLIC-LOCATION .
+
+  ops top controller1 controller2 curr : -> ComponentId .
+  ops x t : -> VarId .
+  ops temp in out : -> FeatureId .
+  ops init state : -> Location .
+
+  eq init = loc(real(0)) .
+  eq state = loc(real(1)) .
+
+  op model : -> Object .
+  eq model =
+        < top : System |
+                features : none,
+                subcomponents :
+                    < controller1 : Thread |
+                        features :
+                            < out : DataOutPort | content : null(Real),
+                                                  properties : DataModel::InitialValue => {{15}} >,
+                        subcomponents :
+                            < curr : Data | value : null(Real),
+                                            features : none,
+                                            subcomponents : none,
+                                            properties : DataModel::InitialValue => {{15}},
+                                            connections : empty >,
+                        properties : (TimingProperties::Period => {{5}}) ;
+                                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+                        currState : init,
+                        completeStates : init,
+                        variables : (x : Real),
+                        transitions :
+                            (init -[ on dispatch ]-> state {
+                                skip
+                            }) ;
+                            (state -[ [[true]] ]-> init {
+                                skip 
+                            }) ;
+                            (state -[ [[true]] ]-> init {
+                                (f{out} := [[10.0]])
+                            }), 
+                        loopBound : 0,
+                        transBound : 5,
+                        varGen : < "top.controller" >,
+                        connections : empty >
+                    < controller2 : Thread |
+                        features :
+                            < in : DataInPort | content : null(Real),
+                                                  cache : null(Real),
+                                                  properties : none >,
+                        subcomponents :
+                            < curr : Data | value : null(Real),
+                                            features : none,
+                                            subcomponents : none,
+                                            properties : DataModel::InitialValue => {{15}},
+                                            connections : empty >,
+                        properties : (TimingProperties::Period => {{5}}) ;
+                                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+                        currState : init,
+                        completeStates : init,
+                        variables : (x : Real),
+                        transitions :
+                            (init -[ on dispatch ]-> init {
+                                c{curr} := f[in]
+                            }),
+                        loopBound : 0,
+                        transBound : 5,
+                        varGen : < "top.controller" >,
+                        connections : empty >,
+                connections : (
+					(controller1 .. out --> controller2 .. in)),
+                properties : (TimingProperties::Period => {{5}}) > .
+
+endm

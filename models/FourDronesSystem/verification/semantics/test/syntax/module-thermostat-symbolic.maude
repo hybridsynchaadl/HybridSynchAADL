@@ -1,0 +1,8 @@
+load module-thermostat.maude .
+mod THERMOSTAT-SYSTEM is
+  including THERMOSTAT-SYSTEM-SYNTAX .
+  including BEHAVIOR-SYMBOLIC-LOCATION .
+
+  eq init  = loc(real(0)) .
+  eq state = loc(real(1)) .
+endm

@@ -1,0 +1,155 @@
+--- Defines the syntax of the behavior annex language in AADL.
+--- Only the subset for Hybrid Synchornous AADL is defined.
+--- Subprograms and arrays are not supported yet.
+
+
+fmod BEHAVIOR-EXPRESSION-SYNTAX is
+  including BEHAVIOR-VAR-ID .
+  including FEATURE-ID .
+  including PROPERTY-ID .
+  including COMPONENT-REF .
+  including AADL-VALUE .
+
+  sort AADLExp .
+  subsort AADLValue < AADLExp .
+
+--- access feature/port/local-var names..
+  sort VarAADLExp .
+  subsort VarAADLExp < AADLExp .
+  op f[_] : FeatureId -> VarAADLExp [ctor] .     --- reference
+  op v[_] : VarId -> VarAADLExp [ctor] .         --- reference
+  op c[_] : ComponentRef -> VarAADLExp [ctor] .  --- reference
+  op p[_] : PropertyId -> VarAADLExp [ctor] .    --- reference
+
+  op count : FeatureId -> VarAADLExp [ctor] .    --- p'count
+  op fresh : FeatureId -> VarAADLExp [ctor] .    --- p'fresh
+
+--- binary operators
+  op _and_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _or_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _xor_ : AADLExp AADLExp -> AADLExp [ctor] .
+
+  op _=_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _!=_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _<_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _<=_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _>_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _>=_ : AADLExp AADLExp -> AADLExp [ctor] .
+
+  op _+_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _-_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _*_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _/_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _mod_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _rem_ : AADLExp AADLExp -> AADLExp [ctor] .
+  op _**_ : AADLExp AADLExp -> AADLExp [ctor] .
+
+--- unary operators
+  op not : AADLExp -> AADLExp [ctor] .
+  op plus : AADLExp -> AADLExp [ctor] .
+  op minus : AADLExp -> AADLExp [ctor] .
+  op abs : AADLExp -> AADLExp [ctor] .
+endfm
+
+
+fmod BEHAVIOR-CONDITION-SYNTAX is
+  including BEHAVIOR-EXPRESSION-SYNTAX .
+
+  sort TransGuard .
+  sort DispatchCond .
+  subsort DispatchCond < TransGuard .
+  op on`dispatch : -> DispatchCond [ctor] .
+
+--- execute conditions
+  sort ExecuteCond .
+  subsort AADLExp < ExecuteCond < TransGuard .
+  op otherwise : -> ExecuteCond [ctor] .
+endfm
+
+
+--- Define a subset of Behavior Annex Action language. 
+fmod BEHAVIOR-ACTION-SYNTAX is
+  including BEHAVIOR-EXPRESSION-SYNTAX .
+  including CLASSIFIER-ID .
+
+  sort Action .
+
+--- action block
+  sort ActionBlock .
+  subsort ActionBlock < Action .
+  op {_} : ActionGroup -> ActionBlock [ctor] .
+
+  sorts ActionGroup ActionSequence ActionSet  EmptyAction .
+  subsorts Action EmptyAction < ActionSequence ActionSet < ActionGroup .
+  op skip : -> EmptyAction [ctor] . --- no action
+  op _;_ : ActionSequence ActionSequence -> ActionSequence [ctor assoc] .
+  op _&_ : ActionSet ActionSet -> ActionSet [ctor comm assoc] .
+
+--- assignment: local variables, output ports/params, and data (sub)components
+  sort AssignmentAction .
+  subsort AssignmentAction < Action .
+  op _:=_ : AssignmentTarget AADLExp -> AssignmentAction [ctor] .
+
+  sort AssignmentTarget .
+  op v{_} : VarId -> AssignmentTarget [ctor] .
+  op f{_} : FeatureId -> AssignmentTarget [ctor] .
+  op c{_} : ComponentRef -> AssignmentTarget [ctor] .
+
+--- communication (subprograms are not supported yet)
+  sort CommunicationAction .
+  subsort CommunicationAction < Action .
+
+  --- event/event data port for the environment
+  op _! : FeatureId -> CommunicationAction [ctor] . 
+  op _!(_) : FeatureId AADLExp -> CommunicationAction [ctor] . 
+
+  --- for pre-defined functions
+  op _! : ClassifierId -> CommunicationAction [ctor] .
+  op _!(_) : ClassifierId ParamList -> CommunicationAction [ctor] .
+
+  sort ParamList .
+  subsort AADLExp < ParamList .
+  op _,_ : ParamList ParamList -> ParamList [ctor assoc] .
+
+--- branch action
+  sort BranchAction .
+  subsort BranchAction < Action .
+  op if(_)_end`if : AADLExp ActionGroup -> BranchAction [ctor] .
+  op if(_)_else_end`if : AADLExp ActionGroup ActionGroup -> BranchAction [ctor] .
+  op if(_)__end`if : AADLExp ActionGroup ElseIfs -> BranchAction [ctor] .
+  op if(_)__else_end`if : AADLExp ActionGroup ElseIfs ActionGroup -> BranchAction [ctor] .
+
+  sort ElseIfs .
+  op __ : ElseIfs ElseIfs -> ElseIfs [ctor assoc] .
+  op elsif(_)_ : AADLExp ActionGroup -> ElseIfs [ctor] .
+
+--- loop action. NOTE: The for loop is not supported yet.
+  sort LoopAction .
+  subsort LoopAction < Action .
+  op while(_){_} : AADLExp ActionGroup -> LoopAction [ctor] .
+  op do_until(_) : ActionGroup AADLExp -> LoopAction [ctor] .
+endfm
+
+
+fmod BEHAVIOR-TRANSITION is
+  including BEHAVIOR-CONDITION-SYNTAX .
+  including BEHAVIOR-ACTION-SYNTAX .
+  including SET{Location} * (op _,_ : Set{Location} Set{Location} -> Set{Location} to __) .
+
+  sort Transition .
+
+  --- source -[ guard ]-> destination {action}
+  --- NOTE: we do not consider a transition priority yet.
+  op _-[_]->__ : Location TransGuard Location ActionBlock -> Transition [ctor] .
+endfm
+
+
+view Transition from TRIV to BEHAVIOR-TRANSITION is
+  sort Elt to Transition .
+endv
+
+
+fmod BEHAVIOR-TRANSITION-SET is
+  including SET{Transition} * (op _,_ : Set{Transition} Set{Transition} -> Set{Transition}  to _;_) .
+endfm
+

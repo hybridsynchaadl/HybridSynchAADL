@@ -1,0 +1,1376 @@
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{initState,0} | 0 | 6000} .
+rewrites: 259264
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlProc : Process | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] >),subcomponents : (< diffAngle : Data | properties :
+    DataModel::InitialValue => {{1.0}},features : none,subcomponents : none,
+    connections : empty,value : [1.0] # [true] > < currAngle : Data |
+    properties : DataModel::InitialValue => {{2.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) > < leftWingController : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) > < mainController : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < rightangle
+    : DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] #
+    [false] > < currdirection : DataOutPort | properties : none,content : [0.0]
+    # [false] > < goalangle : DataInPort | properties : none,content : [0.0] #
+    [false],cache : [0.0] # [false] > < rightgoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [-4.4999999999999996e-1] # [
+    true] > < leftgoal : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : [4.4999999999999996e-1] # [true] >),subcomponents : <
+    ctrlProc : Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    none,content : [0.0] # [false] > < rightangle : DataInPort | properties :
+    none,content : [0.0] # [false],cache : [0.0] # [false] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rightgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] > < leftgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : none,content : [0.0] # [false] > <
+    rightangle : DataInPort | properties : none,content : [0.0] # [false],cache
+    : [0.0] # [true] > < currdirection : DataOutPort | properties : none,
+    content : [0.0] # [false] > < goalangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [-1.0e+1] # [true] > < rightgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] > < leftgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : (< yawAngle : Data | properties : DataModel::InitialValue => {{0.0}},
+    features : none,subcomponents : none,connections : empty,value : [0.0] # [
+    true] > < dirAngle : Data | properties : DataModel::InitialValue => {{
+    0.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < rollAngle : Data | properties : DataModel::InitialValue
+    => {{0.0}},features : none,subcomponents : none,connections : empty,value :
+    [0.0] # [true] >),connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 >,connections : ((leftangle --> (ctrlThread ..
+    leftangle)) ; (rudderangle --> (ctrlThread .. rudderangle)) ; (rightangle
+    --> (ctrlThread .. rightangle)) ; (goalangle --> (ctrlThread .. goalangle))
+    ; ((ctrlThread .. ruddergoal) --> ruddergoal) ; ((ctrlThread ..
+    currdirection) --> currdirection) ; ((ctrlThread .. rightgoal) -->
+    rightgoal) ; (ctrlThread .. leftgoal) --> leftgoal) >,connections : ((
+    leftangle --> (ctrlProc .. leftangle)) ; (rudderangle --> (ctrlProc ..
+    rudderangle)) ; (rightangle --> (ctrlProc .. rightangle)) ; (goalangle -->
+    (ctrlProc .. goalangle)) ; ((ctrlProc .. ruddergoal) --> ruddergoal) ; ((
+    ctrlProc .. currdirection) --> currdirection) ; ((ctrlProc .. rightgoal)
+    --> rightgoal) ; (ctrlProc .. leftgoal) --> leftgoal) > <
+    rudderWingController : System | properties : ((TimingProperties::Period =>
+    {{60}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< currangle
+    : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) >),connections : ((pilotgoal --> (
+    mainController .. goalangle)) ; ((rightWingController .. currangle) --> (
+    mainController .. rightangle)) ; ((leftWingController .. currangle) --> (
+    mainController .. leftangle)) ; ((mainController .. ruddergoal) --> (
+    rudderWingController .. goalangle)) ; ((mainController .. currdirection)
+    --> currdirection) ; ((mainController .. rightgoal) --> (
+    rightWingController .. goalangle)) ; ((mainController .. leftgoal) --> (
+    leftWingController .. goalangle)) ; (rudderWingController .. currangle) -->
+    (mainController .. rudderangle)) > < pilotConsole : System | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    -1.0e+1] # [true] >),subcomponents : < pilotConsoleProc : Process |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currdirection :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < goaldirection : DataOutPort | properties : none,content : [0.0]
+    # [false] >),subcomponents : < pilotConsoleThread : Thread | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >,connections : ((
+    currdirection --> (pilotConsoleThread .. currdirection)) ; (
+    pilotConsoleThread .. goaldirection) --> goaldirection) >,connections : ((
+    currdirection --> (pilotConsoleProc .. currdirection)) ; (pilotConsoleProc
+    .. goaldirection) --> goaldirection) >),connections : (((turningCtrl ..
+    currdirection) --> (pilotConsole .. currdirection)) ; (pilotConsole ..
+    goaldirection) --> (turningCtrl .. pilotgoal)) >,1400} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{initState,400} | 0 | 6000} .
+rewrites: 259209
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlProc : Process | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    -4.4999999999999996e-1] # [true] >),subcomponents : (< diffAngle : Data |
+    properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) > < leftWingController : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [4.4999999999999996e-1] # [true] >),subcomponents :
+    (< diffAngle : Data | properties : DataModel::InitialValue => {{1.0}},
+    features : none,subcomponents : none,connections : empty,value : [1.0] # [
+    true] > < currAngle : Data | properties : DataModel::InitialValue => {{
+    2.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < movingRate : Data | properties : DataModel::InitialValue
+    => {{4.0}},features : none,subcomponents : none,connections : empty,value :
+    [4.0] # [true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,
+    completeStates : init,variables : empty,transitions : ((init -[on
+    dispatch]-> move {skip}) ; (move -[otherwise]-> update {skip}) ; (move -[
+    abs(f[goalangle] - c[currAngle]) > c[diffAngle]]-> update {if((f[goalangle]
+    - c[currAngle]) >= [[0]]){c{currAngle} := (c[currAngle] + c[diffAngle])}
+    else {c{currAngle} := (c[currAngle] - c[diffAngle])} end if}) ; update -[[[
+    true]]]-> init {f{currangle} := c[currAngle]}),loopBound : 10,transBound :
+    10 >,connections : ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread
+    .. currangle) --> currangle) >,connections : ((goalangle --> (ctrlProc ..
+    goalangle)) ; (ctrlProc .. currangle) --> currangle) > < mainController :
+    System | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < rightangle
+    : DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] #
+    [false] > < currdirection : DataOutPort | properties : none,content : [0.0]
+    # [false] > < goalangle : DataInPort | properties : none,content : [0.0] #
+    [false],cache : [0.0] # [false] > < rightgoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [4.4999999999999996e-1] # [
+    true] > < leftgoal : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : [-4.4999999999999996e-1] # [true] >),subcomponents : <
+    ctrlProc : Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    none,content : [0.0] # [false] > < rightangle : DataInPort | properties :
+    none,content : [0.0] # [false],cache : [0.0] # [false] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rightgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] > < leftgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : none,content : [0.0] # [false] > <
+    rightangle : DataInPort | properties : none,content : [0.0] # [false],cache
+    : [0.0] # [true] > < currdirection : DataOutPort | properties : none,
+    content : [0.0] # [false] > < goalangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [1.0e+1] # [true] > < rightgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] > < leftgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : (< yawAngle : Data | properties : DataModel::InitialValue => {{0.0}},
+    features : none,subcomponents : none,connections : empty,value : [0.0] # [
+    true] > < dirAngle : Data | properties : DataModel::InitialValue => {{
+    0.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < rollAngle : Data | properties : DataModel::InitialValue
+    => {{0.0}},features : none,subcomponents : none,connections : empty,value :
+    [0.0] # [true] >),connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 >,connections : ((leftangle --> (ctrlThread ..
+    leftangle)) ; (rudderangle --> (ctrlThread .. rudderangle)) ; (rightangle
+    --> (ctrlThread .. rightangle)) ; (goalangle --> (ctrlThread .. goalangle))
+    ; ((ctrlThread .. ruddergoal) --> ruddergoal) ; ((ctrlThread ..
+    currdirection) --> currdirection) ; ((ctrlThread .. rightgoal) -->
+    rightgoal) ; (ctrlThread .. leftgoal) --> leftgoal) >,connections : ((
+    leftangle --> (ctrlProc .. leftangle)) ; (rudderangle --> (ctrlProc ..
+    rudderangle)) ; (rightangle --> (ctrlProc .. rightangle)) ; (goalangle -->
+    (ctrlProc .. goalangle)) ; ((ctrlProc .. ruddergoal) --> ruddergoal) ; ((
+    ctrlProc .. currdirection) --> currdirection) ; ((ctrlProc .. rightgoal)
+    --> rightgoal) ; (ctrlProc .. leftgoal) --> leftgoal) > <
+    rudderWingController : System | properties : ((TimingProperties::Period =>
+    {{60}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< currangle
+    : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) >),connections : ((pilotgoal --> (
+    mainController .. goalangle)) ; ((rightWingController .. currangle) --> (
+    mainController .. rightangle)) ; ((leftWingController .. currangle) --> (
+    mainController .. leftangle)) ; ((mainController .. ruddergoal) --> (
+    rudderWingController .. goalangle)) ; ((mainController .. currdirection)
+    --> currdirection) ; ((mainController .. rightgoal) --> (
+    rightWingController .. goalangle)) ; ((mainController .. leftgoal) --> (
+    leftWingController .. goalangle)) ; (rudderWingController .. currangle) -->
+    (mainController .. rudderangle)) > < pilotConsole : System | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    -1.0e+1] # [true] >),subcomponents : < pilotConsoleProc : Process |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currdirection :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < goaldirection : DataOutPort | properties : none,content : [0.0]
+    # [false] >),subcomponents : < pilotConsoleThread : Thread | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >,connections : ((
+    currdirection --> (pilotConsoleThread .. currdirection)) ; (
+    pilotConsoleThread .. goaldirection) --> goaldirection) >,connections : ((
+    currdirection --> (pilotConsoleProc .. currdirection)) ; (pilotConsoleProc
+    .. goaldirection) --> goaldirection) >),connections : (((turningCtrl ..
+    currdirection) --> (pilotConsole .. currdirection)) ; (pilotConsole ..
+    goaldirection) --> (turningCtrl .. pilotgoal)) >,1800} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{initState,800} | 0 | 6000} .
+rewrites: 259451
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlProc : Process | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    -4.4999999999999996e-1] # [true] >),subcomponents : (< diffAngle : Data |
+    properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) > < leftWingController : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [4.4999999999999996e-1] # [true] >),subcomponents :
+    (< diffAngle : Data | properties : DataModel::InitialValue => {{1.0}},
+    features : none,subcomponents : none,connections : empty,value : [1.0] # [
+    true] > < currAngle : Data | properties : DataModel::InitialValue => {{
+    2.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < movingRate : Data | properties : DataModel::InitialValue
+    => {{4.0}},features : none,subcomponents : none,connections : empty,value :
+    [4.0] # [true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,
+    completeStates : init,variables : empty,transitions : ((init -[on
+    dispatch]-> move {skip}) ; (move -[otherwise]-> update {skip}) ; (move -[
+    abs(f[goalangle] - c[currAngle]) > c[diffAngle]]-> update {if((f[goalangle]
+    - c[currAngle]) >= [[0]]){c{currAngle} := (c[currAngle] + c[diffAngle])}
+    else {c{currAngle} := (c[currAngle] - c[diffAngle])} end if}) ; update -[[[
+    true]]]-> init {f{currangle} := c[currAngle]}),loopBound : 10,transBound :
+    10 >,connections : ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread
+    .. currangle) --> currangle) >,connections : ((goalangle --> (ctrlProc ..
+    goalangle)) ; (ctrlProc .. currangle) --> currangle) > < mainController :
+    System | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < rightangle
+    : DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] #
+    [false] > < currdirection : DataOutPort | properties : none,content : [0.0]
+    # [false] > < goalangle : DataInPort | properties : none,content : [0.0] #
+    [false],cache : [0.0] # [false] > < rightgoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < leftgoal :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] >),subcomponents : < ctrlProc : Process | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [false] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [0.0] # [false] > <
+    ruddergoal : DataOutPort | properties : none,content : [0.0] # [false] > <
+    rightangle : DataInPort | properties : none,content : [0.0] # [false],cache
+    : [0.0] # [false] > < currdirection : DataOutPort | properties : none,
+    content : [0.0] # [false] > < goalangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < rightgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] > < leftgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : < ctrlThread : Thread | properties : ((TimingProperties::Period => {{
+    60}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [5.0e-1] # [true] > < ruddergoal : DataOutPort | properties
+    : none,content : [0.0] # [false] > < rightangle : DataInPort | properties :
+    none,content : [0.0] # [false],cache : [0.0] # [true] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] > < rightgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] > < leftgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] >),subcomponents : (< yawAngle : Data | properties :
+    DataModel::InitialValue => {{0.0}},features : none,subcomponents : none,
+    connections : empty,value : [0.0] # [true] > < dirAngle : Data | properties
+    : DataModel::InitialValue => {{0.0}},features : none,subcomponents : none,
+    connections : empty,value : [0.0] # [true] > < rollAngle : Data |
+    properties : DataModel::InitialValue => {{0.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] >),
+    connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 >,connections : ((leftangle --> (ctrlThread ..
+    leftangle)) ; (rudderangle --> (ctrlThread .. rudderangle)) ; (rightangle
+    --> (ctrlThread .. rightangle)) ; (goalangle --> (ctrlThread .. goalangle))
+    ; ((ctrlThread .. ruddergoal) --> ruddergoal) ; ((ctrlThread ..
+    currdirection) --> currdirection) ; ((ctrlThread .. rightgoal) -->
+    rightgoal) ; (ctrlThread .. leftgoal) --> leftgoal) >,connections : ((
+    leftangle --> (ctrlProc .. leftangle)) ; (rudderangle --> (ctrlProc ..
+    rudderangle)) ; (rightangle --> (ctrlProc .. rightangle)) ; (goalangle -->
+    (ctrlProc .. goalangle)) ; ((ctrlProc .. ruddergoal) --> ruddergoal) ; ((
+    ctrlProc .. currdirection) --> currdirection) ; ((ctrlProc .. rightgoal)
+    --> rightgoal) ; (ctrlProc .. leftgoal) --> leftgoal) > <
+    rudderWingController : System | properties : ((TimingProperties::Period =>
+    {{60}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< currangle
+    : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) >),connections : ((pilotgoal --> (
+    mainController .. goalangle)) ; ((rightWingController .. currangle) --> (
+    mainController .. rightangle)) ; ((leftWingController .. currangle) --> (
+    mainController .. leftangle)) ; ((mainController .. ruddergoal) --> (
+    rudderWingController .. goalangle)) ; ((mainController .. currdirection)
+    --> currdirection) ; ((mainController .. rightgoal) --> (
+    rightWingController .. goalangle)) ; ((mainController .. leftgoal) --> (
+    leftWingController .. goalangle)) ; (rudderWingController .. currangle) -->
+    (mainController .. rudderangle)) > < pilotConsole : System | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    1.0e+1] # [true] >),subcomponents : < pilotConsoleProc : Process |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currdirection :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < goaldirection : DataOutPort | properties : none,content : [0.0]
+    # [false] >),subcomponents : < pilotConsoleThread : Thread | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >,connections : ((
+    currdirection --> (pilotConsoleThread .. currdirection)) ; (
+    pilotConsoleThread .. goaldirection) --> goaldirection) >,connections : ((
+    currdirection --> (pilotConsoleProc .. currdirection)) ; (pilotConsoleProc
+    .. goaldirection) --> goaldirection) >),connections : (((turningCtrl ..
+    currdirection) --> (pilotConsole .. currdirection)) ; (pilotConsole ..
+    goaldirection) --> (turningCtrl .. pilotgoal)) >,2200} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{initState,1200} | 0 | 6000}
+    .
+rewrites: 259512
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlProc : Process | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] >),subcomponents : (< diffAngle : Data | properties :
+    DataModel::InitialValue => {{1.0}},features : none,subcomponents : none,
+    connections : empty,value : [1.0] # [true] > < currAngle : Data |
+    properties : DataModel::InitialValue => {{2.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) > < leftWingController : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) > < mainController : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < rightangle
+    : DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] #
+    [false] > < currdirection : DataOutPort | properties : none,content : [0.0]
+    # [false] > < goalangle : DataInPort | properties : none,content : [0.0] #
+    [false],cache : [0.0] # [false] > < rightgoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [4.4999999999999996e-1] # [
+    true] > < leftgoal : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : [-4.4999999999999996e-1] # [true] >),subcomponents : <
+    ctrlProc : Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< leftangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rudderangle : DataInPort | properties : none,content : [0.0] # [
+    false],cache : [0.0] # [false] > < ruddergoal : DataOutPort | properties :
+    none,content : [0.0] # [false] > < rightangle : DataInPort | properties :
+    none,content : [0.0] # [false],cache : [0.0] # [false] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < rightgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] > < leftgoal : DataOutPort | properties : none,content : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : none,content : [0.0] # [false] > <
+    rightangle : DataInPort | properties : none,content : [0.0] # [false],cache
+    : [0.0] # [true] > < currdirection : DataOutPort | properties : none,
+    content : [0.0] # [false] > < goalangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [1.0e+1] # [true] > < rightgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] > < leftgoal :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : (< yawAngle : Data | properties : DataModel::InitialValue => {{0.0}},
+    features : none,subcomponents : none,connections : empty,value : [0.0] # [
+    true] > < dirAngle : Data | properties : DataModel::InitialValue => {{
+    0.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < rollAngle : Data | properties : DataModel::InitialValue
+    => {{0.0}},features : none,subcomponents : none,connections : empty,value :
+    [0.0] # [true] >),connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 >,connections : ((leftangle --> (ctrlThread ..
+    leftangle)) ; (rudderangle --> (ctrlThread .. rudderangle)) ; (rightangle
+    --> (ctrlThread .. rightangle)) ; (goalangle --> (ctrlThread .. goalangle))
+    ; ((ctrlThread .. ruddergoal) --> ruddergoal) ; ((ctrlThread ..
+    currdirection) --> currdirection) ; ((ctrlThread .. rightgoal) -->
+    rightgoal) ; (ctrlThread .. leftgoal) --> leftgoal) >,connections : ((
+    leftangle --> (ctrlProc .. leftangle)) ; (rudderangle --> (ctrlProc ..
+    rudderangle)) ; (rightangle --> (ctrlProc .. rightangle)) ; (goalangle -->
+    (ctrlProc .. goalangle)) ; ((ctrlProc .. ruddergoal) --> ruddergoal) ; ((
+    ctrlProc .. currdirection) --> currdirection) ; ((ctrlProc .. rightgoal)
+    --> rightgoal) ; (ctrlProc .. leftgoal) --> leftgoal) > <
+    rudderWingController : System | properties : ((TimingProperties::Period =>
+    {{60}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< currangle
+    : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [false] >),subcomponents : < ctrlProc :
+    Process | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] >),subcomponents : < ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties : none,content :
+    [0.0] # [false] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >,connections :
+    ((goalangle --> (ctrlThread .. goalangle)) ; (ctrlThread .. currangle) -->
+    currangle) >,connections : ((goalangle --> (ctrlProc .. goalangle)) ; (
+    ctrlProc .. currangle) --> currangle) >),connections : ((pilotgoal --> (
+    mainController .. goalangle)) ; ((rightWingController .. currangle) --> (
+    mainController .. rightangle)) ; ((leftWingController .. currangle) --> (
+    mainController .. leftangle)) ; ((mainController .. ruddergoal) --> (
+    rudderWingController .. goalangle)) ; ((mainController .. currdirection)
+    --> currdirection) ; ((mainController .. rightgoal) --> (
+    rightWingController .. goalangle)) ; ((mainController .. leftgoal) --> (
+    leftWingController .. goalangle)) ; (rudderWingController .. currangle) -->
+    (mainController .. rudderangle)) > < pilotConsole : System | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] >),subcomponents : < pilotConsoleProc : Process | properties
+    : ((TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {
+    {true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : none,content : [0.0] # [false] >),subcomponents
+    : < pilotConsoleThread : Thread | properties : ((TimingProperties::Period
+    => {{60}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (<
+    currdirection : DataInPort | properties : none,content : [0.0] # [false],
+    cache : [0.0] # [false] > < goaldirection : DataOutPort | properties :
+    none,content : [0.0] # [false] >),subcomponents : none,connections : empty,
+    varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >,connections : ((
+    currdirection --> (pilotConsoleThread .. currdirection)) ; (
+    pilotConsoleThread .. goaldirection) --> goaldirection) >,connections : ((
+    currdirection --> (pilotConsoleProc .. currdirection)) ; (pilotConsoleProc
+    .. goaldirection) --> goaldirection) >),connections : (((turningCtrl ..
+    currdirection) --> (pilotConsole .. currdirection)) ; (pilotConsole ..
+    goaldirection) --> (turningCtrl .. pilotgoal)) >,2600} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{cinitState,0} | 0 | 6000} .
+rewrites: 198301
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController . ctrlProc . ctrlThread : Thread |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 > <
+    leftWingController . ctrlProc . ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] >),subcomponents : (< diffAngle : Data | properties :
+    DataModel::InitialValue => {{1.0}},features : none,subcomponents : none,
+    connections : empty,value : [1.0] # [true] > < currAngle : Data |
+    properties : DataModel::InitialValue => {{2.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 > <
+    mainController . ctrlProc . ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : DataModel::InitialValue => {{0.0}},
+    content : [0.0] # [true] > < rightangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [true] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [-1.0e+1]
+    # [true] > < rightgoal : DataOutPort | properties : DataModel::InitialValue
+    => {{0.0}},content : [-4.4999999999999996e-1] # [true] > < leftgoal :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    4.4999999999999996e-1] # [true] >),subcomponents : (< yawAngle : Data |
+    properties : DataModel::InitialValue => {{0.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    dirAngle : Data | properties : DataModel::InitialValue => {{0.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    rollAngle : Data | properties : DataModel::InitialValue => {{0.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] >),
+    connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 > < rudderWingController . ctrlProc . ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >),connections
+    : ((pilotgoal --> ((mainController . ctrlProc . ctrlThread) .. goalangle))
+    ; (((rightWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rightangle)) ; (((
+    leftWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. leftangle)) ; (((mainController
+    . ctrlProc . ctrlThread) .. ruddergoal) --> ((rudderWingController .
+    ctrlProc . ctrlThread) .. goalangle)) ; (((mainController . ctrlProc .
+    ctrlThread) .. currdirection) --> currdirection) ; (((mainController .
+    ctrlProc . ctrlThread) .. rightgoal) --> ((rightWingController . ctrlProc .
+    ctrlThread) .. goalangle)) ; (((mainController . ctrlProc . ctrlThread) ..
+    leftgoal) --> ((leftWingController . ctrlProc . ctrlThread) .. goalangle))
+    ; ((rudderWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rudderangle)) > < pilotConsole .
+    pilotConsoleProc . pilotConsoleThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    -1.0e+1] # [true] >),subcomponents : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >),connections : (((
+    turningCtrl .. currdirection) --> ((pilotConsole . pilotConsoleProc .
+    pilotConsoleThread) .. currdirection)) ; ((pilotConsole . pilotConsoleProc
+    . pilotConsoleThread) .. goaldirection) --> (turningCtrl .. pilotgoal)) >,
+    1400} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{cinitState,400} | 0 | 6000}
+    .
+rewrites: 198394
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController . ctrlProc . ctrlThread : Thread |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [-4.4999999999999996e-1] # [true] >),subcomponents :
+    (< diffAngle : Data | properties : DataModel::InitialValue => {{1.0}},
+    features : none,subcomponents : none,connections : empty,value : [1.0] # [
+    true] > < currAngle : Data | properties : DataModel::InitialValue => {{
+    2.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < movingRate : Data | properties : DataModel::InitialValue
+    => {{4.0}},features : none,subcomponents : none,connections : empty,value :
+    [4.0] # [true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,
+    completeStates : init,variables : empty,transitions : ((init -[on
+    dispatch]-> move {skip}) ; (move -[otherwise]-> update {skip}) ; (move -[
+    abs(f[goalangle] - c[currAngle]) > c[diffAngle]]-> update {if((f[goalangle]
+    - c[currAngle]) >= [[0]]){c{currAngle} := (c[currAngle] + c[diffAngle])}
+    else {c{currAngle} := (c[currAngle] - c[diffAngle])} end if}) ; update -[[[
+    true]]]-> init {f{currangle} := c[currAngle]}),loopBound : 10,transBound :
+    10 > < leftWingController . ctrlProc . ctrlThread : Thread | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    4.4999999999999996e-1] # [true] >),subcomponents : (< diffAngle : Data |
+    properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 > <
+    mainController . ctrlProc . ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : DataModel::InitialValue => {{0.0}},
+    content : [0.0] # [true] > < rightangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [true] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [1.0e+1] #
+    [true] > < rightgoal : DataOutPort | properties : DataModel::InitialValue
+    => {{0.0}},content : [4.4999999999999996e-1] # [true] > < leftgoal :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    -4.4999999999999996e-1] # [true] >),subcomponents : (< yawAngle : Data |
+    properties : DataModel::InitialValue => {{0.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    dirAngle : Data | properties : DataModel::InitialValue => {{0.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    rollAngle : Data | properties : DataModel::InitialValue => {{0.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] >),
+    connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 > < rudderWingController . ctrlProc . ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >),connections
+    : ((pilotgoal --> ((mainController . ctrlProc . ctrlThread) .. goalangle))
+    ; (((rightWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rightangle)) ; (((
+    leftWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. leftangle)) ; (((mainController
+    . ctrlProc . ctrlThread) .. ruddergoal) --> ((rudderWingController .
+    ctrlProc . ctrlThread) .. goalangle)) ; (((mainController . ctrlProc .
+    ctrlThread) .. currdirection) --> currdirection) ; (((mainController .
+    ctrlProc . ctrlThread) .. rightgoal) --> ((rightWingController . ctrlProc .
+    ctrlThread) .. goalangle)) ; (((mainController . ctrlProc . ctrlThread) ..
+    leftgoal) --> ((leftWingController . ctrlProc . ctrlThread) .. goalangle))
+    ; ((rudderWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rudderangle)) > < pilotConsole .
+    pilotConsoleProc . pilotConsoleThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    -1.0e+1] # [true] >),subcomponents : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >),connections : (((
+    turningCtrl .. currdirection) --> ((pilotConsole . pilotConsoleProc .
+    pilotConsoleThread) .. currdirection)) ; ((pilotConsole . pilotConsoleProc
+    . pilotConsoleThread) .. goaldirection) --> (turningCtrl .. pilotgoal)) >,
+    1800} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{cinitState,800} | 0 | 6000}
+    .
+rewrites: 198656
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController . ctrlProc . ctrlThread : Thread |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [-4.4999999999999996e-1] # [true] >),subcomponents :
+    (< diffAngle : Data | properties : DataModel::InitialValue => {{1.0}},
+    features : none,subcomponents : none,connections : empty,value : [1.0] # [
+    true] > < currAngle : Data | properties : DataModel::InitialValue => {{
+    2.0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] > < movingRate : Data | properties : DataModel::InitialValue
+    => {{4.0}},features : none,subcomponents : none,connections : empty,value :
+    [4.0] # [true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,
+    completeStates : init,variables : empty,transitions : ((init -[on
+    dispatch]-> move {skip}) ; (move -[otherwise]-> update {skip}) ; (move -[
+    abs(f[goalangle] - c[currAngle]) > c[diffAngle]]-> update {if((f[goalangle]
+    - c[currAngle]) >= [[0]]){c{currAngle} := (c[currAngle] + c[diffAngle])}
+    else {c{currAngle} := (c[currAngle] - c[diffAngle])} end if}) ; update -[[[
+    true]]]-> init {f{currangle} := c[currAngle]}),loopBound : 10,transBound :
+    10 > < leftWingController . ctrlProc . ctrlThread : Thread | properties : (
+    (TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    4.4999999999999996e-1] # [true] >),subcomponents : (< diffAngle : Data |
+    properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 > <
+    mainController . ctrlProc . ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : DataModel::InitialValue => {{0.0}},
+    content : [0.0] # [true] > < rightangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [true] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] > < rightgoal : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : [0.0] # [true] > < leftgoal : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] >),
+    subcomponents : (< yawAngle : Data | properties : DataModel::InitialValue
+    => {{0.0}},features : none,subcomponents : none,connections : empty,value :
+    [0.0] # [true] > < dirAngle : Data | properties : DataModel::InitialValue
+    => {{0.0}},features : none,subcomponents : none,connections : empty,value :
+    [0.0] # [true] > < rollAngle : Data | properties : DataModel::InitialValue
+    => {{0.0}},features : none,subcomponents : none,connections : empty,value :
+    [0.0] # [true] >),connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 > < rudderWingController . ctrlProc . ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >),connections
+    : ((pilotgoal --> ((mainController . ctrlProc . ctrlThread) .. goalangle))
+    ; (((rightWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rightangle)) ; (((
+    leftWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. leftangle)) ; (((mainController
+    . ctrlProc . ctrlThread) .. ruddergoal) --> ((rudderWingController .
+    ctrlProc . ctrlThread) .. goalangle)) ; (((mainController . ctrlProc .
+    ctrlThread) .. currdirection) --> currdirection) ; (((mainController .
+    ctrlProc . ctrlThread) .. rightgoal) --> ((rightWingController . ctrlProc .
+    ctrlThread) .. goalangle)) ; (((mainController . ctrlProc . ctrlThread) ..
+    leftgoal) --> ((leftWingController . ctrlProc . ctrlThread) .. goalangle))
+    ; ((rudderWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rudderangle)) > < pilotConsole .
+    pilotConsoleProc . pilotConsoleThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    1.0e+1] # [true] >),subcomponents : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >),connections : (((
+    turningCtrl .. currdirection) --> ((pilotConsole . pilotConsoleProc .
+    pilotConsoleThread) .. currdirection)) ; ((pilotConsole . pilotConsoleProc
+    . pilotConsoleThread) .. goaldirection) --> (turningCtrl .. pilotgoal)) >,
+    2200} | 6000 | 6000}
+==========================================
+rewrite in TEST-AIRPLANE_NONDET_INSTANCE-MODEL : {{cinitState,1200} | 0 | 6000}
+    .
+rewrites: 198697
+result GlobalSystem: {{< AirplanenondetInstance : System | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : none,subcomponents : (< turningCtrl : System |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< pilotgoal :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    false] > < currdirection : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [false] >),
+    subcomponents : (< rightWingController . ctrlProc . ctrlThread : Thread |
+    properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{1.0}},features : none,
+    subcomponents : none,connections : empty,value : [1.0] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rightWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 > <
+    leftWingController . ctrlProc . ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currangle : DataOutPort | properties :
+    DataModel::InitialValue => {{0.0}},content : [0.0] # [true] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [0.0] # [
+    true] >),subcomponents : (< diffAngle : Data | properties :
+    DataModel::InitialValue => {{1.0}},features : none,subcomponents : none,
+    connections : empty,value : [1.0] # [true] > < currAngle : Data |
+    properties : DataModel::InitialValue => {{2.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    movingRate : Data | properties : DataModel::InitialValue => {{4.0}},
+    features : none,subcomponents : none,connections : empty,value : [4.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.leftWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 > <
+    mainController . ctrlProc . ctrlThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< leftangle : DataInPort | properties : none,content :
+    [0.0] # [false],cache : [0.0] # [true] > < rudderangle : DataInPort |
+    properties : none,content : [0.0] # [false],cache : [5.0e-1] # [true] > <
+    ruddergoal : DataOutPort | properties : DataModel::InitialValue => {{0.0}},
+    content : [0.0] # [true] > < rightangle : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [true] > < currdirection :
+    DataOutPort | properties : none,content : [0.0] # [false] > < goalangle :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [1.0e+1] #
+    [true] > < rightgoal : DataOutPort | properties : DataModel::InitialValue
+    => {{0.0}},content : [4.4999999999999996e-1] # [true] > < leftgoal :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    -4.4999999999999996e-1] # [true] >),subcomponents : (< yawAngle : Data |
+    properties : DataModel::InitialValue => {{0.0}},features : none,
+    subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    dirAngle : Data | properties : DataModel::InitialValue => {{0.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] > <
+    rollAngle : Data | properties : DataModel::InitialValue => {{0.0}},features
+    : none,subcomponents : none,connections : empty,value : [0.0] # [true] >),
+    connections : empty,varGen : <
+    "AirplanenondetInstance.turningCtrl.mainController.ctrlProc.ctrlThread" >,
+    currState : init,completeStates : init,variables : ((x : Real) ; (y : Real)
+    ; (z : Real) ; (d : Real) ; w : Real),transitions : ((init -[on dispatch]->
+    yaw {skip}) ; (rudder -[[[true]]]-> init {(v{x} := minus(c[yawAngle])) ;
+    if(abs(v[x]) > [[1.0]]){(v{d} := (abs(v[x]) * [[8.0000000000000004e-1]])) ;
+    if(v[d] > [[3.0e+1]]){v{d} := [[3.0e+1]]} end if} else {v{d} := ((v[x] + v[
+    x]) * [[8.0000000000000004e-1]])} end if ; if(v[x] < [[0]]){v{d} := minus(
+    v[d])} end if ; f{ruddergoal} := v[d]}) ; yaw -[[[true]]]-> rudder {(v{x}
+    := (f[goalangle] - c[dirAngle])) ; (v{y} := ((v[x] * [[
+    4.0000000000000002e-1]]) - c[rollAngle])) ; if(abs(v[y]) > [[1.5]]){if(v[y]
+    >= [[0]]){v{d} := (c[rollAngle] + [[1.5]])} else {v{d} := (c[rollAngle] - [
+    [1.5]])} end if} else {v{d} := (v[x] * [[3.2000000000000001e-1]])} end if ;
+    (v{z} := (v[d] - c[rollAngle])) ; if(abs(v[z]) > [[1.0]]){(v{w} := (abs(v[
+    z]) * [[2.9999999999999999e-1]])) ; if(v[w] > [[4.5e+1]]){v{w} := [[
+    4.5e+1]]} end if} else {v{w} := ((v[z] + v[z]) * [[
+    2.9999999999999999e-1]])} end if ; if(v[z] < [[0]]){v{w} := minus(v[w])}
+    end if ; (f{rightgoal} := v[w]) ; f{leftgoal} := minus(v[w])}),loopBound :
+    10,transBound : 10 > < rudderWingController . ctrlProc . ctrlThread :
+    Thread | properties : ((TimingProperties::Period => {{60}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< currangle :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    5.0e-1] # [true] > < goalangle : DataInPort | properties : none,content : [
+    0.0] # [false],cache : [0.0] # [true] >),subcomponents : (< diffAngle :
+    Data | properties : DataModel::InitialValue => {{5.0e-1}},features : none,
+    subcomponents : none,connections : empty,value : [5.0e-1] # [true] > <
+    currAngle : Data | properties : DataModel::InitialValue => {{2.5}},features
+    : none,subcomponents : none,connections : empty,value : [5.0e-1] # [true] >
+    < movingRate : Data | properties : DataModel::InitialValue => {{3.0}},
+    features : none,subcomponents : none,connections : empty,value : [3.0] # [
+    true] >),connections : empty,varGen : < "AirplanenondetInstance.turningCtrl.rudderWingController.ctrlProc.ctrlThread" >,currState : init,completeStates :
+    init,variables : empty,transitions : ((init -[on dispatch]-> move {skip}) ;
+    (move -[otherwise]-> update {skip}) ; (move -[abs(f[goalangle] - c[
+    currAngle]) > c[diffAngle]]-> update {if((f[goalangle] - c[currAngle]) >= [
+    [0]]){c{currAngle} := (c[currAngle] + c[diffAngle])} else {c{currAngle} :=
+    (c[currAngle] - c[diffAngle])} end if}) ; update -[[[true]]]-> init {f{
+    currangle} := c[currAngle]}),loopBound : 10,transBound : 10 >),connections
+    : ((pilotgoal --> ((mainController . ctrlProc . ctrlThread) .. goalangle))
+    ; (((rightWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rightangle)) ; (((
+    leftWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. leftangle)) ; (((mainController
+    . ctrlProc . ctrlThread) .. ruddergoal) --> ((rudderWingController .
+    ctrlProc . ctrlThread) .. goalangle)) ; (((mainController . ctrlProc .
+    ctrlThread) .. currdirection) --> currdirection) ; (((mainController .
+    ctrlProc . ctrlThread) .. rightgoal) --> ((rightWingController . ctrlProc .
+    ctrlThread) .. goalangle)) ; (((mainController . ctrlProc . ctrlThread) ..
+    leftgoal) --> ((leftWingController . ctrlProc . ctrlThread) .. goalangle))
+    ; ((rudderWingController . ctrlProc . ctrlThread) .. currangle) --> ((
+    mainController . ctrlProc . ctrlThread) .. rudderangle)) > < pilotConsole .
+    pilotConsoleProc . pilotConsoleThread : Thread | properties : ((
+    TimingProperties::Period => {{60}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< currdirection : DataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false] > < goaldirection :
+    DataOutPort | properties : DataModel::InitialValue => {{0.0}},content : [
+    0.0] # [true] >),subcomponents : none,connections : empty,varGen : <
+    "AirplanenondetInstance.pilotConsole.pilotConsoleProc.pilotConsoleThread"
+    >,currState : idle,completeStates : idle,variables : empty,transitions : ((
+    select -[[[true]]]-> idle {f{goaldirection} := [[0.0]]}) ; (select -[[[
+    true]]]-> idle {f{goaldirection} := [[1.0e+1]]}) ; (select -[[[true]]]->
+    idle {f{goaldirection} := minus([[1.0e+1]])}) ; idle -[on dispatch]->
+    select {skip}),loopBound : 10,transBound : 10 >),connections : (((
+    turningCtrl .. currdirection) --> ((pilotConsole . pilotConsoleProc .
+    pilotConsoleThread) .. currdirection)) ; ((pilotConsole . pilotConsoleProc
+    . pilotConsoleThread) .. goaldirection) --> (turningCtrl .. pilotgoal)) >,
+    2600} | 6000 | 6000}
+Bye.

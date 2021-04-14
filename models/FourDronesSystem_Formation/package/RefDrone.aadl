@@ -1,0 +1,150 @@
+package RefDrone
+public
+	with Base_Types;
+	with Environment;
+	with Data_Model;
+
+	system RefDroneControl
+		features
+			outX: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			outY: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};			
+			outVX: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			outVY: out data port Base_Types::Float {Data_Model::Initial_Value => ("0");};				
+	end RefDroneControl;
+	system implementation RefDroneControl.formation
+		subcomponents
+			refDrone: system RefDrone.formation;
+			env: system Environment::Environment.impl;
+		connections
+			C1 : port refDrone.outX -> outX;
+			C2 : port refDrone.outY -> outY;
+			C3 : port refDrone.outVX -> outVX;	
+			C4 : port refDrone.outVY -> outVY;					
+
+			C5 : port env.currX -> refDrone.currX;
+			C6 : port env.currY -> refDrone.currY;
+			C7 : port env.currVX -> refDrone.currVX;
+			C8 : port env.currVY -> refDrone.currVY;
+
+			C9 : port refDrone.accX -> env.accX;
+			C10: port refDrone.accY -> env.accY;
+	end RefDroneControl.formation;
+	
+	system RefDrone
+		features
+			outX : out data port Base_Types::Float;
+			outY : out data port Base_Types::Float;
+			outVX :out data port Base_Types::Float;			
+			outVY :out data port Base_Types::Float;			
+
+			currX: in data port Base_Types::Float;
+			currY: in data port Base_Types::Float;
+			currVX: in data port Base_Types::Float;
+			currVY: in data port Base_Types::Float;			
+			
+			accX: out data port Base_Types::Float;
+			accY: out data port Base_Types::Float;
+	end refDrone;
+	system implementation RefDrone.formation
+		subcomponents
+			refProc: process refProc.formation;
+		connections
+			C1 : port refProc.outX -> outX;
+			C2 : port refProc.outY -> outY;
+			C3 : port refProc.outVX -> outVX;
+			C4 : port refProc.outVY -> outVY;			
+
+			C5 : port currX -> refProc.currX;
+			C6 : port currY -> refProc.currY;
+			C7 : port currVX -> refProc.currVX;
+			C8 : port currVY -> refProc.currVY;
+			
+			C9 : port refProc.accX -> accX;
+			C10: port refProc.accY -> accY;
+	end RefDrone.formation;
+	
+	process RefProc
+		features
+			outX : out data port Base_Types::Float;
+			outY : out data port Base_Types::Float;
+			outVX :out data port Base_Types::Float;			
+			outVY :out data port Base_Types::Float;			
+
+			currX: in data port Base_Types::Float;
+			currY: in data port Base_Types::Float;
+			currVX: in data port Base_Types::Float;
+			currVY: in data port Base_Types::Float;			
+			
+			accX: out data port Base_Types::Float;
+			accY: out data port Base_Types::Float;		
+	end RefProc;
+	process implementation RefProc.formation
+		subcomponents
+			refThread: thread RefThread.formation;
+		connections
+			C1 : port refThread.outX -> outX;
+			C2 : port refThread.outY -> outY;
+			C3 : port refThread.outVX -> outVX;
+			C4 : port refThread.outVY -> outVY;			
+
+			C5 : port currX -> refThread.currX;
+			C6 : port currY -> refThread.currY;
+			C7 : port currVX -> refThread.currVX;
+			C8 : port currVY -> refThread.currVY;
+			
+			C9 : port refThread.accX -> accX;
+			C10: port refThread.accY -> accY;		
+	end RefProc.formation;
+	
+
+    thread RefThread
+        features
+			outX : out data port Base_Types::Float;
+			outY : out data port Base_Types::Float;
+			outVX :out data port Base_Types::Float;			
+			outVY :out data port Base_Types::Float;			
+
+			currX: in data port Base_Types::Float;
+			currY: in data port Base_Types::Float;
+			currVX: in data port Base_Types::Float;
+			currVY: in data port Base_Types::Float;			
+			
+			accX: out data port Base_Types::Float;
+			accY: out data port Base_Types::Float;			
+        properties
+            Dispatch_Protocol => Periodic;
+    end RefThread;
+    thread implementation RefThread.formation
+    	subcomponents
+			nx : data Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			ny : data Base_Types::Float {Data_Model::Initial_Value => ("0");};
+        annex behavior_specification {**		
+			states
+	            init : initial complete state;
+	            exec, output : state;
+	        transitions
+	            init -[ on dispatch ]-> exec;
+	            exec -[ nx = 0 and ny = 0]-> output {
+	            		nx := 1;
+	            		ny := 1
+	            	}; 
+	            	exec -[ nx = 1 and ny = 1]-> output {
+	            		nx := 2;
+	            		ny := 2
+	            	}; 
+	            	exec -[ nx = 2 and ny = 2]-> output {
+	            		nx := 0;
+	            		ny := 0
+	            	};
+				output -[ ]-> init {
+					accX := nx;
+					outX := currX;
+					outVX := currVX;
+					accY := ny;
+					outY := currY;
+					outVY := currVY
+				};
+    	**};
+    end RefThread.formation;
+    
+end RefDrone;

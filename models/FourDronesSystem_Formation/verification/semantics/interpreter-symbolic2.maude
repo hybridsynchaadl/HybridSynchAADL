@@ -1,0 +1,35 @@
+
+set include BOOLEAN off .
+
+load syntax/abstract-exp.maude
+load syntax/identifiers.maude
+load syntax/aadl-value-property.maude
+load syntax/ba-syntax.maude
+load syntax/env-syntax.maude
+load syntax/features.maude
+load syntax/component.maude
+load syntax/flatten-ensemble.maude
+load syntax/time-domain.maude
+
+load symbolic/smt/smt-check.maude --- extended Maude-SMT interface
+load symbolic/smt/smt-prelude.maude
+load symbolic/smt/smt-meta-trans.maude
+load symbolic/smt/smt-exp-common.maude
+load symbolic/smt/smt-exp2.maude
+load symbolic/smt/smt-vargen.maude
+load symbolic/smt/smt-interface2.maude
+
+load common/io-operations.maude
+load symbolic/env-io-operations.maude
+load common/ba-exp-semantics.maude
+load common/ba-semantics.maude
+load symbolic/ba-semantics.maude
+load common/env-semantics-common.maude
+load symbolic/env-semantics.maude
+
+load common/transfer-input.maude
+load symbolic/transfer-results.maude
+load symbolic/component-dynamics.maude
+
+load common/specification-language.maude
+load symbolic/synchronous-model.maude

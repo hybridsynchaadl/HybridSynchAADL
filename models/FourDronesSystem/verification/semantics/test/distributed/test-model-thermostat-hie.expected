@@ -1,0 +1,106 @@
+==========================================
+rewrite [100] in TEST-THERMOSTAT-SYSTEM : {initState | 0 | infty} .
+rewrites: 8832
+result GlobalSystem: {< top : System | properties : TimingProperties::Period =>
+    {{5}},features : none,subcomponents : (< csys : System | properties : none,
+    features : (< on : AsyncDataOutPort | properties : none,content : * # [
+    false],destination : (environment .. on) > < off : AsyncDataOutPort |
+    properties : none,content : * # [false],destination : (environment .. off)
+    > < temp : AsyncDataInPort | properties : DataModel::InitialValue => {{
+    16}},content : [0.0] # [false],cache : [0.0] # [false],destination : (cproc
+    .. temp) >),subcomponents : < cproc : Process | properties : none,features
+    : (< on : AsyncDataOutPort | properties : none,content : * # [false],
+    destination : on > < off : AsyncDataOutPort | properties : none,content : *
+    # [false],destination : off > < temp : AsyncDataInPort | properties : none,
+    content : [0.0] # [false],cache : [0.0] # [false],destination : (cthread ..
+    temp) >),subcomponents : < cthread : AsyncThread | properties : ((
+    TimingProperties::Period => {{5}}) ; (HybridSynchAADL::SamplingTime => {{
+    0.0 .. 2.0}}) ; HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features :
+    (< on : AsyncDataOutPort | properties : none,content : * # [false],
+    destination : on > < off : AsyncDataOutPort | properties : none,content : *
+    # [false],destination : off > < temp : AsyncDataInPort | properties : none,
+    content : [0.0] # [false],cache : [2.15e+1] # [true],destination : empty
+    >),subcomponents : (< lower : Data | properties : DataModel::InitialValue
+    => {{10}},features : none,subcomponents : none,connections : empty,value :
+    [1.0e+1] # [true] > < upper : Data | properties : DataModel::InitialValue
+    => {{20}},features : none,subcomponents : none,connections : empty,value :
+    [2.0e+1] # [true] > < curr : Data | properties : DataModel::InitialValue =>
+    {{16}},features : none,subcomponents : none,connections : empty,value : [
+    2.2107421875e+1] # [true] >),connections : empty,varGen : < "top.cthread"
+    >,currState : init,completeStates : init,variables : x : Real,transitions :
+    init -[on dispatch]-> init {(v{x} := ((c[curr] + f[temp]) / [[2]])) ; if(v[
+    x] < c[lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[
+    x]},loopBound : 0,transBound : 10,period : 5,perTimer : 5/2,msgTimer :
+    infty,execTime : 5/2,execTimer : infty > > > < environment : AsyncEnv |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : AsyncEnvInPort | properties : none,content : * # [false],envCache :
+    null(Unit),target : csys,destination : empty > < off : AsyncEnvInPort |
+    properties : none,content : * # [true],envCache : null(Unit),target : csys,
+    destination : empty > < out : AsyncEnvOutPort | properties : none,content :
+    [0.0] # [false],envCache : null(Real),target : csys,destination : (csys ..
+    temp) >),subcomponents : < x : Data | properties : DataModel::InitialValue
+    => {{16}},features : none,subcomponents : none,connections : empty,value :
+    [2.0375e+1] # [true] >,connections : x ==> out,varGen : < "top.environment"
+    >,currMode : state,jumps : ((init -[on]-> init) ; (init -[off]-> state) ; (
+    state -[on]-> init) ; state -[off]-> state),flows : ((init [x(t)= (c[x] + (
+    v[t] * [[5.0e-1]]))]) ; state [x(t)= (c[x] - (v[t] * [[5.0e-1]]))]),
+    sampling : csys :(0,2),response : csys :(3,4),period : 5,perTimer : 5/2,
+    msgTimer : infty,samplingTimes : csys : (1/4, 3/4, 5/4, 7/4),responseTimes
+    : csys : (25/8, 27/8, 29/8, 31/8),envState : [response,csys],envTimer : 5/8
+    >) > | 55/2 | infty}
+==========================================
+rewrite [100] in TEST-THERMOSTAT-SYSTEM : {cinitState | 0 | infty} .
+rewrites: 7594
+result GlobalSystem: {< top : System | properties : TimingProperties::Period =>
+    {{5}},features : none,subcomponents : (< environment : AsyncEnv |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : AsyncEnvInPort | properties : none,content : * # [false],envCache :
+    null(Unit),target : csys,destination : empty > < off : AsyncEnvInPort |
+    properties : none,content : * # [true],envCache : null(Unit),target : csys,
+    destination : empty > < out : AsyncEnvOutPort | properties : none,content :
+    [0.0] # [false],envCache : null(Real),target : csys,destination : ((csys .
+    cproc . cthread) .. temp) >),subcomponents : < x : Data | properties :
+    DataModel::InitialValue => {{16}},features : none,subcomponents : none,
+    connections : empty,value : [2.0375e+1] # [true] >,connections : x ==> out,
+    varGen : < "top.environment" >,currMode : state,jumps : ((init -[on]->
+    init) ; (init -[off]-> state) ; (state -[on]-> init) ; state -[off]->
+    state),flows : ((init [x(t)= (c[x] + (v[t] * [[5.0e-1]]))]) ; state [x(t)=
+    (c[x] - (v[t] * [[5.0e-1]]))]),sampling : csys :(0,2),response : csys :(3,
+    4),period : 5,perTimer : 5/2,msgTimer : infty,samplingTimes : csys : (1/4,
+    3/4, 5/4, 7/4),responseTimes : csys : (25/8, 27/8, 29/8, 31/8),envState : [
+    response,csys],envTimer : 5/8 > < csys . cproc . cthread : AsyncThread |
+    properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    AsyncDataOutPort | properties : none,content : * # [false],destination : (
+    environment .. on) > < off : AsyncDataOutPort | properties : none,content :
+    * # [false],destination : (environment .. off) > < temp : AsyncDataInPort |
+    properties : DataModel::InitialValue => {{16}},content : [0.0] # [false],
+    cache : [2.15e+1] # [true],destination : empty >),subcomponents : (< lower
+    : Data | properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : [1.0e+1] # [true] > <
+    upper : Data | properties : DataModel::InitialValue => {{20}},features :
+    none,subcomponents : none,connections : empty,value : [2.0e+1] # [true] > <
+    curr : Data | properties : DataModel::InitialValue => {{16}},features :
+    none,subcomponents : none,connections : empty,value : [2.2107421875e+1] # [
+    true] >),connections : empty,varGen : < "top.cthread" >,currState : init,
+    completeStates : init,variables : x : Real,transitions : init -[on
+    dispatch]-> init {(v{x} := ((c[curr] + f[temp]) / [[2]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]},
+    loopBound : 0,transBound : 10,period : 5,perTimer : 5/2,msgTimer : infty,
+    execTime : 5/2,execTimer : infty >) > | 55/2 | infty}
+==========================================
+search [, 5] in TEST-THERMOSTAT-SYSTEM : {initState | 0 | infty} =>* {none |
+    T:Time | infty} .
+
+No solution.
+states: 264  rewrites: 12858
+==========================================
+search [, 5] in TEST-THERMOSTAT-SYSTEM : {cinitState | 0 | infty} =>* {none |
+    T:Time | infty} .
+
+No solution.
+states: 264  rewrites: 10858
+Bye.

@@ -1,0 +1,80 @@
+
+mod ENV-FEATURE-OPERATION is
+  including ENV-PORT .
+  protecting VAR-GEN .
+  protecting FEATURE-MAP .
+
+  var FMAP : FeatureMap . 
+  vars FTS FTS' : Configuration .  
+  var PI : FeatureId .
+  vars D D' : DataContent .
+  vars E E' V : Exp .  
+  vars BV : BoolExp .
+  vars CONST B B' : BoolExp .
+  vars GEN GEN1 GEN2 : VarGen .
+  var ATTS : AttributeSet .
+
+  sort EnvFeatureReadResult .
+  op {_,_,_,_} : Configuration FeatureMap BoolExp VarGen -> EnvFeatureReadResult [ctor] .
+
+  op readEnvFeature : Configuration VarGen ~> EnvFeatureReadResult [format (m! o)] .
+  op readEnvFeature : Configuration Configuration FeatureMap BoolExp VarGen ~> EnvFeatureReadResult [format (m! o)] .
+
+  eq readEnvFeature(FTS, GEN) = readEnvFeature(FTS, none, empty, bool(true), GEN) .
+
+  --- The envCache contains a data content used in the previous round. Also, a content of 
+  --- EnvInPort is always fresh, because no data cache is defiend for it.
+ ceq readEnvFeature(
+       < PI : C:EnvInPort | 
+           content  : E  # B, 
+           envCache : E' # B', ATTS > FTS, FTS', 
+       FMAP, 
+       CONST, GEN)
+   = 
+     readEnvFeature(FTS, 
+       < PI : C:EnvInPort | 
+           content  : bot(type(E)),
+           envCache : V # BV, ATTS > FTS', 
+       insert(PI, V # BV : bool(true), FMAP), 
+       CONST and E === E' and B === B', GEN2) 
+  if {V, GEN1} := gen(GEN, type(E))    --- Note: E can be a unit
+  /\ {BV,GEN2} := gen(GEN1,Boolean) .
+
+  eq readEnvFeature(
+       < PI : C:EnvOutPort | content : E # B, ATTS > FTS, FTS', FMAP, 
+       CONST, GEN)
+   = 
+     readEnvFeature(FTS, 
+       < PI : C:EnvOutPort | content  : E # B, ATTS > FTS', insert(PI, bot(type(E)), FMAP), 
+       CONST, GEN) .
+
+  eq readEnvFeature(none, FTS, FMAP, CONST, GEN) = {FTS, FMAP, CONST, GEN} [owise] .
+
+
+  sort EnvFeatureWriteResult .
+  op {_,_,_} : Configuration BoolExp VarGen -> EnvFeatureWriteResult [ctor] .
+
+  op writeEnvFeature : FeatureMap Configuration VarGen ~> EnvFeatureWriteResult [format (m! o)] .
+  op writeEnvFeature : FeatureMap Configuration Configuration BoolExp VarGen ~> EnvFeatureWriteResult [format (m! o)] .
+
+  eq writeEnvFeature(FMAP, FTS, GEN) = writeEnvFeature(FMAP, FTS, none, bool(true), GEN) .
+
+ ceq writeEnvFeature(FMAP, 
+       < PI : C:EnvOutPort | 
+           content  : D, 
+           envCache : E # B, ATTS > FTS, FTS',
+       CONST, GEN)
+   = 
+     writeEnvFeature(FMAP, FTS, 
+       < PI : C:EnvOutPort | 
+           content  : V # BV, 
+           envCache : V # BV, ATTS > FTS',
+       CONST and E === E' and B === B', GEN2) 
+   if E' # B' := FMAP[PI] 
+   /\ {V, GEN1} := gen(GEN, type(E))  --- Note: E can be a unit
+   /\ {BV,GEN2} := gen(GEN1,Boolean) .
+
+  eq writeEnvFeature(FMAP, FTS, FTS', CONST, GEN) = {FTS FTS', CONST, GEN} [owise] .
+endm
+
+

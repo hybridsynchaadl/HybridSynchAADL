@@ -1,0 +1,15 @@
+
+load module-syntax2.maude
+
+mod TEST-THERMOSTAT-SYSTEM-RANDOM is
+  including MODEL-INIT .
+  including THERMOSTAT-SYSTEM .
+  including MODEL-TRANSITION-SYSTEM .
+  including BOOL-EXP-SIMPLIFICATION .
+  including REAL-EXP-SIMPLIFICATION .
+  including COND-EXP-SIMPLIFICATION .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+  
+endm

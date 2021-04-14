@@ -1,0 +1,103 @@
+
+
+fmod TEST-CONX-TABLE is
+  including CONX-TABLE .
+
+  ops c1 c2 c3 : -> ComponentId .
+  ops i1 i2 i3 o1 o2 o3 ei1 ei2 eo : -> FeatureId .
+
+  op conn : -> Set{Connection} .
+  eq conn =
+    (c1 .. o1 --> c1 .. i1) ; (c1 .. o1 --> c2 .. i1) ; (c1 .. o2 --> ei1) ; (c1 .. o3 --> c3 .. i1) ;
+    (c2 .. o1 --> ei2) ; (c2 .. o2 --> c1 .. i2) ; (c2 .. o3 --> c3 .. i2) ;
+    (c3 .. o1 --> c2 .. i2) ;
+    (eo --> c1 .. i3)
+  .
+endfm
+
+
+
+mod TEST-TRANSFER-DATA is
+  including TEST-CONX-TABLE .
+  including TRANSFER-INPUT .
+  including TRANSFER-RESULTS .
+  including REAL-EXP .
+  including DATA-PORT .
+  including ENV-COMPONENT .
+
+  op e : -> ComponentId .
+
+  op comps : -> Configuration .
+  eq comps =
+        < c1 : System |
+            features :
+                < i1 : DataInPort | content : real(11) # bool(true),
+                                    cache : real(0) # bool(false),
+                                    properties : none >
+                < i2 : DataInPort | content : real(12) # bool(true),
+                                    cache : real(0) # bool(false),
+                                    properties : none >
+                < i3 : DataInPort | content : real(13) # bool(true),
+                                    cache : real(0) # bool(false),
+                                    properties : none >
+                < o1 : DataOutPort | content : real(14) # bool(true),
+                                     properties : none >
+                < o2 : DataOutPort | content : real(15) # bool(false),
+                                     properties : none >
+                < o3 : DataOutPort | content : real(16) # bool(false),
+                                     properties : none >,
+            subcomponents : none,
+            connections : empty,
+            properties : none >
+        < c2 : System |
+            features :
+                < i1 : DataInPort | content : real(21) # bool(false),
+                                    cache : real(0) # bool(false),
+                                    properties : none >
+                < i2 : DataInPort | content : real(22) # bool(false),
+                                    cache : real(0) # bool(false),
+                                    properties : none >
+                < o1 : DataOutPort | content : real(23) # bool(false),
+                                     properties : none >
+                < o2 : DataOutPort | content : real(24) # bool(false),
+                                     properties : none >
+                < o3 : DataOutPort | content : real(25) # bool(false),
+                                     properties : none >,
+            subcomponents : none,
+            connections : empty,
+            properties : none >
+        < c3 : Env |
+            features :
+                < i1 : EnvInPort | content : real(31) # bool(false),
+                                   envCache : real(0) # bool(false),
+                                   target : c1,
+                                   properties : none >
+                < i2 : EnvInPort | content : real(32) # bool(false),
+                                   envCache : real(0) # bool(false),
+                                   target : c2,
+                                   properties : none >
+                < i3 : EnvInPort | content : real(33) # bool(false),
+                                   envCache : real(0) # bool(false),   --- invalid env port
+                                   properties : none >
+                < o1 : EnvOutPort | content : real(34) # bool(false),
+                                   envCache : real(0) # bool(false),
+                                   target : c2,
+                                   properties : none >,
+            subcomponents : none,
+            connections : empty,
+            properties : none > .
+
+  op ports : -> Configuration .
+  eq ports =
+        < ei1 : DataOutPort | content : real(0) # bool(false), properties : none >
+        < ei2 : DataOutPort | content : real(0) # bool(false), properties : none >
+        < eo  : DataInPort  | content : real(44) # bool(false), cache : real(0) # bool(false), properties : none > .
+
+  op system : -> Object .
+  eq system =
+    < e : System |
+        features : ports,
+        subcomponents : comps,
+        connections : conn,
+        properties : none > .
+endm

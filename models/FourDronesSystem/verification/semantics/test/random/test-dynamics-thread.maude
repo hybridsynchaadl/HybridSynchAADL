@@ -1,0 +1,35 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+load ../syntax/module-thermostat-noparam.maude 
+
+-------------------------------------------------------
+mod TEST-THREAD-DYNAMICS is
+  including THERMOSTAT-SYSTEM-NOPARAM .
+  including MODEL-INIT .
+  including THREAD-DYNAMICS .
+  including TRANSFER-INPUT .
+  including TRANSFER-RESULTS .
+  including CONC-REAL-EXP .
+
+  op thread : -> Object .
+  eq thread = initialize(objC) .
+
+  op thread2 : -> Object .
+  eq thread2 = initialize(objC2) .
+endm
+
+rew execSample({thread, 0}) .
+rew execResponse({thread, 0}) .
+
+rew executeStep({thread, 0}) .  --- kind
+
+rew executeStep({transIn(real(10) # bool(true), controller .. temp) thread, 0}) .
+rew executeStep({transIn(real(0) #  bool(true), controller .. temp) thread, 0}) .
+rew executeStep({transIn(real(50) # bool(true), controller .. temp) thread, 0}) .
+
+--- For testing random pick in possible transition set
+rew executeStep({transIn(real(0) #  bool(true), controller .. temp) thread2, 0}) .
+rew executeStep({transIn(real(0) #  bool(true), controller .. temp) thread2, 1}) .
+rew executeStep({transIn(real(0) #  bool(true), controller .. temp) thread2, 7}) .

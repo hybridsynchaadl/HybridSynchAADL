@@ -1,0 +1,29 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+load ../syntax/module-thermostat-noparam.maude 
+
+-------------------------------------------------------
+mod TEST-ENV-DYNAMICS is
+  including THERMOSTAT-SYSTEM-NOPARAM .
+  including MODEL-INIT .
+  including ENV-DYNAMICS .
+  including TRANSFER-INPUT .
+  including TRANSFER-RESULTS .
+  including CONC-REAL-EXP .
+
+  op env : -> Object .
+  eq env = initialize(objE) .
+endm
+
+
+rew executeStep({env, 0}) .
+
+rew execSample({env, 0}) .
+
+rew execResponse(execSample({transIn(* # bool(true), environment .. on) env, 0})) . 
+
+rew execResponse(execSample({transIn(* # bool(true), environment .. off) env, 0})) . 
+
+

@@ -1,0 +1,65 @@
+==========================================
+reduce in TEST : toenv-tb(conn, comps) .
+rewrites: 41
+result ConxTable: ((c1 .. o3) |-> (c3 .. i1)) (c2 .. o3) |-> (c3 .. i2)
+==========================================
+reduce in TEST : transEnvOut(comps, outer-tb(conn), inner-tb(conn), toenv-tb(
+    conn, comps)) .
+rewrites: 86
+result [Configuration]: transOut([1.5e+1] # [false], ei1) transOut([2.3e+1] # [
+    false], ei2) < c1 : System | properties : none,features : (< i1 :
+    DataInPort | properties : none,content : [1.1e+1] # [true],cache : [0.0] #
+    [false] > < i2 : DataInPort | properties : none,content : [1.2e+1] # [
+    true],cache : [0.0] # [false] > < i3 : DataInPort | properties : none,
+    content : [1.3e+1] # [true],cache : [0.0] # [false] > < o1 : DataOutPort |
+    properties : none,content : [1.4e+1] # [true] > < o2 : DataOutPort |
+    properties : none,content : [0.0] # [false] > < o3 : DataOutPort |
+    properties : none,content : [0.0] # [false] >),subcomponents : none,
+    connections : empty > < c2 : System | properties : none,features : (< i1 :
+    DataInPort | properties : none,content : [2.1e+1] # [false],cache : [0.0] #
+    [false] > < i2 : DataInPort | properties : none,content : [2.2e+1] # [
+    false],cache : [0.0] # [false] > < o1 : DataOutPort | properties : none,
+    content : [0.0] # [false] > < o2 : DataOutPort | properties : none,content
+    : [2.4e+1] # [false] > < o3 : DataOutPort | properties : none,content : [
+    0.0] # [false] >),subcomponents : none,connections : empty > < c3 : Env |
+    properties : none,features : (< i1 : EnvInPort | properties : none,content
+    : [1.6e+1] # [false],envCache : [0.0] # [false],target : c1 > < i2 :
+    EnvInPort | properties : none,content : [2.5e+1] # [false],envCache : [0.0]
+    # [false],target : c2 > < i3 : EnvInPort | properties : none,content : [
+    3.3e+1] # [false],envCache : [0.0] # [false] > < o1 : EnvOutPort |
+    properties : none,content : [3.4e+1] # [false],envCache : [0.0] # [false],
+    target : c2 >),subcomponents : none,connections : empty >
+==========================================
+reduce in TEST : transferResults(system) .
+rewrites: 86
+result Object: < e : System | properties : none,features : (< ei1 : DataOutPort
+    | properties : none,content : [1.5e+1] # [false] > < ei2 : DataOutPort |
+    properties : none,content : [2.3e+1] # [false] > < eo : DataInPort |
+    properties : none,content : [4.4e+1] # [false],cache : [0.0] # [false] >),
+    subcomponents : (< c1 : System | properties : none,features : (< i1 :
+    DataInPort | properties : none,content : [1.1e+1] # [true],cache : [0.0] #
+    [false] > < i2 : DataInPort | properties : none,content : [1.2e+1] # [
+    true],cache : [0.0] # [false] > < i3 : DataInPort | properties : none,
+    content : [1.3e+1] # [true],cache : [0.0] # [false] > < o1 : DataOutPort |
+    properties : none,content : [1.4e+1] # [true] > < o2 : DataOutPort |
+    properties : none,content : [0.0] # [false] > < o3 : DataOutPort |
+    properties : none,content : [0.0] # [false] >),subcomponents : none,
+    connections : empty > < c2 : System | properties : none,features : (< i1 :
+    DataInPort | properties : none,content : [2.1e+1] # [false],cache : [0.0] #
+    [false] > < i2 : DataInPort | properties : none,content : [2.2e+1] # [
+    false],cache : [0.0] # [false] > < o1 : DataOutPort | properties : none,
+    content : [0.0] # [false] > < o2 : DataOutPort | properties : none,content
+    : [2.4e+1] # [false] > < o3 : DataOutPort | properties : none,content : [
+    0.0] # [false] >),subcomponents : none,connections : empty > < c3 : Env |
+    properties : none,features : (< i1 : EnvInPort | properties : none,content
+    : [1.6e+1] # [false],envCache : [0.0] # [false],target : c1 > < i2 :
+    EnvInPort | properties : none,content : [2.5e+1] # [false],envCache : [0.0]
+    # [false],target : c2 > < i3 : EnvInPort | properties : none,content : [
+    3.3e+1] # [false],envCache : [0.0] # [false] > < o1 : EnvOutPort |
+    properties : none,content : [3.4e+1] # [false],envCache : [0.0] # [false],
+    target : c2 >),subcomponents : none,connections : empty >),connections : ((
+    eo --> (c1 .. i3)) ; ((c1 .. o1) --> (c1 .. i1)) ; ((c1 .. o1) --> (c2 ..
+    i1)) ; ((c1 .. o2) --> ei1) ; ((c1 .. o3) --> (c3 .. i1)) ; ((c2 .. o1) -->
+    ei2) ; ((c2 .. o2) --> (c1 .. i2)) ; ((c2 .. o3) --> (c3 .. i2)) ; (c3 ..
+    o1) --> (c2 .. i2)) >
+Bye.

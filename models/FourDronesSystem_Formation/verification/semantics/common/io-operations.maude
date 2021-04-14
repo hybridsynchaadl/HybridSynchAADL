@@ -1,0 +1,178 @@
+
+fmod FEATURE-MAP-CONTENT is
+  protecting DATA-CONTENT .
+  sort FeatureMapContent .
+  subsort DataContent < FeatureMapContent .  --- for output port
+  op _:_ : DataContent BoolExp -> FeatureMapContent [ctor] . --- for input port (value : fresh)
+
+  op getData : FeatureMapContent ~> DataContent [format (m! o)] .
+  eq getData(D:DataContent : B:BoolExp) = D:DataContent .
+endfm
+
+view FeatureMapContent from TRIV to FEATURE-MAP-CONTENT is
+  sort Elt to FeatureMapContent .
+endv
+
+
+fmod VAR-VALUATION is
+  protecting REAL-EXP .
+  including MAP{VarId,DataType} * (op _|->_ : VarId DataType -> Entry{VarId,DataType} to _:_,
+                                   op _,_ : Map{VarId,DataType} Map{VarId,DataType} -> Map{VarId,DataType} to _;_) .
+  including MAP{VarId,DataContent} * (sort Map{VarId,DataContent} to VarValuation, 
+                                      op _,_ : Map{VarId,DataContent} Map{VarId,DataContent} -> Map{VarId,DataContent} to _;_) .
+
+  var VI : VarId . 
+  var TY : DataType .
+  var VIS : Map{VarId,DataType} . 
+  var VAL : VarValuation .
+
+--- An empty valuation where no actual values are assigned. "no value" is assigned to each variable;
+--- that is, dummy value [0] with the false flag. TODO: generate variables of different types
+  op defaultVal : Map{VarId,DataType} ~> VarValuation [format (m! o)] .
+  op defaultVal : Map{VarId,DataType} VarValuation ~> VarValuation [format (m! o)] .
+
+  --- TODO: use different dummy values for different types  
+  eq defaultVal(VIS) = defaultVal(VIS, empty) .
+  eq defaultVal((VI : TY) ; VIS, VAL) = defaultVal(VIS, (VI |-> bot(TY)) ; VAL) .
+  eq defaultVal(empty, VAL)    = VAL .
+endfm
+
+
+fmod DATA-VALUATION is
+  protecting REAL-EXP .
+  including MAP{ComponentRef,DataContent} * (sort Map{ComponentRef,DataContent} to DataValuation, 
+                                             op _|->_ : ComponentRef DataContent -> Entry{ComponentRef,DataContent} to _|=>_,
+                                             op undefined to undefinedData) .
+endfm
+
+
+fmod FEATURE-MAP is
+  including MAP{FeatureId,FeatureMapContent} * (sort Map{FeatureId,FeatureMapContent} to FeatureMap, 
+                                                op undefined to undefinedFeatureId) .
+endfm
+
+
+mod FEATURE-OPERATION is
+  including DATA-PORT .
+  protecting REAL-EXP .
+  protecting FEATURE-MAP .
+  protecting CHECKSAT .
+
+  var FMAP : FeatureMap . 
+  vars FTS FTS' : Configuration .  
+  var PI : FeatureId .
+  vars D D' : DataContent .
+  vars E E' : Exp .  
+  vars B B' : BoolExp .
+  var ATTS : AttributeSet .
+
+  sort FeatureReadResult .
+  op {_,_} : Configuration FeatureMap -> FeatureReadResult [ctor] .
+
+--- Create a feature valuation from features. 
+  op readFeature : Configuration ~> FeatureReadResult [format (m! o)] .
+  op readFeature : Configuration Configuration FeatureMap ~> FeatureReadResult [format (m! o)] .
+
+  eq readFeature(FTS) = readFeature(FTS, none, empty) .
+
+  --- if the content is present (i.e., B is true), then we use E; otherwise, E'.
+  --- This can be represented as the port value (B ? E : E') : (B or B'). Note 
+  --- that neither B nor B' is true, the value considered undefined. 
+  --- Finally, the freshness is set to B. 
+  --- TODO: cache should not be updated if B is false!!
+  eq readFeature(
+       < PI : C:DataInPort | 
+           content : E # B, 
+           cache : E' # B', ATTS > FTS, FTS', 
+       FMAP)
+   = 
+     readFeature(FTS, 
+       < PI : C:DataInPort | 
+           content : bot(type(E)),
+           cache : E # B, ATTS > FTS', 
+       insert(PI, (simplify(B ? E : E') # simplify(B or B')) : B, FMAP)) .
+
+  --- NOTE: using a new variable instead of the conditional expression seems to
+  --- significantly increase SMT solving time...
+
+  eq readFeature(
+       < PI : C:DataOutPort | content : E # B, ATTS > FTS, FTS', 
+       FMAP)
+   = 
+     readFeature(FTS, 
+       < PI : C:DataOutPort | content : E # B, ATTS > FTS', 
+       insert(PI, bot(type(E)), FMAP)) .
+
+  eq readFeature(none, FTS, FMAP) = {FTS, FMAP} .
+
+
+--- output a feature valuation to features
+  op writeFeature : FeatureMap Configuration ~> Configuration [format (m! o)] .
+  op writeFeature : FeatureMap Configuration Configuration ~> Configuration [format (m! o)] .
+
+  eq writeFeature(FMAP, FTS) = writeFeature(FMAP, FTS, none) .
+
+  --- we do not need to consider freshness (B') for writeFeature
+  eq writeFeature(((PI |-> D'), FMAP), < PI : C:DataOutPort | content : D, ATTS > FTS, FTS')
+   = writeFeature(FMAP, FTS, < PI : C:DataOutPort | content : D', ATTS > FTS') .
+
+  eq writeFeature(FMAP, FTS, FTS') = FTS FTS' [owise] .
+endm
+
+
+mod DATA-OPERATION is
+  including DATA-VALUATION .
+  including DATA-COMPONENT .
+
+  vars COMPS COMPS' : Configuration .
+  var CR : ComponentRef .
+  vars D D' : DataContent .
+  vars LD LD' : List{DataContent} .
+  var ATTS : AttributeSet .
+  var DATA : DataValuation .
+  var N : Nat .
+  
+  op readData : Configuration ~> DataValuation [format (m! o)] .
+  op readData : Configuration DataValuation ~> DataValuation [format (m! o)] .
+  op readData : Configuration DataValuation Nat ~> DataValuation [format (m! o)] .
+
+  eq readData(COMPS) = readData(COMPS, empty) .
+
+  eq readData(< CR : C:Data | value : D, ATTS > COMPS, DATA)
+   = readData(COMPS, insert(CR, D, DATA)) .
+
+  eq readData(< CR : C:Data | valueArray : LD, ATTS > COMPS, DATA)
+   = readData(< CR : C:Data | valueArray : LD, ATTS > COMPS, DATA, 0) .
+
+  eq readData(< CR : C:Data | valueArray : D LD, ATTS > COMPS, DATA, N)
+   = readData(< CR : C:Data | valueArray : LD, ATTS > COMPS, insert(CR[N], D, DATA), s N) .
+
+  eq readData(< CR : C:Data | valueArray : nil, ATTS > COMPS, DATA, N)
+   = readData(COMPS, DATA) .
+
+  eq readData(none, DATA) = DATA .
+
+
+  op writeData : DataValuation Configuration ~> Configuration [format (m! o)] .
+  op writeData : DataValuation Configuration Configuration ~> Configuration [format (m! o)] .
+
+  eq writeData(DATA, COMPS) = writeData(DATA, COMPS, none) .
+  eq writeData((CR |=> D', DATA), < CR : C:Data | value : D, ATTS > COMPS, COMPS')
+   = writeData(DATA, COMPS, COMPS' < CR : C:Data | value : D', ATTS >) .
+
+  ceq writeData((CR[N] |=> D, DATA), < CR : C:Data | valueArray : LD, ATTS > COMPS, COMPS')
+   = writeData(DATA, COMPS, COMPS' < CR : C:Data | valueArray : LD', ATTS >) 
+   if LD' := updateAt(LD, N, D) .
+
+  eq writeData(DATA, COMPS, COMPS') = COMPS COMPS' [owise] .
+
+  --- Auxiliary Function
+  op updateAt : List{DataContent} Nat DataContent -> List{DataContent} .
+  op updateAt : List{DataContent} Nat DataContent List{DataContent} -> List{DataContent} .
+  eq updateAt(LD, N, D) = updateAt(LD, N, D, nil) .
+  ceq updateAt(D LD, N, D', LD') = updateAt(LD, N - 1, D', LD' D)  if N =/= 0 .
+  eq updateAt(D LD, 0, D', LD') = LD' D' LD .
+endm
+
+
+

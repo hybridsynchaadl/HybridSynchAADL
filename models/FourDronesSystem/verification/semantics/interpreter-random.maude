@@ -1,0 +1,30 @@
+
+set include BOOLEAN off .
+
+load syntax/abstract-exp.maude
+load syntax/identifiers.maude
+load syntax/aadl-value-property.maude
+load syntax/ba-syntax.maude
+load syntax/env-syntax.maude
+load syntax/features.maude
+load syntax/component.maude
+load syntax/flatten-ensemble.maude
+load syntax/time-domain.maude
+
+load concrete/concrete-exp.maude
+load common/io-operations.maude
+load concrete/env-io-operations.maude
+load common/ba-exp-semantics.maude
+load common/ba-semantics.maude
+load concrete/random/ba-semantics.maude
+load common/env-semantics-common.maude
+load concrete/env-semantics.maude
+
+load common/transfer-input.maude
+load concrete/random/transfer-results.maude
+load concrete/random/component-dynamics.maude
+
+load common/specification-language.maude
+load concrete/random/randomize-model.maude
+load concrete/random/synchronous-model.maude
+

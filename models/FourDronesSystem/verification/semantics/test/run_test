@@ -1,0 +1,51 @@
+#!/bin/bash
+
+help() {
+    echo "Usage: run_test [-g] [-d <directory> ]"
+    echo "Options:"
+    echo "       -d <directory> : directory to be tested"
+    echo "       -g             : generate test oracle" 
+	exit 1
+}
+
+MAUDESMT_DIR=../../maude/
+
+TEST_DIR="."
+GEN=false
+while getopts "d:gh" opt;
+do
+    case "$opt" in
+        d)  TEST_DIR=$OPTARG;;
+        g)  GEN=true;;
+		h)  help;;
+        *)  help;;
+    esac
+done
+shift $(( OPTIND - 1 ))
+
+# check whether the environment is Mac or Linux.
+MACHINE=$(uname)
+case "$MACHINE" in
+	Darwin) MAUDESMT_BIN=maude-se-z3.darwin64;;
+	Linux)	MAUDESMT_BIN=maude-se-z3.linux;;
+	*)	echo "Error: Maude doesn't support $MACHINE" 
+		echo "Try to execute run_test in Mac or Linux" 
+		exit 1;;
+esac
+
+MAUDESMT_COM="$MAUDESMT_DIR/$MAUDESMT_BIN -no-advise -no-prelude -no-banner $MAUDESMT_DIR/prelude.maude $MAUDESMT_DIR/smt.maude"
+
+if [ "$GEN" = true ]; then
+    for file in $(find $TEST_DIR -name "test-*.maude")
+    do
+        echo Running $file ...
+        echo "quit" | $MAUDESMT_COM  $file > ${file%.*}.expected
+    done
+else
+    for file in $(find $TEST_DIR -name "test-*.maude") 
+    do
+        echo Testing $file ...
+        echo "quit" | $MAUDESMT_COM  $file | diff ${file%.*}.expected -
+    done
+fi
+

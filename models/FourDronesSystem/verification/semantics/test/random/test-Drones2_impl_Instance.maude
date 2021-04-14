@@ -1,0 +1,26 @@
+set show timing off .
+
+load ../../interpreter-random.maude
+load ../syntax/Drones2_impl_Instance.maude .
+
+mod TEST-DRONE2-SYSTEM is
+  including DRONES2_IMPL_INSTANCE-MODEL .
+  including MODEL-TRANSITION-SYSTEM .
+
+  op initState : -> Object .
+  eq initState = initialize(initial) .
+
+  op cinitState : -> Object .
+  eq cinitState = initialize(collapse(initial)) .
+
+endm
+
+rew {{initState,0} | 0 | 3000} .
+rew {{initState,800} | 0 | 3000} .
+rew {{initState,1600} | 0 | 3000} .
+rew {{initState,2400} | 0 | 3000} .
+
+rew {{cinitState,0} | 0 | 3000} .
+rew {{cinitState,800} | 0 | 3000} .
+rew {{cinitState,1600} | 0 | 3000} .
+rew {{cinitState,2400} | 0 | 3000} .

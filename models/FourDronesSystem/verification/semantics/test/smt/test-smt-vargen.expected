@@ -1,0 +1,45 @@
+==========================================
+reduce in SMT-VAR-GEN : type([(true).Boolean]) .
+rewrites: 1
+result DataType: Boolean
+==========================================
+reduce in SMT-VAR-GEN : type([(0/1).Real]) .
+rewrites: 1
+result DataType: Real
+==========================================
+reduce in SMT-VAR-GEN : type(*) .
+rewrites: 1
+result DataType: Unit
+==========================================
+reduce in SMT-VAR-GEN : gen(< "a",0,0 >, Boolean) .
+rewrites: 7
+result Pair{Exp,VarGen}: {[b("a#$#0")],< "a",0,1 >}
+==========================================
+reduce in SMT-VAR-GEN : gen(< "a",0,0 >, Real) .
+rewrites: 7
+result Pair{Exp,VarGen}: {[r("a#$#0")],< "a",1,0 >}
+==========================================
+reduce in SMT-VAR-GEN : gen(< "a",0,0 >, Unit) .
+rewrites: 1
+result Pair{Exp,VarGen}: {*,< "a",0,0 >}
+==========================================
+reduce in SMT-VAR-GEN : fresh?(r(0), < "a",1,2 >) .
+rewrites: 19
+result Bool: (false).Bool
+==========================================
+reduce in SMT-VAR-GEN : fresh?(r(1), < "a",1,2 >) .
+rewrites: 17
+result Bool: (true).Bool
+==========================================
+reduce in SMT-VAR-GEN : fresh?(b(0), < "a",1,2 >) .
+rewrites: 17
+result Bool: (false).Bool
+==========================================
+reduce in SMT-VAR-GEN : fresh?(b(1), < "a",1,2 >) .
+rewrites: 17
+result Bool: (false).Bool
+==========================================
+reduce in SMT-VAR-GEN : fresh?(b(2), < "a",1,2 >) .
+rewrites: 17
+result Bool: (true).Bool
+Bye.

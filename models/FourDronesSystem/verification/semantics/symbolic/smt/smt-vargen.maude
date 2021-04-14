@@ -1,0 +1,41 @@
+
+--- real-index and bool-index denotes variable indices for newly generated 
+--- rational and Boolean variables, respectively. uniqueId denotes a 
+--- unique identifier for each component to distinguish different
+--- variables with the same index. This uniqueId should be generated
+--- by code generator of OSATE.
+fmod SMT-VAR-GEN is
+  including VAR-GEN .
+  including SMT-REAL-EXP .
+  including SMT-UNIT-EXP .
+
+  sort SMTVarGen .
+  subsort SMTVarGen < VarGen .
+  op <_,_,_> : String Nat Nat -> SMTVarGen [ctor] . --- id, real-index, bool-index
+
+  vars I J I' J' : Nat .
+  var S : String .
+  var B : SMTBoolExp .
+  var R : SMTRealExp .
+  var VB : SMTBoolVar .
+  var VR : SMTRealVar .
+
+  --- create a concrete vargen
+  eq init(< S >) = < S, 0, 0 > .
+
+  --- generate a variable of the same type with the given exp
+  op gen : SMTVarGen DataType ~> Pair{Exp,VarGen} [format (m! o)] .
+  eq gen(< S, I, J >, Boolean) = {b(S,J), < S, I, s J >} .
+  eq gen(< S, I, J >, Real)    = {r(S,I), < S, s I, J >} .
+  eq gen(< S, I, J >, Unit)    = {     *, < S,   I, J >} .
+
+  --- return true if a given variable is fresh with respect to VarGen
+  op fresh? : SMTVar SMTVarGen ~> Bool [format (m! o)] .
+  eq fresh?(VB, < S, I, J >) = getIndex(VB) >= J .
+  eq fresh?(VR, < S, I, J >) = getIndex(VR) >= I .
+
+  --- return a vargen with a greater index
+  op max : SMTVarGen SMTVarGen ~> SMTVarGen [format (m! o)] .
+  eq max(< S, I, J >, < S, I', J' >) = < S, max(I,I'), max(J,J') > .
+endfm
+

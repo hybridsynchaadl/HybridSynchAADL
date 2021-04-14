@@ -1,0 +1,48 @@
+
+--- time module from Real-Time Maude
+fmod TIME is
+  protecting RAT .
+
+  sorts Time NzTime TimeInf .
+  subsorts Zero PosRat Nat < Time < Rat .
+  subsort PosRat < NzTime < Time < TimeInf .
+  op infty : -> TimeInf [ctor] .
+
+  vars T T' : Time .
+  vars TI TI' : TimeInf .
+
+  op _monus_ : TimeInf TimeInf -> TimeInf [prec 33 gather (E e)] .
+  eq T monus T' = if T > T' then T - T' else 0 fi .
+
+  eq infty +     TI    = infty .
+  eq infty monus T     = infty .
+  eq TI    <=    infty = true .
+  eq infty <=    T     = false .
+  eq infty <     TI    = false .
+  eq T     <     infty = true .
+  eq TI    >     TI'   = TI' <  TI .
+  eq TI    >=    TI'   = TI' <= TI .
+
+  eq min(infty, TI) = TI .
+  eq max(infty, TI) = infty .
+endfm
+
+
+view Time from TRIV to TIME is
+  sort Elt to Time .
+endv
+
+
+fmod INTERACTION-TIME is
+  protecting COMPONENT-ID .
+  protecting SET{Time} .
+
+  sort InterTime .
+  op _:_ : ComponentId Set{Time} -> InterTime [ctor] .
+endfm
+
+
+view InterTime from TRIV to INTERACTION-TIME is
+  sort Elt to InterTime .
+endv
+

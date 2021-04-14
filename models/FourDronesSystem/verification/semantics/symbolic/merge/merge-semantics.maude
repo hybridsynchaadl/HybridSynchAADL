@@ -1,0 +1,47 @@
+
+mod META-BEHAVIOR-SEARCH is
+  including SYM-MERGE-TRANSITION-RESULT .
+  protecting META-LEVEL .
+
+  op @m@ : ~> Module [format (m! o)] .            --- a system module. Note: this must be set later
+  op error : ~> BATransResult [format (m! o)] .   --- for downTerm
+
+  vars T T' : Term .
+  vars N : Nat .
+
+  op collectSearchResults : Term Nat ~> Set{BATransResult} [format (m! o)] .
+  op collectSearchResults : Term Nat ResultTriple? ~> Set{BATransResult} [format (m! o)] .
+
+  eq collectSearchResults(T, N)
+   = collectSearchResults(T, N, metaSearch(@m@, T, 'BTR:BATransResult, nil, '!, unbounded, N)) .
+
+  eq collectSearchResults(T, N, {T',TY:Type,S:Substitution})
+   = downTerm(T',error) ;; collectSearchResults(T, s(N)) .
+
+  eq collectSearchResults(T, N, failure) = empty .
+endm
+
+
+--- redeclaration
+mod BEHAVIOR-TRANSITION-SEMANTICS is
+  protecting BEHAVIOR-TRANSITION-EXEC .
+  including META-BEHAVIOR-SEARCH .
+
+  var BCF : BehaviorConf .
+  
+  op execTrans : BehaviorConf ~> BATransResult [format (m! o)] .
+  eq execTrans(BCF) = symMerge(collectSearchResults('execBehTrans[upTerm(BCF)], 0)) .
+endm
+
+
+--- redeclaration
+mod ENV-TRANSITION-SEMANTICS is
+  protecting ENV-TRANSITION-EXEC .
+  including META-BEHAVIOR-SEARCH .
+
+  var ECF : BehaviorConf .
+
+  op execEnv  : BehaviorConf ~> BATransResult [format (m! o)] .
+  eq execEnv(ECF) = symMerge(collectSearchResults('execEnvTrans[upTerm(ECF)], 0)) .
+endm
+

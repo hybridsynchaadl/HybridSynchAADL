@@ -1,0 +1,84 @@
+==========================================
+reduce in TEST-THERMOSTAT-SYSTEM-HIE-MOD : model .
+rewrites: 1
+result Object: < top : System | properties : TimingProperties::Period => {{5}},
+    features : none,subcomponents : (< csys : System | properties : none,
+    features : (< on : DataOutPort | properties : none,content : null(Unit) > <
+    off : DataOutPort | properties : none,content : null(Unit) > < temp :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) >),
+    subcomponents : < cproc : Process | properties : none,features : (< on :
+    DataOutPort | properties : none,content : null(Unit) > < off : DataOutPort
+    | properties : none,content : null(Unit) > < temp : DataInPort | properties
+    : none,content : null(Real),cache : null(Real) >),subcomponents : < cthread
+    : Thread | properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : null(Unit) > < off : DataOutPort
+    | properties : none,content : null(Unit) > < temp : DataInPort | properties
+    : none,content : null(Real),cache : null(Real) >),subcomponents : (< lower
+    : Data | properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) > < upper :
+    Data | properties : DataModel::InitialValue => {{30}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) > < curr : Data
+    | properties : DataModel::InitialValue => {{15}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) >),connections
+    : empty,varGen : < "top.cthread" >,currState : init,completeStates : init,
+    variables : x : Real,transitions : init -[on dispatch]-> init {(v{x} := ((
+    c[curr] + f[temp]) / [[2]])) ; if(v[x] < c[lower])(on !) (elsif(v[x] > c[
+    upper])off !) end if ; c{curr} := v[x]},loopBound : 0,transBound : 2 >,
+    connections : ((temp --> (cthread .. temp)) ; ((cthread .. on) --> on) ; (
+    cthread .. off) --> off) >,connections : ((temp --> (cproc .. temp)) ; ((
+    cproc .. on) --> on) ; (cproc .. off) --> off) > < environment : Env |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : null(Unit),envCache : null(
+    Unit),target : csys > < off : EnvInPort | properties : none,content : null(
+    Unit),envCache : null(Unit),target : csys > < out : EnvOutPort | properties
+    : none,content : null(Real),envCache : null(Real),target : csys >),
+    subcomponents : < x : Data | properties : DataModel::InitialValue => {{
+    16}},features : none,subcomponents : none,connections : empty,value : null(
+    Real) >,connections : x ==> out,varGen : < "top.environment" >,currMode :
+    init,jumps : ((init -[on]-> state) ; (init -[off]-> init) ; (state -[on]->
+    state) ; state -[off]-> init),flows : ((init [x(t)= (c[x] + (v[t] * [[
+    2.0000000000000001e-1]]))]) ; state [x(t)= (c[x] - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : csys :(0,2),response : csys :(3,4)
+    >),connections : (((csys .. on) --> (environment .. on)) ; ((csys .. off)
+    --> (environment .. off)) ; (environment .. out) --> (csys .. temp)) >
+==========================================
+reduce in TEST-THERMOSTAT-SYSTEM-HIE-MOD : collapse(model) .
+rewrites: 87
+result Object: < top : System | properties : TimingProperties::Period => {{5}},
+    features : none,subcomponents : (< environment : Env | properties : ((
+    TimingProperties::Period => {{5}}) ; HybridSynchAADL::MaxClockDeviation =>
+    {{1.0000000000000001e-1}}),features : (< on : EnvInPort | properties :
+    none,content : null(Unit),envCache : null(Unit),target : csys > < off :
+    EnvInPort | properties : none,content : null(Unit),envCache : null(Unit),
+    target : csys > < out : EnvOutPort | properties : none,content : null(
+    Real),envCache : null(Real),target : csys >),subcomponents : < x : Data |
+    properties : DataModel::InitialValue => {{16}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) >,connections :
+    x ==> out,varGen : < "top.environment" >,currMode : init,jumps : ((init -[
+    on]-> state) ; (init -[off]-> init) ; (state -[on]-> state) ; state -[
+    off]-> init),flows : ((init [x(t)= (c[x] + (v[t] * [[
+    2.0000000000000001e-1]]))]) ; state [x(t)= (c[x] - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : csys :(0,2),response : csys :(3,4) >
+    < csys . cproc . cthread : Thread | properties : ((TimingProperties::Period
+    => {{5}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : null(Unit) > < off : DataOutPort
+    | properties : none,content : null(Unit) > < temp : DataInPort | properties
+    : none,content : null(Real),cache : null(Real) >),subcomponents : (< lower
+    : Data | properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) > < upper :
+    Data | properties : DataModel::InitialValue => {{30}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) > < curr : Data
+    | properties : DataModel::InitialValue => {{15}},features : none,
+    subcomponents : none,connections : empty,value : null(Real) >),connections
+    : empty,varGen : < "top.cthread" >,currState : init,completeStates : init,
+    variables : x : Real,transitions : init -[on dispatch]-> init {(v{x} := ((
+    c[curr] + f[temp]) / [[2]])) ; if(v[x] < c[lower])(on !) (elsif(v[x] > c[
+    upper])off !) end if ; c{curr} := v[x]},loopBound : 0,transBound : 2 >),
+    connections : (((environment .. out) --> ((csys . cproc . cthread) ..
+    temp)) ; (((csys . cproc . cthread) .. on) --> (environment .. on)) ; ((
+    csys . cproc . cthread) .. off) --> (environment .. off)) >
+Bye.

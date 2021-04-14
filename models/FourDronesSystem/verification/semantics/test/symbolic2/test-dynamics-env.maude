@@ -1,0 +1,52 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load module-component-dynamics.maude
+
+select TEST-ENV-DYNAMICS-MOD  .
+
+red finalConst(env1) .
+
+red finalConst(env2) .
+
+--- Test1 : No jump, # controller : 1 
+--- # Solutions : 1
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont
+search executeStep(bool(true), env1) =>+ C:ConstConfig .
+
+--- Test2 : jump, # controller : 1
+--- # Solutions : 2
+--- env-cont > env-samp > env-cont > env-resp-move > env-cont
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont
+search executeStep(bool(true), env2) =>+ C:ConstConfig .
+
+--- Test3 : No jump, # controller : 2
+--- # Solutions : 5
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-resp-stay > env-cont (x 4)
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-samp > env-cont > env-resp-stay > env-cont 
+search executeStep(bool(true), env3) =>+ C:ConstConfig .
+
+--- Test 4 : single jump, controller : 2
+--- # Solutions : 20
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-move > env-cont > env-resp-move > env-cont (x 4)
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-move > env-cont > env-resp-stay > env-cont (x 4)
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-resp-move > env-cont (x 4)
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-resp-stay > env-cont (x 4)
+--- env-cont > env-samp > env-cont > env-resp-move > env-cont > env-samp > env-cont > env-resp-move > env-cont 
+--- env-cont > env-samp > env-cont > env-resp-move > env-cont > env-samp > env-cont > env-resp-stay > env-cont 
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-samp > env-cont > env-resp-move > env-cont 
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-samp > env-cont > env-resp-stay > env-cont 
+search executeStep(bool(true), env4) =>+ C:ConstConfig .
+
+--- Test 5 : nondeterministic jump, controller : 2
+--- # Solutions : 45
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-move > env-cont > env-resp-move > env-cont (x 16) 
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-move > env-cont > env-resp-stay > env-cont (x 8)
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-resp-move > env-cont (x 8)
+--- env-cont > env-samp > env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-resp-stay > env-cont (x 4) 
+--- env-cont > env-samp > env-cont > env-resp-move > env-cont > env-samp > env-cont > env-resp-move > env-cont (x 4)
+--- env-cont > env-samp > env-cont > env-resp-move > env-cont > env-samp > env-cont > env-resp-stay > env-cont (x 2)
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-samp > env-cont > env-resp-move > env-cont (x 2)
+--- env-cont > env-samp > env-cont > env-resp-stay > env-cont > env-samp > env-cont > env-resp-stay > env-cont 
+search executeStep(bool(true), env5) =>+ C:ConstConfig .

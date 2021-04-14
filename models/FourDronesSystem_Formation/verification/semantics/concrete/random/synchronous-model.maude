@@ -1,0 +1,274 @@
+
+--- no variable is generated during initialization
+mod MODEL-INIT is
+  including DATA-COMPONENT .
+  including ENSEMBLE-COMPONENT .
+  protecting DEFAULT-PROPERTIES .
+  protecting HYBRID-SYNCHAADL-PROPERTIES .
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+  including ENV-WITH-TIMER-COMPONENT .
+  including THREAD-COMPONENT .
+
+  var E : Exp .
+  var B : BoolExp .
+  var TY : DataType .
+  var CR : ComponentRef .
+  var PI : FeatureId .
+  var PROPS : PropertyAssociation .
+  vars PORTS PORTS' COMPS COMPS' CONF CONF' : Configuration .
+  vars SIT STS RTS : Set{InterTiming} .
+  vars LT UT : Rat .
+  var ATTS : AttributeSet .
+
+  op initialize : Configuration ~> Configuration [format (m! o)] .
+  op initialize : Configuration Configuration ~> Configuration [format (m! o)] .
+
+  eq initialize(CONF) = initialize(CONF, none) .
+
+  --- for an ensemble, initialize its ports and subcomponents.
+  eq initialize(< CR : C:Ensemble | features : PORTS, 
+                                    subcomponents : COMPS, ATTS > CONF, CONF')
+   = initialize(CONF, < CR : C:Ensemble | features : initialize(PORTS), 
+                                          subcomponents : initialize(COMPS), ATTS > CONF') .
+
+  --- for a thread , initialize its ports and data subcomponents 
+  eq initialize(< CR : C:Thread | features : PORTS, 
+                                  subcomponents : COMPS, ATTS > CONF, CONF')
+   = initialize(CONF, < CR : C:Thread | features : initialize(PORTS), 
+                                        subcomponents : initialize(COMPS), ATTS > CONF')  .
+
+  --- for an environment, initialize its ports and data subcomponents, and add timer
+  --- NOTE: CR should exactly have the Env class.
+  eq initialize(< CR : Env | features : PORTS, 
+                             subcomponents : COMPS, 
+                             sampling : STS,
+                             response : RTS, ATTS > CONF, CONF')
+   = initialize(CONF, < CR : EnvWithTimer | features : initialize(PORTS), 
+                                            subcomponents : initialize(COMPS), 
+                                            sampling : STS,
+                                            response : RTS,
+                                            samplingIDs : getIdList(STS),
+                                            responseIDs : getIdList(RTS),
+                                            timer : 0 , 
+                                            ATTS > CONF')  .
+
+ --- generate a list of ids (this will be used for random choice)
+  op getIdList : Set{InterTiming} ~> List{ComponentRef} .
+  eq getIdList((CR : (LT,UT), SIT)) = CR getIdList(SIT) .
+  eq getIdList(empty) = nil .
+
+  --- all data input ports are initialized as bots
+  eq initialize(< PI : C:DataInPort | content : null(TY), 
+                                      cache : null(TY), ATTS > CONF, CONF')
+   = initialize(CONF, < PI : C:DataInPort | content : bot(TY), 
+                                            cache : bot(TY), ATTS > CONF') .
+
+  --- all env ports are also initialize as bots 
+  eq initialize(< PI : C:EnvInPort | content : null(TY), ATTS > CONF, CONF')
+   = initialize(CONF, < PI : C:EnvInPort | content : bot(TY), ATTS > CONF') .
+     
+  --- data/env output ports with given initial values are initialized as the values.
+ ceq initialize(< PI : C:OutPort | content : null(TY), 
+                                   properties : PROPS, ATTS > CONF, CONF')
+   = initialize(CONF, < PI : C:OutPort | content : E # B, 
+                                         properties : PROPS, ATTS > CONF') 
+  if E # B := eval(p[DataModel::InitialValue], prop(PROPS)) /\ TY == type(E) .
+
+  --- all other data/env output parts are initialized as bots
+ ceq initialize(< PI : C:OutPort | content : null(TY), 
+                                   properties : PROPS, ATTS > CONF, CONF')
+   = initialize(CONF, < PI : C:OutPort | content : bot(TY), 
+                                         properties : PROPS, ATTS > CONF') 
+  if not $hasMapping(PROPS, DataModel::InitialValue) .
+
+  --- all data components must be initialized using given initial values (params are not allowed)
+ ceq initialize(< CR : C:Data | value : null(TY), 
+                                properties : PROPS, ATTS > CONF, CONF')
+   = initialize(CONF, < CR : C:Data | value : E # B, 
+                                      properties : PROPS, ATTS > CONF')
+  if E # B := eval(p[DataModel::InitialValue], prop(PROPS)) /\ TY == type(E) .
+
+ eq initialize(< CR : C:Data | value : param(TY), 
+                                properties : PROPS, ATTS > CONF, CONF')
+   = initialize(CONF, < CR : C:Data | value : param(TY), 
+                                      properties : PROPS, ATTS > CONF') .
+
+  eq initialize(none, CONF) = CONF .
+
+endm
+
+--- Similar to the symbolic version (just no constraints)
+mod MODEL-TRANSITION-SYSTEM is
+  including ENV-DYNAMICS .
+  including DATA-DYNAMICS .
+  including THREAD-DYNAMICS .
+  including ENSEMBLE-DYNAMICS .
+  including MODEL-INIT .
+  including CONC-BOOL-EXP .
+  including CONC-REAL-EXP .
+  including COLLAPSE-SINGLE-ENSEMBLE .
+  including TIME .
+  
+  var CR : ComponentRef . 
+  vars OBJ OBJ' : Object .
+  var ATTS : AttributeSet .
+  var PROPS : PropertyAssociation .
+  vars N N' : Nat .
+  var T : Time .
+  var NT : NzTime .
+  var TI : TimeInf .
+  var PER : RealExp .
+  var B : BoolExp .
+  
+  sort GlobalSystem .
+  op {_|_|_} : ConfigWithRand Time TimeInf -> GlobalSystem [ctor] .
+
+  sort GlobalSystemList .
+  subsort GlobalSystem < GlobalSystemList .
+  op none : -> GlobalSystemList [ctor] .
+  op errorGlobalSystemList : -> GlobalSystemList [ctor] .
+  op _,_ : GlobalSystemList GlobalSystemList -> GlobalSystemList [ctor assoc id: none] .
+
+---(
+  crl [step]: 
+      {{OBJ,N} | T | TI} 
+   => 
+      {executeStep({OBJ,N}) | T + NT | TI}
+   if 
+      < CR : C:System | features : none, properties : PROPS, ATTS > := OBJ 
+   /\ PER # B := eval(p[TimingProperties::Period], prop(PROPS)) 
+   /\ NT := rval(PER)
+   /\ T + NT <= TI .
+---)
+endm
+
+
+mod REACHABILITY-PATH is
+    including MODEL-TRANSITION-SYSTEM .
+    including CONVERSION .
+
+    sort ReachabilityPath .
+    op _->`[_`] : ComponentRef ReachabilityPathSet -> ReachabilityPath [ctor format(r o d n++i d --)] .
+    op variables:_ : ReachabilityPathValue -> ReachabilityPath [ctor prec 124 format(b o d)] .
+    op currState:_ : Location -> ReachabilityPath [ctor format(b o d)] .
+    op currMode:_ : Location -> ReachabilityPath [ctor format(b o d)] .
+    op outputs:_ : ReachabilityPathValue -> ReachabilityPath [ctor prec 124 format(b o d)] .
+
+    sort ReachabilityPathValue .
+    op _|=>_ : ComponentRef Float -> ReachabilityPathValue [ctor] .
+    op none : -> ReachabilityPathValue [ctor] . 
+    op _,_ : ReachabilityPathValue ReachabilityPathValue -> ReachabilityPathValue [ctor assoc id: none] .
+
+    sort ReachabilityPathSet .
+    subsort ReachabilityPath < ReachabilityPathSet .
+    op none : -> ReachabilityPathSet [ctor] .
+    op __ : ReachabilityPathSet ReachabilityPathSet -> ReachabilityPathSet [ctor assoc id: none format(d ni d) prec 126] .
+
+    sort TimedReachabilityPath .
+    op nil : -> TimedReachabilityPath .
+    op Time:__ : Time ReachabilityPathSet -> TimedReachabilityPath [ctor format(n d n d)] .
+    op __ : TimedReachabilityPath TimedReachabilityPath -> TimedReachabilityPath [ctor assoc id: nil format(d ni d)] .
+
+    var OBJ : Object .
+    vars REST COMPS PORTS : Configuration .
+    vars CR CR' : ComponentRef .
+    var RPS : ReachabilityPathSet .
+    var ATTS : AttributeSet .
+	var N : Nat .
+    var R : RealExp .
+    var BE : BoolExp .
+    var T : Time .
+    var TI : TimeInf .
+    var GSL : GlobalSystemList .
+    var L : Location .
+
+    ---removes redundant information
+    eq CR ->[ CR' -> [RPS] ] = CR . CR' -> [RPS] .
+    eq CR ->[(outputs: none) RPS] = CR -> [RPS] .
+
+    --- simplify
+    op simplify : GlobalSystemList -> TimedReachabilityPath .
+    eq simplify({{OBJ,N} | T | TI}, GSL) = (Time: T simplifyConfig(OBJ)) simplify(GSL) .
+    eq simplify(GSL) = nil .
+
+    op simplifyConfig : Configuration -> ReachabilityPathSet .
+    eq simplifyConfig(< CR : C:Ensemble | subcomponents : COMPS, features : PORTS, ATTS > REST)
+        = (CR ->[ outputs: simplifyFeatures(PORTS) simplifyConfig(COMPS) ]) simplifyConfig(REST) .
+    eq simplifyConfig(< CR : C:Thread | subcomponents : COMPS, currState : L, features : PORTS, ATTS > REST)
+        = (CR ->[ outputs: simplifyFeatures(PORTS) variables: simplifyData(COMPS) currState: L]) simplifyConfig(REST) .
+
+    eq simplifyConfig(< CR : C:Env | subcomponents : COMPS, features : PORTS, ATTS, currMode : L > REST)
+        = (CR ->[ outputs: simplifyFeatures(PORTS) variables: simplifyData(COMPS) currMode: L ]) simplifyConfig(REST) .
+    eq simplifyConfig(REST) = none [owise] .
+
+    op simplifyData : Configuration -> ReachabilityPathValue .
+    eq simplifyData(< CR : C:Data | value : R # BE, ATTS > REST)
+        = if bval(BE) then (CR |=> fval(R)) else (CR |=> none) fi , simplifyData(REST) .
+    eq simplifyData(REST) = none [owise] .
+
+    op simplifyFeatures : Configuration -> ReachabilityPathValue .
+    eq simplifyFeatures(< CR : OutPort | content : R # BE, ATTS > REST)
+        = if bval(BE) then (CR |=> fval(R)) else (CR |=> none) fi , simplifyFeatures(REST) .
+    eq simplifyFeatures(REST) = none [owise] . 
+
+    --- for unused DataContent
+    op none : -> Float [ctor] .
+endm
+
+mod RANDOM-SIMULATION is 
+    including REACHABILITY-PATH .
+	including RANDOMZIE-OBJECT .
+    including SPECIFICATION-LANGUAGE-SEMANTICS .
+
+    var CR : ComponentRef .
+    var SYSTEM : ConfigWithRand .
+    var OBJ ROBJ : Object .
+    var ATTS : AttributeSet .
+    var PROPS : PropertyAssociation .
+    vars N K : Nat .
+    var T : Time .
+    var TI : TimeInf .
+    var PER : RealExp .
+    var B : BoolExp .
+    var IC GC : PropSpec .
+	var GSL : GlobalSystemList .
+	var TRP : TimedReachabilityPath .
+
+    sort Triple{ConfigWithRand,Bool,GlobalSystemList} .
+    op _,_,_ : ConfigWithRand Bool GlobalSystemList -> Triple{ConfigWithRand,Bool,GlobalSystemList} [ctor] .
+
+    op reachGoal : GlobalSystem PropSpec GlobalSystemList -> Triple{ConfigWithRand,Bool,GlobalSystemList} .
+	rl reachGoal({{OBJ,N} | T | TI}, GC, GSL)
+	=>  if T <= TI then
+			if eval(GC,OBJ) == bool(true) then
+        		{OBJ,N}, true, (GSL, {{OBJ,N} | T | TI}) 
+     		else 
+				reachGoal(
+					{executeStep({OBJ,N}) | T + getPeriod(OBJ) | TI}, 
+					GC, 
+					(GSL, {{OBJ,N} | T | TI})
+					) 
+			fi
+		else 
+			{OBJ,N}, false, (GSL, {{OBJ,N} | T | TI}) 
+		fi .
+
+	op repeat : ConfigWithRand TimeInf PropSpec PropSpec -> TimedReachabilityPath . 
+    op repeat : Triple{ConfigWithRand,Bool,GlobalSystemList} TimeInf PropSpec PropSpec Nat Object -> TimedReachabilityPath .
+
+	ceq repeat({OBJ,N}, TI, IC, GC) = repeat(reachGoal({{ROBJ ,N} | 0 | TI}, GC, none), TI, IC, GC, 1, OBJ) 
+	 if ROBJ := randomize(OBJ, IC, N) .
+	rl repeat((SYSTEM, true, GSL),  TI, IC, GC, K, OBJ) => simplify(GSL) [print "Number of Randomized Simulations: " K] .
+	crl repeat((SYSTEM, false, GSL) , TI, IC, GC, K, OBJ) => repeat(reachGoal({{ROBJ,N} | 0 | TI}, GC, none), TI, IC, GC, s K, OBJ) 
+	 if N := getRandSeed(SYSTEM)
+	 /\ ROBJ := randomize(OBJ, IC, N) 
+	 /\ TRP := simplify(GSL) [print "Debug " TRP]. 
+
+    --- aux functions
+    op getPeriod : Object ~> Time .
+    ceq getPeriod(< CR : C:System | properties : PROPS, ATTS >) = rval(PER)
+     if PER # B := eval(p[TimingProperties::Period], prop(PROPS)) .
+
+    op getRandSeed : ConfigWithRand -> Nat .
+    eq getRandSeed({OBJ,N}) = N .
+endm

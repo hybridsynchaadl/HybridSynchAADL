@@ -1,0 +1,35 @@
+==========================================
+reduce in TEST-ENV-FEATURE-OPERATION : readEnvFeature((((< d : EnvOutPort |
+    content : real(0) # bool(false),envCache : real(3) # bool(true),target :
+    cr1 > < e : EnvOutPort | content : bool(true) # bool(true),envCache : real(
+    4) # bool(false),target : cr2 >) < c : EnvInPort | content : real(1) #
+    bool(false),envCache : real(2) # bool(false) >) < b : EnvInPort | content :
+    bool(true) # bool(true),envCache : bool(false) # bool(true) >) < a :
+    EnvInPort | content : real(0) # bool(true),envCache : real(0) # bool(true)
+    >) .
+rewrites: 48
+result EnvFeatureReadResult: [< a : EnvInPort | content : [0.0] # [false],
+    envCache : [0.0] # [true] > < b : EnvInPort | content : [false] # [false],
+    envCache : [false] # [true] > < c : EnvInPort | content : [0.0] # [false],
+    envCache : [2.0] # [false] > < d : EnvOutPort | content : [0.0] # [false],
+    envCache : [3.0] # [true],target : cr1 > < e : EnvOutPort | content : [
+    true] # [true],envCache : [4.0] # [false],target : cr2 >,a |-> ([0.0] # [
+    true] : [true]), b |-> ([true] # [true] : [true]), c |-> ([1.0] # [false] :
+    [true]), d |-> [0.0] # [false], e |-> [false] # [false]]
+==========================================
+reduce in TEST-ENV-FEATURE-OPERATION : writeEnvFeature(e |-> real(10000) #
+    bool(true), (((< d : EnvOutPort | content : real(0) # bool(false),envCache
+    : real(3) # bool(true),target : cr1 > < e : EnvOutPort | content : bool(
+    true) # bool(true),envCache : real(4) # bool(false),target : cr2 >) < c :
+    EnvInPort | content : real(1) # bool(false),envCache : real(2) # bool(
+    false) >) < b : EnvInPort | content : bool(true) # bool(true),envCache :
+    bool(false) # bool(true) >) < a : EnvInPort | content : real(0) # bool(
+    true),envCache : real(0) # bool(true) >) .
+rewrites: 22
+result Configuration: < a : EnvInPort | content : [0.0] # [true],envCache : [
+    0.0] # [true] > < b : EnvInPort | content : [true] # [true],envCache : [
+    false] # [true] > < c : EnvInPort | content : [1.0] # [false],envCache : [
+    2.0] # [false] > < d : EnvOutPort | content : [0.0] # [false],envCache : [
+    3.0] # [true],target : cr1 > < e : EnvOutPort | content : [1.0e+4] # [
+    true],envCache : [4.0] # [false],target : cr2 >
+Bye.

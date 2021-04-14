@@ -1,0 +1,108 @@
+package FourDronesSystem
+public
+	with Drone;
+	with RefDrone;
+	with Data_Model;
+	with Hybrid_SynchAADL;
+	
+	system FourDronesSystem
+		properties
+			Hybrid_SynchAADL::Synchronous => true;
+	end FourDronesSystem;
+	
+	system implementation FourDronesSystem.impl
+		subcomponents
+			drone1: system Drone::Drone.impl;
+			drone2: system Drone::Drone.impl;
+			drone3: system Drone::Drone.impl;
+			drone4: system Drone::Drone.impl;
+			refDrone: system RefDrone::RefDroneControl.formation;
+		connections
+			d12x: port drone1.outX -> drone2.inX;
+			d23x: port drone2.outX -> drone3.inX;
+			d34x: port drone3.outX -> drone4.inX;
+			d41x: port drone4.outX -> drone1.inX;
+			d12vx: port drone1.outVX -> drone2.inVX;
+			d23vx: port drone2.outVX -> drone3.inVX;
+			d34vx: port drone3.outVX -> drone4.inVX;
+			d41vx: port drone4.outVX -> drone1.inVX;
+			
+			d12y: port drone1.outY -> drone2.inY;
+			d23y: port drone2.outY -> drone3.inY;
+			d34y: port drone3.outY -> drone4.inY;
+			d41y: port drone4.outY -> drone1.inY;
+			d12vy: port drone1.outVY -> drone2.inVY;
+			d23vy: port drone2.outVY -> drone3.inVY;
+			d34vy: port drone3.outVY -> drone4.inVY;
+			d41vy: port drone4.outVY -> drone1.inVY;
+			
+			r1x: port refDrone.outX -> drone1.refX;
+			r2x: port refDrone.outX -> drone2.refX;
+			r3x: port refDrone.outX -> drone3.refX;
+			r4x: port refDrone.outX -> drone4.refX;
+			r1vx: port refDrone.outVX -> drone1.refVX;
+			r2vx: port refDrone.outVX -> drone2.refVX;
+			r3vx: port refDrone.outVX -> drone3.refVX;
+			r4vx: port refDrone.outVX -> drone4.refVX;			
+			
+			r1y: port refDrone.outY -> drone1.refY;
+			r2y: port refDrone.outY -> drone2.refY;
+			r3y: port refDrone.outY -> drone3.refY;
+			r4y: port refDrone.outY -> drone4.refY;
+			r1vy: port refDrone.outVY -> drone1.refVY;
+			r2vy: port refDrone.outVY -> drone2.refVY;
+			r3vy: port refDrone.outVY -> drone3.refVY;
+			r4vy: port refDrone.outVY -> drone4.refVY;	
+		properties
+    		Data_Model::Initial_Value => ("param") applies to
+    			drone1.environment.x, drone2.environment.x, 
+    			drone3.environment.x, drone4.environment.x; 
+    		Data_Model::Initial_Value => ("0") applies to
+    			drone1.environment.dotx, drone2.environment.dotx, 
+    			drone3.environment.dotx, drone4.environment.dotx;	
+    		Data_Model::Initial_Value => ("0") applies to
+    			drone1.environment.dotdotx, drone2.environment.dotdotx, 
+    			drone3.environment.dotdotx, drone4.environment.dotdotx;	
+    			
+			Data_Model::Initial_Value => ("param") applies to
+    			drone1.environment.y, drone2.environment.y, 
+    			drone3.environment.y, drone4.environment.y,
+    			refDrone.env.x, refDrone.env.y;
+    		Data_Model::Initial_Value => ("0") applies to
+    			drone1.environment.doty, drone2.environment.doty, 
+    			drone3.environment.doty, drone4.environment.doty,
+    			refDrone.env.dotx, refDrone.env.doty;
+    		Data_Model::Initial_Value => ("0") applies to
+    			drone1.environment.dotdoty, drone2.environment.dotdoty, 
+    			drone3.environment.dotdoty, drone4.environment.dotdoty,
+    			refDrone.env.dotdotx, refDrone.env.dotdoty;	    			
+    			
+   			Data_Model::Initial_Value => ("0.5") applies to
+				drone1.drone.droneProc.droneThread.offsetY,
+				drone2.drone.droneProc.droneThread.offsetY;			
+			Data_Model::Initial_Value => ("-0.5") applies to
+    			drone1.drone.droneProc.droneThread.offsetX,
+    			drone3.drone.droneProc.droneThread.offsetX;   			
+    		Data_Model::Initial_Value => ("0") applies to
+    			drone2.drone.droneProc.droneThread.offsetX,  			
+    			drone3.drone.droneProc.droneThread.offsetY,  			
+    			drone4.drone.droneProc.droneThread.offsetX,
+    			drone4.drone.droneProc.droneThread.offsetY;  
+    			
+			Timing => Delayed applies to 
+				d12x,  d23x, d34x, d41x, d12vx, d23vx, d34vx, d41vx,
+				d12y,  d23y, d34y, d41y, d12vy, d23vy, d34vy, d41vy,
+				r1x,  r2x,  r3x, r4x, r1y, r2y, r3y, r4y,
+				r1vx, r2vx, r3vx, r4vx, r1vy, r2vy, r3vy, r4vy;
+			
+			Hybrid_SynchAADL::Sampling_Time => 20ms .. 30ms applies to 
+				drone1.drone, drone2.drone, drone3.drone, drone4.drone, refDrone.refDrone;
+				
+			Hybrid_SynchAADL::Response_Time => 60ms .. 80ms applies to 
+				drone1.drone, drone2.drone, drone3.drone, drone4.drone, refDrone.refDrone;
+				
+			Hybrid_SynchAADL::Max_Clock_Deviation => 5ms;
+			Period => 100ms;	
+	end FourDronesSystem.impl;
+	
+end FourDronesSystem;

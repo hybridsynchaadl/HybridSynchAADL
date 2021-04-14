@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="ASCII"?>
+<diagram:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:diagram="http://osate.org/diagram" formatVersion="7">
+  <element uuid="59fe566b-40e3-4f32-b461-ae37779ad2af" manual="true">
+    <element uuid="d513e850-4d28-4d28-acd9-1981e82ed83b" manual="true">
+      <element uuid="094bcbbe-28fb-44f8-9f2c-898eb6caa1e0" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="00298b19-a583-4f42-b525-a80c9935d2ca" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C1</seg>
+      </bo>
+    </element>
+    <element uuid="1f68b7ce-79e5-4dd4-95ef-1d225d858d7f" manual="true">
+      <element uuid="1621777c-be0d-4339-af65-bb457c2a1e4f" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="2c995a34-eb50-4d58-9fc8-9b55f44cce74" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C2</seg>
+      </bo>
+    </element>
+    <element uuid="0fbd017e-8e8f-426f-92c6-de49f681230a" manual="true">
+      <element uuid="fe356482-3d5a-4290-bf83-4c7676cf93d6" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="f214592e-7841-4111-bca4-c3707e907566" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C3</seg>
+      </bo>
+    </element>
+    <element uuid="97a37889-ba0a-4355-8cce-9d169f7aa2d2" manual="true">
+      <element uuid="8b433441-4da2-486c-87c5-0169d218fd23" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="52ecbb23-ece7-485b-acb0-113bf72e3fdb" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C4</seg>
+      </bo>
+      <bendpoints>
+        <point x="148.0" y="82.0"/>
+      </bendpoints>
+    </element>
+    <element uuid="e06e9de2-085d-469b-b447-840b003c960f" manual="true">
+      <element uuid="1dc4e89c-a226-436c-a2dd-d55b0e71df9a" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="3e275cd2-23fa-476b-a0c4-42db0604f85e" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C5</seg>
+      </bo>
+    </element>
+    <element uuid="decf5317-5e72-4369-9749-cd63ff8d7b8e" manual="true">
+      <element uuid="0221838c-c2ef-4106-8c80-3abc037bfde5" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="fec4c678-5f61-4123-b3bb-f129791e7a3f" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C6</seg>
+      </bo>
+    </element>
+    <element uuid="3dfebb30-99c5-4ffa-8762-38eedb160d20" manual="true">
+      <element uuid="c73f9884-35a9-4579-b88a-3e5a9fa6d3c7" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="feaa194e-156d-4469-9ee0-704008f69e95" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C7</seg>
+      </bo>
+    </element>
+    <element uuid="b488649d-6ce2-4089-b415-4e3d0e37d720" manual="true">
+      <element uuid="fbf26045-6a50-47af-98db-ab4ead36616e" manual="true">
+        <bo>
+          <seg>pvg</seg>
+          <seg>Communication_Properties::Timing</seg>
+        </bo>
+      </element>
+      <element uuid="90b830d5-e0a8-4bcf-9a06-902f551a4a61" manual="true">
+        <bo>
+          <seg>tag</seg>
+          <seg>unidirectional</seg>
+        </bo>
+      </element>
+      <bo>
+        <seg>connection</seg>
+        <seg>C8</seg>
+      </bo>
+    </element>
+    <element uuid="90040dda-2e45-477b-807e-6df84b97c709" manual="true">
+      <element uuid="431a6be6-87ec-4670-b9d2-dc7d2565e35d" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>iX</seg>
+        </bo>
+        <position x="48.0"/>
+      </element>
+      <element uuid="d1c9e12d-682c-423b-939e-81f68f949101" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>iY</seg>
+        </bo>
+        <position x="48.0" y="160.0"/>
+      </element>
+      <element uuid="f955aaf7-d9a7-4225-8206-d1e076567531" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>oX</seg>
+        </bo>
+        <position x="46.0" y="110.0"/>
+      </element>
+      <element uuid="feeb87c0-5260-4ccd-89eb-36e28d5913e4" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>oY</seg>
+        </bo>
+        <position x="46.0" y="50.0"/>
+      </element>
+      <bo>
+        <seg>subcomponent</seg>
+        <seg>dr1</seg>
+      </bo>
+      <position x="68.0" y="38.0"/>
+      <size width="68.0" height="210.0"/>
+    </element>
+    <element uuid="ec8c4f53-6791-4e28-bfbb-e58db9c489f9" manual="true">
+      <element uuid="28b0b72c-f36e-4ea6-b020-6182a2715f04" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>iX</seg>
+        </bo>
+        <position y="60.0"/>
+      </element>
+      <element uuid="23528bda-5f77-44dc-b9af-5710b4026b17" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>iY</seg>
+        </bo>
+        <position y="10.0"/>
+      </element>
+      <element uuid="4a38cc52-7137-4e54-9942-ce18f22eff1a" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>oX</seg>
+        </bo>
+        <position x="50.0" y="60.0"/>
+      </element>
+      <element uuid="8d4a2b0f-e2c5-43c4-aa6c-6217b35899f4" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>oY</seg>
+        </bo>
+        <position x="50.0" y="10.0"/>
+      </element>
+      <bo>
+        <seg>subcomponent</seg>
+        <seg>dr2</seg>
+      </bo>
+      <position x="178.0" y="78.0"/>
+      <size width="72.0" height="110.0"/>
+    </element>
+    <element uuid="95a9e3fd-b454-4541-a09d-fb9ca189cb0a" manual="true">
+      <element uuid="157dce57-98fe-46ae-aef4-02b6e748649f" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>iX</seg>
+        </bo>
+        <position y="60.0"/>
+      </element>
+      <element uuid="9adff984-0b02-4d36-b24c-12cf347eeb34" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>iY</seg>
+        </bo>
+        <position y="10.0"/>
+      </element>
+      <element uuid="8127ed30-51ec-4b2b-9542-a4a74d2d7d16" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>oX</seg>
+        </bo>
+        <position x="49.0" y="10.0"/>
+      </element>
+      <element uuid="fc3e703b-8745-4bb8-bbb3-e5cfbeadcd35" manual="true" dockArea="right">
+        <bo>
+          <seg>feature</seg>
+          <seg>oY</seg>
+        </bo>
+        <position x="49.0" y="60.0"/>
+      </element>
+      <bo>
+        <seg>subcomponent</seg>
+        <seg>dr3</seg>
+      </bo>
+      <position x="278.0" y="78.0"/>
+      <size width="71.0" height="110.0"/>
+    </element>
+    <element uuid="b779a425-840e-41e7-b65c-c5f60b8de70c" manual="true">
+      <element uuid="34cc84fe-b5ac-4274-b87c-fc650d1c086a" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>iX</seg>
+        </bo>
+        <position y="50.0"/>
+      </element>
+      <element uuid="00fa2100-9dc1-4f2c-afb0-3c2b64a32c7b" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>iY</seg>
+        </bo>
+        <position y="110.0"/>
+      </element>
+      <element uuid="91e2f133-2189-4a23-94a8-c08a6f0985f3" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>oX</seg>
+        </bo>
+        <position/>
+      </element>
+      <element uuid="edba4d83-9699-44e3-9780-aa54e8919e2c" manual="true" dockArea="left">
+        <bo>
+          <seg>feature</seg>
+          <seg>oY</seg>
+        </bo>
+        <position y="160.0"/>
+      </element>
+      <bo>
+        <seg>subcomponent</seg>
+        <seg>dr4</seg>
+      </bo>
+      <position x="378.0" y="38.0"/>
+      <size width="71.0" height="210.0"/>
+    </element>
+    <bo>
+      <seg>classifier</seg>
+      <seg>FourDronesSystem.impl</seg>
+    </bo>
+    <position x="12.0" y="12.0"/>
+    <size width="540.0" height="260.0"/>
+  </element>
+  <config type="structure" connectionPrimaryLabelsVisible="false">
+    <enabledAadlProperties/>
+    <context>
+      <seg>classifier</seg>
+      <seg>FourDronesSystem::FourDronesSystem.impl</seg>
+    </context>
+  </config>
+</diagram:Diagram>

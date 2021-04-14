@@ -1,0 +1,48 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load ../syntax/module-thermostat-event-data.maude
+
+
+mod TEST-THERMOSTAT-SYSTEM-MOD is
+  including THERMOSTAT-SYSTEM-SYNTAX .
+  including BEHAVIOR-SYMBOLIC-LOCATION . 
+  including MODEL-TRANSITION-SYSTEM .
+  including SMT-REAL-EXP .
+  
+  eq init  = loc(real(0)) .
+  eq state = loc(real(1)) .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+endm
+
+--- # Solutions : 3 + 6 + 11
+search [,3] 
+	{bool(true) || initState | 0 | infty}
+	=>+
+	{B:BoolExp || OBJ:Object | T:Time | infty}
+		such that
+			check-sat(B:BoolExp and finalConst(OBJ:Object)) .
+
+---(
+< Step 2 >
+Solution 1
+init - on - init - on - init
+
+Solution 2
+init - on - init - stay - init
+
+Solution 3
+init - off - state - off - state
+
+Solution 4
+init - stay - init - on - init
+
+Solution 5
+init - stay - init - off - state
+
+Solution 6
+init - stay - init - stay - init
+---)

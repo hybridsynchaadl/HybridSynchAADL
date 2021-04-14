@@ -1,0 +1,230 @@
+==========================================
+reduce in TEST-MODEL-TRANSITION : initState .
+rewrites: 93
+result Object: < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(15/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(0/1).Real] # [(false).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+==========================================
+search in TEST-MODEL-TRANSITION : {bool(true) || initState | 0 | 10} =>+ {
+    B:BoolExp || OBJ:Object | T:Time | 10} such that check-sat(B:BoolExp and
+    finalConst(OBJ:Object)) = (true).Bool .
+
+Solution 1 (state 1)
+states: 2  rewrites: 392
+B:BoolExp --> [(true).Boolean]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(0/1).Real] # [(false).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(15/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+T:Time --> (5).NzNat
+
+Solution 2 (state 2)
+states: 3  rewrites: 523
+B:BoolExp --> [(true).Boolean]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(10/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(15/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+T:Time --> (5).NzNat
+
+Solution 3 (state 3)
+states: 4  rewrites: 824
+B:BoolExp --> [(true).Boolean]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(0/1).Real] # [(false).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(0/1).Real] # [(false).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+T:Time --> (10).NzNat
+
+Solution 4 (state 4)
+states: 5  rewrites: 951
+B:BoolExp --> [(true).Boolean]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(10/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(0/1).Real] # [(false).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+T:Time --> (10).NzNat
+
+Solution 5 (state 5)
+states: 6  rewrites: 1252
+B:BoolExp --> [(true).Boolean]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(0/1).Real] # [(false).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(10/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(10/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+T:Time --> (10).NzNat
+
+Solution 6 (state 6)
+states: 7  rewrites: 1379
+B:BoolExp --> [(true).Boolean]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller1 : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < out :
+    DataOutPort | properties : DataModel::InitialValue => {{(15).NzNat}},
+    content : [(10/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data
+    | properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {skip}) ; (loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {skip}) ; loc([(1/1).Real]) -[[[(true).Bool]]]-> loc([(
+    0/1).Real]) {f{out} := [[1.0e+1]]}),loopBound : 0,transBound : 5 > <
+    controller2 : Thread | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : < in :
+    DataInPort | properties : none,content : [(0/1).Real] # [(false).Boolean],
+    cache : [(10/1).Real] # [(true).Boolean] >,subcomponents : < curr : Data |
+    properties : DataModel::InitialValue => {{(15).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(10/1).Real] # [(
+    true).Boolean] >,connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : loc([(0/1).Real]) -[on dispatch]-> loc([(
+    0/1).Real]) {c{curr} := f[in]},loopBound : 0,transBound : 5 >),connections
+    : (controller1 .. out) --> (controller2 .. in) >
+T:Time --> (10).NzNat
+
+No more solutions.
+states: 7  rewrites: 1483
+Bye.

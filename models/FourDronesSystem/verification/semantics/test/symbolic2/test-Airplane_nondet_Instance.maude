@@ -1,0 +1,12 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load ../syntax/Airplane_nondet_Instance-symbolic.maude
+
+
+red initialize(initial) .
+
+rew [5] {bool(true) || initialize(initial) | 0 | infty} .
+
+search [,5] {bool(true) || initialize(initial) | 0 | infty} =>* G:GlobalSystem .

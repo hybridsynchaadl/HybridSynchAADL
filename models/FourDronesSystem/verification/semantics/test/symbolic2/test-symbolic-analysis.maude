@@ -1,0 +1,37 @@
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load ../syntax/module-thermostat-symbolic.maude
+
+----------------------------------------------
+mod TEST-SYMBOLIC-ANALYSIS-MOD is
+  including THERMOSTAT-SYSTEM .
+  including MODEL-TRANSITION-SYSTEM .
+  including SPECIFICATION-LANGUAGE-SEMANTICS .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+
+endm
+
+red eval(top . environment | ((c[e] < [[2.0]]) and (c[e] > [[1.5]])), initState)  .
+
+search [,2]
+      { eval(top . environment | ((c[e] < [[2.0]]) and (c[e] > [[1.5]])), initState) 
+        || 
+        initState | 0 | infty}
+ =>*
+      {B:BoolExp || OBJ:Object | T:Time | infty}
+ such that
+      check-sat(B:BoolExp and finalConst(OBJ:Object)) .
+
+      
+search [,2]
+      { eval(top . environment | ((c[e] < [[10.0]]) and (c[e] > [[0.0]])), initState) 
+        || 
+        initState | 0 | infty}
+ =>*
+      {B:BoolExp || OBJ:Object | T:Time | infty}
+ such that
+      check-sat(B:BoolExp and finalConst(OBJ:Object) and eval(top . environment | (c[x] > [[10.0]]), OBJ:Object)) .
+

@@ -1,0 +1,123 @@
+package DroneControl  
+public
+	with Base_Types;
+	with Data_Model;
+
+	system DroneControl
+		features
+			iX: in data port Base_Types::Float;
+			iY: in data port Base_Types::Float;
+			oX: out data port Base_Types::Float;
+			oY: out data port Base_Types::Float;
+			cX: in data port Base_Types::Float;
+			cY: in data port Base_Types::Float;
+			vX: out data port Base_Types::Float;
+			vY: out data port Base_Types::Float;				
+	end DroneControl;
+
+	system implementation DroneControl.impl
+		subcomponents
+			ctrlProc: process DroneControlProc.impl;
+		connections
+			C1: port ctrlProc.oX -> oX;
+			C2: port ctrlProc.oY -> oY;
+			C3: port iX -> ctrlProc.iX;
+			C4: port iY -> ctrlProc.iY;
+			C5: port cX -> ctrlProc.cX;
+			C6: port cY -> ctrlProc.cY;
+			C7: port ctrlProc.vX -> vX;
+			C8: port ctrlProc.vY -> vY;
+	end DroneControl.impl;
+
+	process DroneControlProc
+		features		
+			iX: in data port Base_Types::Float;
+			iY: in data port Base_Types::Float;
+			oX: out data port Base_Types::Float;
+			oY: out data port Base_Types::Float;
+			cX: in data port Base_Types::Float;
+			cY: in data port Base_Types::Float;
+			vX: out data port Base_Types::Float;	
+			vY: out data port Base_Types::Float;				
+	end DroneControlProc;
+
+	process implementation DroneControlProc.impl
+		subcomponents
+			cThread: thread DroneControlThread.impl;
+		connections
+			C1: port cThread.oX -> oX;
+			C2: port cThread.oY -> oY;
+			C3: port iX -> cThread.iX;
+			C4: port iY -> cThread.iY;
+			C5: port cX -> cThread.cX;
+			C6: port cY -> cThread.cY;
+			C7: port cThread.vX -> vX;
+			C8: port cThread.vY -> vY;
+	end DroneControlProc.impl;
+
+	thread DroneControlThread
+		features		
+			iX: in data port Base_Types::Float;
+			iY: in data port Base_Types::Float;
+			oX: out data port Base_Types::Float;
+			oY: out data port Base_Types::Float;
+			cX: in data port Base_Types::Float;
+			cY: in data port Base_Types::Float;
+			vX: out data port Base_Types::Float;	
+			vY: out data port Base_Types::Float;						
+		properties	
+			Dispatch_Protocol => Periodic;
+	end DroneControlThread;
+
+	thread implementation DroneControlThread.impl
+		subcomponents
+			close: data Base_Types::Boolean {Data_Model::Initial_Value => ("false");};
+		annex behavior_specification {**
+          variables
+            nx : Base_Types::Float;
+            ny : Base_Types::Float;
+          states
+            init : initial complete state;
+            exec : state;
+            output : state;
+          transitions
+            init -[on dispatch]-> exec;
+            exec -[abs (cX - iX) < 0.1 and abs (cY - iY) < 0.1]-> output {
+              vX := 0;
+              vY := 0;
+              close := true
+            };
+            exec -[otherwise]-> output {
+              nx := -#DroneSpec::A * (cX - iX);
+              ny := -#DroneSpec::A * (cY - iY);
+              	if (nx > 0.3) 
+              		vX := 2.5
+              	elsif (nx > 0.15) 
+              		if (close)
+                		vX := 1.5
+                	else
+                		vX := 0.0
+                	end if	
+              	else 
+                	vX := -2.5
+              	end if;
+              	if (ny > 0.3)
+                	vY := 2.5
+              	elsif (ny > 0.15) 
+              		if (close)
+                		vY := 1.5
+                	else
+                		vY := 0.0
+                	end if	 
+                else
+                 	vY := -2.5               	
+              	end if;
+              	close := false
+            };
+            output -[]-> init {
+              oX := cX;
+              oY := cY
+            };
+        **};
+	end DroneControlThread.impl;
+end DroneControl;

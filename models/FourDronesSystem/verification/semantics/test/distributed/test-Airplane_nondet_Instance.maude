@@ -1,0 +1,31 @@
+
+set show timing off .
+
+load ../../interpreter-distributed.maude
+load ../syntax/Airplane_nondet_Instance.maude
+
+
+mod TEST-AIRPLANE_NONDET_INSTANCE-MODEL is
+  including AIRPLANE_NONDET_INSTANCE-MODEL .
+
+  op initState : -> Object .
+  eq initState = initialize(initial) .
+
+  op cinitState : -> Object .
+  eq cinitState = initialize(collapse(initial)) .
+endm
+
+rew  [100] {initState | 0 | infty} .
+rew  [200] {initState | 0 | infty} .
+rew  [300] {initState | 0 | infty} .
+
+
+rew  [100] {cinitState | 0 | infty} .
+rew  [200] {cinitState | 0 | infty} .
+rew  [300] {cinitState | 0 | infty} .
+
+--- count the number of reachable states up to bound 100
+search [,5] {initState | 0 | infty} =>* {none | T:Time | infty} .
+
+search [,5] {cinitState | 0 | infty} =>* {none | T:Time | infty} .
+

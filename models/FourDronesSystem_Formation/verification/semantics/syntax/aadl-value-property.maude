@@ -1,0 +1,97 @@
+
+--- Data values used in the AADL language. Note that this defines syntactic
+--- values in AADL. Semantically, we consider elements in SMT theories
+fmod AADL-VALUE is
+  protecting CONVERSION .
+
+  sort AADLValue BoolAADLValue IntAADLValue FloatAADLValue CharAADLValue StringAADLValue .
+  subsort BoolAADLValue IntAADLValue FloatAADLValue CharAADLValue StringAADLValue < AADLValue . 
+  subsort CharAADLValue < StringAADLValue .
+
+  op [[_]] : Bool -> BoolAADLValue [ctor] .
+  op [[_]] : Int -> IntAADLValue [ctor] .
+  op [[_]] : Float -> FloatAADLValue [ctor] .
+  op [[_]] : Char -> CharAADLValue [ctor] .
+  op [[_]] : String -> StringAADLValue [ctor] .
+
+  var B : Bool . var I : Int . var F : Float . var S : String .
+
+  op bool : BoolAADLValue ~> Bool [format (m! o)] .
+  eq bool([[B]]) = B .
+
+  op int : IntAADLValue ~> Int [format (m! o)] .
+  eq int([[I]]) = I .
+
+  op float : IntAADLValue ~> Float [format (m! o)] .
+  eq float([[I]]) = float(I) .  
+
+  op float : FloatAADLValue ~> Float [format (m! o)] .
+  eq float([[F]]) = F .
+
+  op string : StringAADLValue ~> String [format (m! o)] .
+ eq string([[S]]) = S .
+endfm
+
+
+--- Default property values.
+fmod AADL-PROPERTY-VALUE is
+  including AADL-VALUE .
+
+  sort PropertyValue .
+
+  op {{_}} : Bool -> PropertyValue [ctor] .
+  op {{_}} : Int -> PropertyValue [ctor] .
+  op {{_}} : Float -> PropertyValue [ctor] .
+  op {{_}} : String -> PropertyValue [ctor] .
+
+  --- range values
+  op {{_.._}} : Float Float -> PropertyValue [ctor] .
+
+  --- This should be defined for each property values that can be used in the behavior annex.
+  op value : PropertyValue ~> AADLValue [format (m! o)] .
+  eq value({{B:Bool}})   = [[B:Bool]] .
+  eq value({{I:Int}})    = [[I:Int]] .
+  eq value({{F:Float}})  = [[F:Float]] .
+  eq value({{S:String}}) = [[S:String]] .
+endfm
+
+
+view PropertyValue from TRIV to AADL-PROPERTY-VALUE is
+  sort Elt to PropertyValue .
+endv
+
+
+fmod AADL-PROPERTY-ASSOCIATION is
+  including MAP{PropertyId,PropertyValue} * 
+      (sort Entry{PropertyId,PropertyValue} to Property,
+       sort Map{PropertyId,PropertyValue} to PropertyAssociation,
+       op _|->_ : PropertyId PropertyValue -> Entry{PropertyId,PropertyValue} to _=>_,
+       op _,_ : Map{PropertyId,PropertyValue} Map{PropertyId,PropertyValue} -> Map{PropertyId,PropertyValue} to _;_,
+       op empty : -> Map{PropertyId,PropertyValue} to none) .
+endfm
+
+--------------------------------
+--- Supported AADL properties
+--------------------------------
+
+
+--- default aadl properties, cetegorized according to the AADL book.
+fmod DEFAULT-PROPERTIES is
+  including AADL-PROPERTY-ASSOCIATION .
+
+  op DataModel::InitialValue : -> PropertyId [ctor] .
+  op TimingProperties::Period : -> PropertyId [ctor] .
+endfm
+
+
+--- the Hybrid-SynchAADL properties
+fmod HYBRID-SYNCHAADL-PROPERTIES is
+  including AADL-PROPERTY-ASSOCIATION .
+
+  op HybridSynchAADL::Synchronous : -> PropertyId [ctor] .
+  op HybridSynchAADL::isEnvironment : -> PropertyId [ctor] .
+  op HybridSynchAADL::ContinuousDynamics : -> PropertyId [ctor] .
+  op HybridSynchAADL::MaxClockDeviation : -> PropertyId [ctor] .
+  op HybridSynchAADL::SamplingTime : -> PropertyId [ctor] .
+  op HybridSynchAADL::ResponseTime : -> PropertyId [ctor] .
+endfm

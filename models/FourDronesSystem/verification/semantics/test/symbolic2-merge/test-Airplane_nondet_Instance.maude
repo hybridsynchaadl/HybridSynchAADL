@@ -1,0 +1,19 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2-merge.maude
+load ../syntax/Airplane_nondet_Instance-symbolic.maude
+
+mod TEST-AIRPLANE_NONDET_INSTANCE-MODEL-SYMBOLIC is
+    including AIRPLANE_NONDET_INSTANCE-MODEL-SYMBOLIC .
+    including BEHAVIOR-TRANSITION-SEMANTICS .
+
+  eq @m@ = ['AIRPLANE_NONDET_INSTANCE-MODEL-SYMBOLIC] .
+endm
+
+
+red initialize(initial) .
+
+rew [5] {bool(true) || initialize(initial) | 0 | infty} .
+
+search [,5] {bool(true) || initialize(initial) | 0 | infty} =>* G:GlobalSystem .

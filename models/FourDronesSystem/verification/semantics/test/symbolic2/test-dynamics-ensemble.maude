@@ -1,0 +1,11 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load module-component-dynamics.maude
+
+select TEST-ENSEMBLE-DYNAMICS-MOD .
+
+red finalConst(obj3) .
+
+search executeStep(bool(true), obj3) =>* C:ConstConfig .

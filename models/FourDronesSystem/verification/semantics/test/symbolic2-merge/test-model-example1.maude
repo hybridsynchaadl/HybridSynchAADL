@@ -1,0 +1,14 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2-merge.maude
+load module-synchronous-model.maude
+
+mod TEST-MODEL-TRANSITION-SYSTEM is
+  including TEST-MODEL-TRANSITION-SYSTEM-MOD .
+
+  eq @m@ = ['TEST-MODEL-TRANSITION-SYSTEM-MOD] .
+endm
+
+
+search [,50] {[true] || obj4 | 0 | infty} =>+ C:GlobalSystem .

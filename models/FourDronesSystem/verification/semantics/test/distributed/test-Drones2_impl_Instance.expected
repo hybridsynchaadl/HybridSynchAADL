@@ -1,0 +1,329 @@
+==========================================
+rewrite [100] in TEST-DRONE2-SYSTEM : {initState | 0 | infty} .
+rewrites: 16693
+result GlobalSystem: {< Drones2implInstance : System | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),
+    features : none,subcomponents : (< drone1 : System | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),
+    features : (< refX : AsyncDataInPort | properties : none,content : [0.0] #
+    [false],destination : (drone .. refX),cache : [0.0] # [false] > < refY :
+    AsyncDataInPort | properties : none,content : [0.0] # [false],destination :
+    (drone .. refY),cache : [0.0] # [false] >),subcomponents : (< drone :
+    System | properties : ((TimingProperties::Period => {{30}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}) ; (
+    HybridSynchAADL::SamplingTime => {{1.0 .. 5.0}}) ;
+    HybridSynchAADL::ResponseTime => {{1.4e+1 .. 1.5e+1}}),features : (< refX :
+    AsyncDataInPort | properties : none,content : [0.0] # [false],destination :
+    (droneProc .. refX),cache : [0.0] # [false] > < refY : AsyncDataInPort |
+    properties : none,content : [0.0] # [false],destination : (droneProc ..
+    refY),cache : [0.0] # [false] > < ydot : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : (environment .. ydot) > < xdot
+    : AsyncDataOutPort | properties : none,content : [0.0] # [false],
+    destination : (environment .. xdot) > < currX : AsyncDataInPort |
+    properties : none,content : [0.0] # [false],destination : (droneProc ..
+    currX),cache : [0.0] # [false] > < currY : AsyncDataInPort | properties :
+    none,content : [0.0] # [false],destination : (droneProc .. currY),cache : [
+    0.0] # [false] >),subcomponents : < droneProc : Process | properties : ((
+    TimingProperties::Period => {{30}}) ; HybridSynchAADL::Synchronous => {{
+    true}}),features : (< refX : AsyncDataInPort | properties : none,content :
+    [0.0] # [false],destination : (droneThread .. refX),cache : [0.0] # [false]
+    > < refY : AsyncDataInPort | properties : none,content : [0.0] # [false],
+    destination : (droneThread .. refY),cache : [0.0] # [false] > < ydot :
+    AsyncDataOutPort | properties : none,content : [0.0] # [false],destination
+    : ydot > < xdot : AsyncDataOutPort | properties : none,content : [0.0] # [
+    false],destination : xdot > < currX : AsyncDataInPort | properties : none,
+    content : [0.0] # [false],destination : (droneThread .. currX),cache : [
+    0.0] # [false] > < currY : AsyncDataInPort | properties : none,content : [
+    0.0] # [false],destination : (droneThread .. currY),cache : [0.0] # [false]
+    >),subcomponents : ((msg [-3.8780000000000007e+2] # [true] to (droneThread
+    .. refY)) (msg [-8.8800000000000011e+1] # [true] to (droneThread .. refX))
+    < droneThread : AsyncThread | properties : ((TimingProperties::Period => {{
+    30}}) ; (HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::SamplingTime => {{1.0 .. 5.0}}) ;
+    HybridSynchAADL::ResponseTime => {{1.4e+1 .. 1.5e+1}}),features : (< refX :
+    AsyncDataInPort | properties : none,content : [0.0] # [false],destination :
+    empty,cache : [-4.0800000000000004e+1] # [true] > < refY : AsyncDataInPort
+    | properties : none,content : [0.0] # [false],destination : empty,cache : [
+    -1.9580000000000001e+2] # [true] > < ydot : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : ydot > < xdot :
+    AsyncDataOutPort | properties : none,content : [0.0] # [false],destination
+    : xdot > < currX : AsyncDataInPort | properties : none,content : [0.0] # [
+    false],destination : empty,cache : [-3.2484999999999999e+1] # [true] > <
+    currY : AsyncDataInPort | properties : none,content : [0.0] # [false],
+    destination : empty,cache : [-1.3904999999999998e+2] # [true] >),
+    subcomponents : (< offsetX : Data | properties : DataModel::InitialValue =>
+    {{-1}},features : none,subcomponents : none,connections : empty,value : [
+    -1.0] # [true] > < offsetY : Data | properties : DataModel::InitialValue =>
+    {{0}},features : none,subcomponents : none,connections : empty,value : [
+    0.0] # [true] >),connections : empty,period : 30,perTimer : 41/2,msgTimer :
+    infty,varGen : < "Drones2implInstance.drone1.drone.droneProc.droneThread"
+    >,currState : init,completeStates : init,variables : ((x : Real) ; (y :
+    Real) ; (z : Real) ; c : Real),transitions : ((init -[on dispatch]-> setX {
+    skip}) ; (setY -[[[true]]]-> init {(v{c} := (f[currY] - c[offsetY])) ; (v{
+    y} := ([[3]] * v[c])) ; (v{y} := (v[y] - (v[c] - f[refY]))) ; ydot !(v[
+    y])}) ; setX -[[[true]]]-> setY {(v{c} := (f[currX] - c[offsetX])) ; (v{x}
+    := ([[3]] * v[c])) ; (v{x} := (v[x] - (v[c] - f[refX]))) ; xdot !(v[x])}),
+    loopBound : 10,transBound : 10,execTime : 19/2,execTimer : infty >) > > <
+    environment : AsyncEnv | properties : ((TimingProperties::Period => {{30}})
+    ; (HybridSynchAADL::Synchronous => {{true}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< ydot : AsyncEnvInPort | properties : none,content : [
+    -4.7389999999999998e+2] # [true],envCache : null(Real),destination : empty
+    > < xdot : AsyncEnvInPort | properties : none,content : [
+    -1.0377000000000001e+2] # [true],envCache : null(Real),destination : empty
+    > < currX : AsyncEnvOutPort | properties : none,content : [0.0] # [false],
+    envCache : null(Real),target : drone,destination : (drone .. currX) > <
+    currY : AsyncEnvOutPort | properties : none,content : [0.0] # [false],
+    envCache : null(Real),target : drone,destination : (drone .. currY) >),
+    subcomponents : (< dotx : Data | properties : DataModel::InitialValue => {{
+    5.8999999999999997e-1}},features : none,subcomponents : none,connections :
+    empty,value : [5.8999999999999997e-1] # [true] > < x : Data | properties :
+    DataModel::InitialValue => {{3.7999999999999998}},features : none,
+    subcomponents : none,connections : empty,value : [-3.7204999999999998e+1] #
+    [true] > < y : Data | properties : DataModel::InitialValue => {{
+    2.3999999999999999}},features : none,subcomponents : none,connections :
+    empty,value : [-1.5744999999999999e+2] # [true] > < doty : Data |
+    properties : DataModel::InitialValue => {{2.2999999999999998}},features :
+    none,subcomponents : none,connections : empty,value : [2.2999999999999998]
+    # [true] >),connections : ((x ==> currX) ; (y ==> currY) ; (ydot =>> doty)
+    ; xdot =>> dotx),period : 30,perTimer : 41/2,msgTimer : infty,varGen : <
+    "Drones2implInstance.drone1.environment" >,currMode : setode,jumps : empty,
+    flows : setode [(x(t)= ((minus(c[dotx]) * v[t]) + c[x])) ; y(t)= ((minus(c[
+    doty]) * v[t]) + c[y])],sampling : drone :(1,5),response : drone :(14,15),
+    samplingTimes : drone : (3/2, 5/2, 7/2, 9/2),responseTimes : drone : (
+    113/8, 115/8, 117/8, 119/8),envState : [response,drone],envTimer : 37/8 >)
+    > < refDrone : System | properties : ((TimingProperties::Period => {{30}})
+    ; (HybridSynchAADL::Synchronous => {{true}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< refX : AsyncDataOutPort | properties : DataModel::InitialValue => {{
+    9.5999999999999996}},content : [0.0] # [false],destination : (drone1 ..
+    refX) > < refY : AsyncDataOutPort | properties : DataModel::InitialValue =>
+    {{5.7999999999999998}},content : [0.0] # [false],destination : (drone1 ..
+    refY) >),subcomponents : (< env : AsyncEnv | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),
+    features : (< ydot : AsyncEnvInPort | properties : none,content : [3.0] # [
+    true],envCache : null(Real),destination : empty > < xdot : AsyncEnvInPort |
+    properties : none,content : [3.0] # [true],envCache : null(Real),
+    destination : empty > < currX : AsyncEnvOutPort | properties : none,content
+    : [0.0] # [false],envCache : null(Real),target : refDrone,destination : (
+    refDrone .. currX) > < currY : AsyncEnvOutPort | properties : none,content
+    : [0.0] # [false],envCache : null(Real),target : refDrone,destination : (
+    refDrone .. currY) >),subcomponents : (< dotx : Data | properties :
+    DataModel::InitialValue => {{1.6000000000000001}},features : none,
+    subcomponents : none,connections : empty,value : [1.6000000000000001] # [
+    true] > < x : Data | properties : DataModel::InitialValue => {{
+    9.5999999999999996}},features : none,subcomponents : none,connections :
+    empty,value : [-1.0160000000000001e+2] # [true] > < y : Data | properties :
+    DataModel::InitialValue => {{5.7999999999999998}},features : none,
+    subcomponents : none,connections : empty,value : [-4.3900000000000006e+2] #
+    [true] > < doty : Data | properties : DataModel::InitialValue => {{
+    6.4000000000000004}},features : none,subcomponents : none,connections :
+    empty,value : [6.4000000000000004] # [true] >),connections : ((x ==> currX)
+    ; (y ==> currY) ; (ydot =>> doty) ; xdot =>> dotx),period : 30,perTimer :
+    41/2,msgTimer : infty,varGen : < "Drones2implInstance.refDrone.env" >,
+    currMode : setode,jumps : empty,flows : setode [(x(t)= ((minus(c[dotx]) *
+    v[t]) + c[x])) ; y(t)= ((minus(c[doty]) * v[t]) + c[y])],sampling :
+    refDrone :(1,5),response : refDrone :(14,15),samplingTimes : refDrone : (
+    3/2, 5/2, 7/2, 9/2),responseTimes : refDrone : (113/8, 115/8, 117/8,
+    119/8),envState : [response,refDrone],envTimer : 37/8 > < refDrone : System
+    | properties : ((TimingProperties::Period => {{30}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}) ; (
+    HybridSynchAADL::SamplingTime => {{1.0 .. 5.0}}) ;
+    HybridSynchAADL::ResponseTime => {{1.4e+1 .. 1.5e+1}}),features : (< refX :
+    AsyncDataOutPort | properties : DataModel::InitialValue => {{
+    9.5999999999999996}},content : [0.0] # [false],destination : refX > < refY
+    : AsyncDataOutPort | properties : DataModel::InitialValue => {{
+    5.7999999999999998}},content : [0.0] # [false],destination : refY > <
+    speedY : AsyncDataOutPort | properties : none,content : [0.0] # [false],
+    destination : (env .. ydot) > < speedX : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : (env .. xdot) > < currX :
+    AsyncDataInPort | properties : none,content : [0.0] # [false],destination :
+    (refProc .. currX),cache : [0.0] # [false] > < currY : AsyncDataInPort |
+    properties : none,content : [0.0] # [false],destination : (refProc ..
+    currY),cache : [0.0] # [false] >),subcomponents : < refProc : Process |
+    properties : ((TimingProperties::Period => {{30}}) ;
+    HybridSynchAADL::Synchronous => {{true}}),features : (< refX :
+    AsyncDataOutPort | properties : none,content : [0.0] # [false],destination
+    : refX > < refY : AsyncDataOutPort | properties : none,content : [0.0] # [
+    false],destination : refY > < speedY : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : speedY > < speedX :
+    AsyncDataOutPort | properties : none,content : [0.0] # [false],destination
+    : speedX > < currX : AsyncDataInPort | properties : none,content : [0.0] #
+    [false],destination : (refThread .. currX),cache : [0.0] # [false] > <
+    currY : AsyncDataInPort | properties : none,content : [0.0] # [false],
+    destination : (refThread .. currY),cache : [0.0] # [false] >),subcomponents
+    : < refThread : AsyncThread | properties : ((TimingProperties::Period => {{
+    30}}) ; (HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::SamplingTime => {{1.0 .. 5.0}}) ;
+    HybridSynchAADL::ResponseTime => {{1.4e+1 .. 1.5e+1}}),features : (< refX :
+    AsyncDataOutPort | properties : none,content : [0.0] # [false],destination
+    : refX > < refY : AsyncDataOutPort | properties : none,content : [0.0] # [
+    false],destination : refY > < speedY : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : speedY > < speedX :
+    AsyncDataOutPort | properties : none,content : [0.0] # [false],destination
+    : speedX > < currX : AsyncDataInPort | properties : none,content : [0.0] #
+    [false],destination : empty,cache : [-8.8800000000000011e+1] # [true] > <
+    currY : AsyncDataInPort | properties : none,content : [0.0] # [false],
+    destination : empty,cache : [-3.8780000000000007e+2] # [true] >),
+    subcomponents : none,connections : empty,period : 30,perTimer : 41/2,
+    msgTimer : infty,varGen : <
+    "Drones2implInstance.refDrone.refDrone.refProc.refThread" >,currState :
+    init,completeStates : init,variables : ((x : Real) ; y : Real),transitions
+    : ((init -[on dispatch]-> setX {skip}) ; (setY -[[[true]]]-> init {if(f[
+    currY] > [[12]]){v{y} := [[2]]} else {v{y} := [[3]]} end if ; (speedY !(v[
+    y])) ; (f{refX} := f[currX]) ; f{refY} := f[currY]}) ; setX -[[[true]]]->
+    setY {if(f[currX] > [[12]]){v{x} := [[2]]} else {v{x} := [[3]]} end if ;
+    speedX !(v[x])}),loopBound : 10,transBound : 10,execTime : 19/2,execTimer :
+    infty > > >) >) > | 139/2 | infty}
+==========================================
+rewrite [100] in TEST-DRONE2-SYSTEM : {cinitState | 0 | infty} .
+rewrites: 13984
+result GlobalSystem: {< Drones2implInstance : System | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),
+    features : none,subcomponents : (< drone1 : System | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),
+    features : (< refX : AsyncDataInPort | properties : none,content : [0.0] #
+    [false],destination : ((drone . droneProc . droneThread) .. refX),cache : [
+    0.0] # [false] > < refY : AsyncDataInPort | properties : none,content : [
+    0.0] # [false],destination : ((drone . droneProc . droneThread) .. refY),
+    cache : [0.0] # [false] >),subcomponents : (< environment : AsyncEnv |
+    properties : ((TimingProperties::Period => {{30}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< ydot : AsyncEnvInPort | properties : none,content : [
+    -4.7389999999999998e+2] # [true],envCache : null(Real),destination : empty
+    > < xdot : AsyncEnvInPort | properties : none,content : [
+    -1.0377000000000001e+2] # [true],envCache : null(Real),destination : empty
+    > < currX : AsyncEnvOutPort | properties : none,content : [0.0] # [false],
+    envCache : null(Real),target : drone,destination : ((drone . droneProc .
+    droneThread) .. currX) > < currY : AsyncEnvOutPort | properties : none,
+    content : [0.0] # [false],envCache : null(Real),target : drone,destination
+    : ((drone . droneProc . droneThread) .. currY) >),subcomponents : (< dotx :
+    Data | properties : DataModel::InitialValue => {{5.8999999999999997e-1}},
+    features : none,subcomponents : none,connections : empty,value : [
+    5.8999999999999997e-1] # [true] > < x : Data | properties :
+    DataModel::InitialValue => {{3.7999999999999998}},features : none,
+    subcomponents : none,connections : empty,value : [-3.7204999999999998e+1] #
+    [true] > < y : Data | properties : DataModel::InitialValue => {{
+    2.3999999999999999}},features : none,subcomponents : none,connections :
+    empty,value : [-1.5744999999999999e+2] # [true] > < doty : Data |
+    properties : DataModel::InitialValue => {{2.2999999999999998}},features :
+    none,subcomponents : none,connections : empty,value : [2.2999999999999998]
+    # [true] >),connections : ((x ==> currX) ; (y ==> currY) ; (ydot =>> doty)
+    ; xdot =>> dotx),period : 30,perTimer : 41/2,msgTimer : infty,varGen : <
+    "Drones2implInstance.drone1.environment" >,currMode : setode,jumps : empty,
+    flows : setode [(x(t)= ((minus(c[dotx]) * v[t]) + c[x])) ; y(t)= ((minus(c[
+    doty]) * v[t]) + c[y])],sampling : drone :(1,5),response : drone :(14,15),
+    samplingTimes : drone : (3/2, 5/2, 7/2, 9/2),responseTimes : drone : (
+    113/8, 115/8, 117/8, 119/8),envState : [response,drone],envTimer : 37/8 > <
+    drone . droneProc . droneThread : AsyncThread | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; (HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}})
+    ; (HybridSynchAADL::SamplingTime => {{1.0 .. 5.0}}) ;
+    HybridSynchAADL::ResponseTime => {{1.4e+1 .. 1.5e+1}}),features : (< refX :
+    AsyncDataInPort | properties : none,content : [-8.8800000000000011e+1] # [
+    true],destination : empty,cache : [-4.0800000000000004e+1] # [true] > <
+    refY : AsyncDataInPort | properties : none,content : [
+    -3.8780000000000007e+2] # [true],destination : empty,cache : [
+    -1.9580000000000001e+2] # [true] > < ydot : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : (environment .. ydot) > < xdot
+    : AsyncDataOutPort | properties : none,content : [0.0] # [false],
+    destination : (environment .. xdot) > < currX : AsyncDataInPort |
+    properties : none,content : [0.0] # [false],destination : empty,cache : [
+    -3.2484999999999999e+1] # [true] > < currY : AsyncDataInPort | properties :
+    none,content : [0.0] # [false],destination : empty,cache : [
+    -1.3904999999999998e+2] # [true] >),subcomponents : (< offsetX : Data |
+    properties : DataModel::InitialValue => {{-1}},features : none,
+    subcomponents : none,connections : empty,value : [-1.0] # [true] > <
+    offsetY : Data | properties : DataModel::InitialValue => {{0}},features :
+    none,subcomponents : none,connections : empty,value : [0.0] # [true] >),
+    connections : empty,period : 30,perTimer : 41/2,msgTimer : infty,varGen : <
+    "Drones2implInstance.drone1.drone.droneProc.droneThread" >,currState :
+    init,completeStates : init,variables : ((x : Real) ; (y : Real) ; (z :
+    Real) ; c : Real),transitions : ((init -[on dispatch]-> setX {skip}) ; (
+    setY -[[[true]]]-> init {(v{c} := (f[currY] - c[offsetY])) ; (v{y} := ([[
+    3]] * v[c])) ; (v{y} := (v[y] - (v[c] - f[refY]))) ; ydot !(v[y])}) ; setX
+    -[[[true]]]-> setY {(v{c} := (f[currX] - c[offsetX])) ; (v{x} := ([[3]] *
+    v[c])) ; (v{x} := (v[x] - (v[c] - f[refX]))) ; xdot !(v[x])}),loopBound :
+    10,transBound : 10,execTime : 19/2,execTimer : infty >) > < refDrone :
+    System | properties : ((TimingProperties::Period => {{30}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< refX : AsyncDataOutPort | properties : DataModel::InitialValue => {{
+    9.5999999999999996}},content : [0.0] # [false],destination : (drone1 ..
+    refX) > < refY : AsyncDataOutPort | properties : DataModel::InitialValue =>
+    {{5.7999999999999998}},content : [0.0] # [false],destination : (drone1 ..
+    refY) >),subcomponents : ((msg [3.0] # [true] to (env .. ydot)) (msg [3.0]
+    # [true] to (env .. xdot)) < env : AsyncEnv | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),
+    features : (< ydot : AsyncEnvInPort | properties : none,content : [3.0] # [
+    true],envCache : null(Real),destination : empty > < xdot : AsyncEnvInPort |
+    properties : none,content : [3.0] # [true],envCache : null(Real),
+    destination : empty > < currX : AsyncEnvOutPort | properties : none,content
+    : [0.0] # [false],envCache : null(Real),target : refDrone,destination : ((
+    refDrone . refProc . refThread) .. currX) > < currY : AsyncEnvOutPort |
+    properties : none,content : [0.0] # [false],envCache : null(Real),target :
+    refDrone,destination : ((refDrone . refProc . refThread) .. currY) >),
+    subcomponents : (< dotx : Data | properties : DataModel::InitialValue => {{
+    1.6000000000000001}},features : none,subcomponents : none,connections :
+    empty,value : [1.6000000000000001] # [true] > < x : Data | properties :
+    DataModel::InitialValue => {{9.5999999999999996}},features : none,
+    subcomponents : none,connections : empty,value : [-1.0160000000000001e+2] #
+    [true] > < y : Data | properties : DataModel::InitialValue => {{
+    5.7999999999999998}},features : none,subcomponents : none,connections :
+    empty,value : [-4.3900000000000006e+2] # [true] > < doty : Data |
+    properties : DataModel::InitialValue => {{6.4000000000000004}},features :
+    none,subcomponents : none,connections : empty,value : [6.4000000000000004]
+    # [true] >),connections : ((x ==> currX) ; (y ==> currY) ; (ydot =>> doty)
+    ; xdot =>> dotx),period : 30,perTimer : 41/2,msgTimer : infty,varGen : <
+    "Drones2implInstance.refDrone.env" >,currMode : setode,jumps : empty,flows
+    : setode [(x(t)= ((minus(c[dotx]) * v[t]) + c[x])) ; y(t)= ((minus(c[doty])
+    * v[t]) + c[y])],sampling : refDrone :(1,5),response : refDrone :(14,15),
+    samplingTimes : refDrone : (3/2, 5/2, 7/2, 9/2),responseTimes : refDrone :
+    (113/8, 115/8, 117/8, 119/8),envState : [response,refDrone],envTimer : 37/8
+    > < refDrone . refProc . refThread : AsyncThread | properties : ((
+    TimingProperties::Period => {{30}}) ; (HybridSynchAADL::Synchronous => {{
+    true}}) ; (HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}})
+    ; (HybridSynchAADL::SamplingTime => {{1.0 .. 5.0}}) ;
+    HybridSynchAADL::ResponseTime => {{1.4e+1 .. 1.5e+1}}),features : (< refX :
+    AsyncDataOutPort | properties : DataModel::InitialValue => {{
+    9.5999999999999996}},content : [0.0] # [false],destination : refX > < refY
+    : AsyncDataOutPort | properties : DataModel::InitialValue => {{
+    5.7999999999999998}},content : [0.0] # [false],destination : refY > <
+    speedY : AsyncDataOutPort | properties : none,content : [0.0] # [false],
+    destination : (env .. ydot) > < speedX : AsyncDataOutPort | properties :
+    none,content : [0.0] # [false],destination : (env .. xdot) > < currX :
+    AsyncDataInPort | properties : none,content : [0.0] # [false],destination :
+    empty,cache : [-8.8800000000000011e+1] # [true] > < currY : AsyncDataInPort
+    | properties : none,content : [0.0] # [false],destination : empty,cache : [
+    -3.8780000000000007e+2] # [true] >),subcomponents : none,connections :
+    empty,period : 30,perTimer : 41/2,msgTimer : infty,varGen : <
+    "Drones2implInstance.refDrone.refDrone.refProc.refThread" >,currState :
+    init,completeStates : init,variables : ((x : Real) ; y : Real),transitions
+    : ((init -[on dispatch]-> setX {skip}) ; (setY -[[[true]]]-> init {if(f[
+    currY] > [[12]]){v{y} := [[2]]} else {v{y} := [[3]]} end if ; (speedY !(v[
+    y])) ; (f{refX} := f[currX]) ; f{refY} := f[currY]}) ; setX -[[[true]]]->
+    setY {if(f[currX] > [[12]]){v{x} := [[2]]} else {v{x} := [[3]]} end if ;
+    speedX !(v[x])}),loopBound : 10,transBound : 10,execTime : 19/2,execTimer :
+    infty >) >) > | 139/2 | infty}
+==========================================
+search [, 5] in TEST-DRONE2-SYSTEM : {initState | 0 | infty} =>* {none | T:Time
+    | infty} .
+
+No solution.
+states: 53467  rewrites: 2878751
+==========================================
+search [, 5] in TEST-DRONE2-SYSTEM : {cinitState | 0 | infty} =>* {none |
+    T:Time | infty} .
+
+No solution.
+states: 53467  rewrites: 2580513
+Bye.

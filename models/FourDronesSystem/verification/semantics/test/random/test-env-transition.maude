@@ -1,0 +1,77 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+
+load module-env-semantics.maude
+
+
+----------------------------------------
+select TEST-ENV-TRANSITION-SEMANTICS .
+
+red
+  execSample(
+          time(0)
+          mode(st1)
+          sampling(((cr1 : (0,1))))
+          response(((cr1 : (4/7,3))))
+          jumps(trans)
+          flows(flows)
+          sIds(cr1)
+          rIds(cr1)
+          randC(0)
+          envcon(conx,envports)
+		  const(bool(true))
+          bcf
+  )  .
+
+
+red
+  execSample(
+          time(0)
+          mode(st1)
+          sampling(((cr1 : (0,1)),   (cr2 : (3/2,5/2))))
+          response(((cr1 : (4/7,3)), (cr2 : (13/4,4))))
+          jumps(trans)
+          flows(flows)
+          sIds(cr1 cr2)
+          rIds(cr1 cr2)
+          randC(0)
+          envcon(conx,envports)
+		  const(bool(true))
+          bcf
+  )  .
+
+red
+  execResp(
+          time(3)
+          mode(st1)
+          sampling(empty)
+          response(((cr1 : (4/7,3))))
+          jumps(trans)
+          flows(flows)
+          sIds(cr1)
+          rIds(cr1)
+          randC(0)
+          envcon(conx,envports)
+		  const(bool(true))
+          bcf
+  )  .
+
+
+red
+  execResp(
+          time(3)
+          mode(st1)
+          sampling(empty)
+          response(((cr1 : (4/7,3)), (cr2 : (13/4,4))))
+          jumps(trans)
+          flows(flows)
+          sIds(cr1 cr2)
+          rIds(cr1 cr2)
+          randC(0)
+          envcon(conx,envports)
+		  const(bool(true))
+          bcf
+  )  .
+

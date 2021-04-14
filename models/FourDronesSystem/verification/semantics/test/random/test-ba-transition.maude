@@ -1,0 +1,18 @@
+set show timing off .
+
+load ../../interpreter-random.maude
+
+load module-ba-semantics
+
+
+
+---------------------------------------------------
+select TEST-BEHAVIOR-TRANSITION-SEMANTICS .
+
+rew execTrans(location(l1) complete(l1) trans(trans1) bcf) .
+
+rew execTrans(location(l1) complete(l1) trans(trans2) bcf) .
+
+rew execTrans(location(l1) complete(l1) trans(trans3) bcf) .
+
+

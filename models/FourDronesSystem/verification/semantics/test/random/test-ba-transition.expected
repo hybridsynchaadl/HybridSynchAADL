@@ -1,0 +1,36 @@
+==========================================
+rewrite in TEST-BEHAVIOR-TRANSITION-SEMANTICS : execTrans(location(l1)
+    complete(l1) bcf trans(trans1)) .
+rewrites: 235
+result BATransResult: {randC(2) const([true]) feature((a |-> ([-1.0] # [true] :
+    [true]), b |-> [9.0] # [true])) data(cr |=> [8.5099999999999994e+1] # [
+    true]) prop(TimingProperties::Period => {{6.0100000000000001e+1}})
+    location(l1) trans((l1 -[on dispatch]-> l2 {c{cr} := (v[x] + [[1]])}) ; l2
+    -[v[x] > [[4]]]-> l1 {if(v[x] > [[3]])(f{b} := (v[x] - [[1]])) (elsif(v[y]
+    < [[4]])f{b} := (v[x] + [[3]])) else f{b} := (v[x] + [[1]]) end if ; (c{cr}
+    := ((c[cr] + v[y]) + f[a])) ; c{cr} := ((c[cr] + v[x]) + p[
+    TimingProperties::Period])})}
+==========================================
+rewrite in TEST-BEHAVIOR-TRANSITION-SEMANTICS : execTrans(location(l1)
+    complete(l1) bcf trans(trans2)) .
+rewrites: 290
+result BATransResult: {randC(2) const([true]) feature((a |-> ([-1.0] # [true] :
+    [true]), b |-> [0.0] # [false])) data(cr |=> [1.5e+1] # [true]) prop(
+    TimingProperties::Period => {{6.0100000000000001e+1}}) location(l1) trans((
+    l1 -[on dispatch]-> l2 {c{cr} := (v[x] + [[1]])}) ; (l2 -[otherwise]-> l1 {
+    c{cr} := (v[x] + v[y])}) ; (l2 -[v[x] < [[-1]]]-> l1 {c{cr} := (v[x] - v[
+    y])}) ; l2 -[v[x] > [[4]]]-> l1 {if(v[x] > [[3]])(f{b} := (v[x] - [[1]])) (
+    elsif(v[y] < [[4]])f{b} := (v[x] + [[3]])) else f{b} := (v[x] + [[1]]) end
+    if ; c{cr} := ((c[cr] + v[y]) + f[a])})}
+==========================================
+rewrite in TEST-BEHAVIOR-TRANSITION-SEMANTICS : execTrans(location(l1)
+    complete(l1) bcf trans(trans3)) .
+rewrites: 200
+result BATransResult: {randC(2) const([true]) feature((a |-> ([-1.0] # [true] :
+    [true]), b |-> [0.0] # [false])) data(cr |=> [2.6e+1] # [true]) prop(
+    TimingProperties::Period => {{6.0100000000000001e+1}}) location(l1) trans((
+    l1 -[on dispatch]-> l2 {c{cr} := (v[x] + [[1]])}) ; (l2 -[otherwise]-> l1 {
+    c{cr} := (c[cr] + (v[x] + v[y]))}) ; l2 -[c[cr] > f[a]]-> l2 {if(v[x] > [[
+    3]])(f{b} := (v[x] - [[1]])) (elsif(v[y] < [[4]])f{b} := (v[x] + [[3]]))
+    else f{b} := (v[x] + [[1]]) end if ; c{cr} := (f[a] - [[1]])})}
+Bye.

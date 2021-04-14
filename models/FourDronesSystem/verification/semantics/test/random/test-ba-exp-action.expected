@@ -1,0 +1,56 @@
+==========================================
+rewrite in TEST-BEHAVIOR-ACTION-SEMANTICS : execAction({(v{x} := ([[4]] + [[
+    6]])) ; skip}, bcf(2)) .
+rewrites: 35
+result BehaviorConf: const([true]) lbound(unbounded) local((x |-> [1.0e+1] # [
+    true]) ; y |-> [4.0] # [true]) feature((a |-> ([1.0e+2] # [true] : [true]),
+    b |-> * # [true])) data(cr |=> [7.5e-1] # [true]) prop(
+    TimingProperties::Period => {{6.0100000000000001e+1}})
+==========================================
+rewrite in TEST-BEHAVIOR-ACTION-SEMANTICS : execAction({if(v[x] > [[3]]){(f{a}
+    := (v[x] - [[1]])) ; b !} else f{a} := (v[x] + [[1]]) end if ; v{y} := ((v[
+    y] * v[x]) + [[1]])}, bcf(2)) .
+rewrites: 115
+result BehaviorConf: const([true]) lbound(unbounded) local((x |-> [2.0] # [
+    true]) ; y |-> [9.0] # [true]) feature((a |-> [3.0] # [true], b |-> * # [
+    true])) data(cr |=> [7.5e-1] # [true]) prop(TimingProperties::Period => {{
+    6.0100000000000001e+1}})
+==========================================
+rewrite in TEST-BEHAVIOR-ACTION-SEMANTICS : execAction({if(v[x] > [[3]])v{x} :=
+    (v[x] - [[1]]) else v{x} := (v[x] + [[1]]) end if ; v{y} := ((v[y] * v[x])
+    + [[1]])}, bcf(4)) .
+rewrites: 91
+result BehaviorConf: const([true]) lbound(unbounded) local((x |-> [3.0] # [
+    true]) ; y |-> [1.3e+1] # [true]) feature((a |-> ([1.0e+2] # [true] : [
+    true]), b |-> * # [true])) data(cr |=> [7.5e-1] # [true]) prop(
+    TimingProperties::Period => {{6.0100000000000001e+1}})
+==========================================
+rewrite in TEST-BEHAVIOR-ACTION-SEMANTICS : execAction({if(v[x] > [[3]])(v{x}
+    := (v[x] - [[1]])) (elsif(v[y] < [[4]])v{y} := (v[x] + [[3]])) else v{x} :=
+    (v[x] + [[1]]) end if ; (v{y} := (v[y] + f[a])) ; v{x} := (f[a] + p[
+    TimingProperties::Period])}, bcf(4)) .
+rewrites: 111
+result BehaviorConf: const([true]) lbound(unbounded) local((x |-> [
+    1.6009999999999999e+2] # [true]) ; y |-> [1.04e+2] # [true]) feature((a |->
+    ([1.0e+2] # [true] : [true]), b |-> * # [true])) data(cr |=> [7.5e-1] # [
+    true]) prop(TimingProperties::Period => {{6.0100000000000001e+1}})
+==========================================
+rewrite in TEST-BEHAVIOR-ACTION-SEMANTICS : execAction({while(v[x] > [[5]]){(v{
+    x} := (v[x] - [[1]])) ; v{y} := (v[y] + [[2]])} ; (v{y} := (v[y] + f[a])) ;
+    v{x} := (f[a] + p[TimingProperties::Period])}, bcf(20)) .
+rewrites: 1539
+result BehaviorConf: const([true]) lbound(unbounded) local((x |-> [
+    1.6009999999999999e+2] # [true]) ; y |-> [1.34e+2] # [true]) feature((a |->
+    ([1.0e+2] # [true] : [true]), b |-> * # [true])) data(cr |=> [7.5e-1] # [
+    true]) prop(TimingProperties::Period => {{6.0100000000000001e+1}})
+==========================================
+rewrite in TEST-BEHAVIOR-ACTION-SEMANTICS : execAction({while(v[x] > [[5]]){
+    while(v[y] < [[10]]){(c{cr} := (v[x] + [[1]])) ; v{y} := (v[y] + [[2]])} ;
+    v{x} := (v[x] - [[1]])} ; (v{y} := (v[y] + f[a])) ; v{x} := (f[a] + p[
+    TimingProperties::Period])}, bcf(20)) .
+rewrites: 1591
+result BehaviorConf: const([true]) lbound(unbounded) local((x |-> [
+    1.6009999999999999e+2] # [true]) ; y |-> [1.1e+2] # [true]) feature((a |->
+    ([1.0e+2] # [true] : [true]), b |-> * # [true])) data(cr |=> [2.1e+1] # [
+    true]) prop(TimingProperties::Period => {{6.0100000000000001e+1}})
+Bye.

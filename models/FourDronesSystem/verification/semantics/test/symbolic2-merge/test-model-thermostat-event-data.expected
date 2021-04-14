@@ -1,0 +1,694 @@
+==========================================
+search [, 3] in TEST-THERMOSTAT-SYSTEM-HIE : {bool(true) || initState | 0 |
+    infty} =>+ {B:BoolExp || OBJ:Object | T:Time | infty} such that check-sat(
+    B:BoolExp and finalConst(OBJ:Object)) = (true).Bool .
+
+Solution 1 (state 1)
+states: 2  rewrites: 2098
+B:BoolExp --> [b("top.environment#$#3") and (r("top.environment#$#1") === r(
+    "top.environment#$#2") + (1/2).Real * r("top.environment#$#4") and ((r(
+    "top.environment#$#8") === r("top.environment#$#2") + ((b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + (
+    1/2).Real * r("top.environment#$#6")) and ((b("top.environment#$#4") and (
+    r("top.environment#$#4") <= (39631676720860365/18014398509481984).Real and
+    ((0/1).Real <= r("top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and (r("top.environment#$#4") <= r(
+    "top.environment#$#5") and (r("top.environment#$#6") === (5/1).Real and r(
+    "top.environment#$#5") <= r("top.environment#$#6"))))))) or r(
+    "top.environment#$#6") === (5/1).Real and (r("top.environment#$#5") <= r(
+    "top.environment#$#6") and (not b("top.environment#$#5") and (not b(
+    "top.environment#$#4") and (r("top.environment#$#4") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and r("top.environment#$#4") <= r(
+    "top.environment#$#5"))))))))) and r("top.environment#$#7") === (0/1).Real)
+    or r("top.environment#$#8") === r("top.environment#$#2") + (r(
+    "top.environment#$#5") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#6"))) and (b("top.environment#$#5") and (r(
+    "top.environment#$#4") <= (39631676720860365/18014398509481984).Real and ((
+    0/1).Real <= r("top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and (r("top.environment#$#4") <= r(
+    "top.environment#$#5") and (r("top.environment#$#6") === (5/1).Real and (r(
+    "top.environment#$#5") <= r("top.environment#$#6") and r(
+    "top.environment#$#7") === (1/1).Real))))))))) and (not b(
+    "top.environment#$#0") and (not b("top.environment#$#1") and (b(
+    "top.environment#$#2") and ((0/1).Real === r("top.environment#$#0") and ((
+    not b("top.environment#$#3") or r("top.environment#$#1") <= (25/1).Real)
+    and (b("top.environment#$#3") and (r("top.environment#$#1") >= (5/1).Real
+    and (not b("top.controller#$#0") and (not b("top.controller#$#1") and (not
+    b("top.controller#$#2") and r("top.controller#$#0") === (0/1).Real))))) or
+    (not (b("top.environment#$#3") and r("top.environment#$#1") >= (5/1).Real)
+    and (b("top.environment#$#3") and (r("top.controller#$#0") === (1/1).Real
+    and (b("top.controller#$#0") and not b("top.controller#$#1")))) or not (not
+    b("top.environment#$#3") or r("top.environment#$#1") <= (25/1).Real) and (
+    b("top.environment#$#3") and (r("top.environment#$#1") >= (5/1).Real and (
+    r("top.controller#$#0") === (-1/1).Real and (not b("top.controller#$#0")
+    and b("top.controller#$#1")))))) and b("top.controller#$#2"))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [b("top.controller#$#0")] > <
+    off : DataOutPort | properties : none,content : * # [b(
+    "top.controller#$#1")] > < temp : DataInPort | properties :
+    DataModel::InitialValue => {{(15).NzNat}},content : [(0/1).Real] # [(
+    false).Boolean],cache : [r("top.environment#$#1")] # [b(
+    "top.environment#$#3")] > < ce : DataOutPort | properties :
+    DataModel::InitialValue => {{(0).Zero}},content : [r("top.controller#$#0")]
+    # [b("top.controller#$#2")] >),subcomponents : (< lower : Data | properties
+    : DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [((15/1).Real + (b("top.environment#$#3") ? r("top.environment#$#1") : (
+    0/1).Real)) / (2/1).Real] # [(true).Boolean] >),connections : empty,varGen
+    : < "top.controller",1,3 >,currState : loc([(0/1).Real]),completeStates :
+    loc([(0/1).Real]),variables : x : Real,transitions : ((loc([(0/1).Real]) -[
+    on dispatch]-> loc([(1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(
+    2).NzNat]])) ; if(v[x] < c[lower]){on ! ; f{ce} := [[(1).NzNat]]} (elsif(v[
+    x] > c[upper]){off ! ; f{ce} := [[(-1).NzInt]]}) end if ; c{curr} := v[x]})
+    ; loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#4")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#5")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#9")] # [b(
+    "top.environment#$#7")],envCache : [r("top.environment#$#9")] # [b(
+    "top.environment#$#7")],target : controller > < ee : EnvInPort | properties
+    : none,content : [(0/1).Real] # [(false).Boolean],envCache : [r(
+    "top.environment#$#3")] # [b("top.environment#$#6")],target : controller
+    >),subcomponents : (< x : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#8")]
+    # [(true).Boolean] > < e : Data | properties : DataModel::InitialValue => {
+    {(0).Zero}},features : none,subcomponents : none,connections : empty,value
+    : [b("top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real] # [(
+    true).Boolean or b("top.environment#$#6")] >),connections : ((x ==> out) ;
+    ee =>> e),varGen : < "top.environment",10,8 >,currMode : loc([r(
+    "top.environment#$#7")]),jumps : ((loc([(0/1).Real]) -[on]-> loc([(
+    0/1).Real])) ; (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(
+    1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(
+    1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[
+    5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    5.0e-1]]))]),sampling : controller :(0,2),response : controller :(3,4) >),
+    connections : (((controller .. on) --> (environment .. on)) ; ((controller
+    .. off) --> (environment .. off)) ; ((controller .. ce) --> (environment ..
+    ee)) ; (environment .. out) --> (controller .. temp)) >
+T:Time --> (5).NzNat
+
+Solution 2 (state 2)
+states: 3  rewrites: 4812
+B:BoolExp --> [b("top.environment#$#3") and (r("top.environment#$#1") === r(
+    "top.environment#$#2") + (1/2).Real * r("top.environment#$#4") and ((r(
+    "top.environment#$#8") === r("top.environment#$#2") + ((b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + (
+    1/2).Real * r("top.environment#$#6")) and ((b("top.environment#$#4") and (
+    r("top.environment#$#4") <= (39631676720860365/18014398509481984).Real and
+    ((0/1).Real <= r("top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and (r("top.environment#$#4") <= r(
+    "top.environment#$#5") and (r("top.environment#$#6") === (5/1).Real and r(
+    "top.environment#$#5") <= r("top.environment#$#6"))))))) or r(
+    "top.environment#$#6") === (5/1).Real and (r("top.environment#$#5") <= r(
+    "top.environment#$#6") and (not b("top.environment#$#5") and (not b(
+    "top.environment#$#4") and (r("top.environment#$#4") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and r("top.environment#$#4") <= r(
+    "top.environment#$#5"))))))))) and r("top.environment#$#7") === (0/1).Real)
+    or r("top.environment#$#8") === r("top.environment#$#2") + (r(
+    "top.environment#$#5") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#6"))) and (b("top.environment#$#5") and (r(
+    "top.environment#$#4") <= (39631676720860365/18014398509481984).Real and ((
+    0/1).Real <= r("top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and (r("top.environment#$#4") <= r(
+    "top.environment#$#5") and (r("top.environment#$#6") === (5/1).Real and (r(
+    "top.environment#$#5") <= r("top.environment#$#6") and r(
+    "top.environment#$#7") === (1/1).Real))))))))) and (not b(
+    "top.environment#$#0") and (not b("top.environment#$#1") and (b(
+    "top.environment#$#2") and ((0/1).Real === r("top.environment#$#0") and (((
+    not b("top.environment#$#3") or r("top.environment#$#1") <= (25/1).Real)
+    and (b("top.environment#$#3") and (r("top.environment#$#1") >= (5/1).Real
+    and (not b("top.controller#$#0") and (not b("top.controller#$#1") and (not
+    b("top.controller#$#2") and r("top.controller#$#0") === (0/1).Real))))) or
+    (not (b("top.environment#$#3") and r("top.environment#$#1") >= (5/1).Real)
+    and (b("top.environment#$#3") and (r("top.controller#$#0") === (1/1).Real
+    and (b("top.controller#$#0") and not b("top.controller#$#1")))) or not (not
+    b("top.environment#$#3") or r("top.environment#$#1") <= (25/1).Real) and (
+    b("top.environment#$#3") and (r("top.environment#$#1") >= (5/1).Real and (
+    r("top.controller#$#0") === (-1/1).Real and (not b("top.controller#$#0")
+    and b("top.controller#$#1")))))) and b("top.controller#$#2")) and (b(
+    "top.environment#$#7") and (r("top.environment#$#9") === r(
+    "top.environment#$#16") and ((r("top.environment#$#16") === r(
+    "top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (1/2).Real * r(
+    "top.environment#$#11")) and (r("top.environment#$#15") === r(
+    "top.environment#$#8") + ((2/1).Real * (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (1/2).Real * r(
+    "top.environment#$#13"))) and ((b("top.environment#$#8") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((0/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and
+    r("top.environment#$#12") <= r("top.environment#$#13")))))))) or r(
+    "top.environment#$#13") === (5/1).Real and (r("top.environment#$#12") <= r(
+    "top.environment#$#13") and (not b("top.environment#$#9") and (not b(
+    "top.environment#$#8") and (r("top.environment#$#11") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#11") and ((0/1).Real === r("top.environment#$#7") and (
+    r("top.environment#$#12") <= (75660473739824333/18014398509481984).Real and
+    ((3/1).Real <= r("top.environment#$#12") and r("top.environment#$#11") <=
+    r("top.environment#$#12")))))))))) and r("top.environment#$#14") === (
+    0/1).Real) or r("top.environment#$#15") === r("top.environment#$#8") + ((
+    2/1).Real * (b("top.environment#$#6") ? r("top.environment#$#3") : (
+    0/1).Real) + (r("top.environment#$#12") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#13")))) and (b("top.environment#$#9") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((0/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and (
+    r("top.environment#$#12") <= r("top.environment#$#13") and r(
+    "top.environment#$#14") === (1/1).Real)))))))))) or (r(
+    "top.environment#$#15") === r("top.environment#$#8") + ((2/1).Real * (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + ((
+    -1/1).Real * r("top.environment#$#12") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (1/2).Real * r(
+    "top.environment#$#13")))) and (r("top.environment#$#16") === r(
+    "top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#11")) and (b("top.environment#$#8") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((1/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and (
+    r("top.environment#$#12") <= r("top.environment#$#13") and r(
+    "top.environment#$#14") === (0/1).Real)))))))))) or (r(
+    "top.environment#$#15") === r("top.environment#$#8") + ((2/1).Real * (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + ((b(
+    "top.environment#$#10") ? r("top.environment#$#10") : (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real)) + (
+    -1/2).Real * r("top.environment#$#13"))) and (r("top.environment#$#16") ===
+    r("top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#11")) and (r("top.environment#$#13") === (5/1).Real and
+    (r("top.environment#$#12") <= r("top.environment#$#13") and (not b(
+    "top.environment#$#9") and (not b("top.environment#$#8") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((1/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and r("top.environment#$#14") === (
+    1/1).Real))))))))))) or r("top.environment#$#15") === r(
+    "top.environment#$#8") + ((2/1).Real * (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#13"))) and (r("top.environment#$#16") === r(
+    "top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#11")) and (b("top.environment#$#9") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((1/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and (
+    r("top.environment#$#12") <= r("top.environment#$#13") and r(
+    "top.environment#$#14") === (1/1).Real))))))))))))) and (b(
+    "top.controller#$#0") === b("top.environment#$#4") and (b(
+    "top.controller#$#1") === b("top.environment#$#5") and (b(
+    "top.controller#$#2") === b("top.environment#$#6") and (r(
+    "top.controller#$#0") === r("top.environment#$#3") and ((1/4).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) and ((b("top.environment#$#3") or b(
+    "top.environment#$#7")) and (not b("top.controller#$#3") and (not b(
+    "top.controller#$#4") and (not b("top.controller#$#5") and r(
+    "top.controller#$#1") === (0/1).Real))))) or (not (25/4).Real <= (1/4).Real
+    * (b("top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) and ((b("top.environment#$#3") or b(
+    "top.environment#$#7")) and (r("top.controller#$#1") === (1/1).Real and (b(
+    "top.controller#$#3") and not b("top.controller#$#4")))) or not (1/4).Real
+    * (b("top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) and ((b("top.environment#$#3") or b(
+    "top.environment#$#7")) and (r("top.controller#$#1") === (-1/1).Real and (
+    not b("top.controller#$#3") and b("top.controller#$#4")))))) and b(
+    "top.controller#$#5"))))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [b("top.controller#$#3")] > <
+    off : DataOutPort | properties : none,content : * # [b(
+    "top.controller#$#4")] > < temp : DataInPort | properties :
+    DataModel::InitialValue => {{(15).NzNat}},content : [(0/1).Real] # [(
+    false).Boolean],cache : [r("top.environment#$#9")] # [b(
+    "top.environment#$#7")] > < ce : DataOutPort | properties :
+    DataModel::InitialValue => {{(0).Zero}},content : [r("top.controller#$#1")]
+    # [b("top.controller#$#5")] >),subcomponents : (< lower : Data | properties
+    : DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [(((15/1).Real + (b("top.environment#$#3") ? r("top.environment#$#1") : (
+    0/1).Real)) / (2/1).Real + (b("top.environment#$#7") ? r(
+    "top.environment#$#9") : r("top.environment#$#1"))) / (2/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",2,6 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower]){on ! ; f{ce} := [[(1).NzNat]]} (elsif(v[x] > c[upper]){off ! ; f{
+    ce} := [[(-1).NzInt]]}) end if ; c{curr} := v[x]}) ; loc([(1/1).Real]) -[
+    otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,transBound : 5 > <
+    environment : Env | properties : ((TimingProperties::Period => {{(
+    5).NzNat}}) ; HybridSynchAADL::MaxClockDeviation => {{
+    1.0000000000000001e-1}}),features : (< on : EnvInPort | properties : none,
+    content : * # [(false).Boolean],envCache : * # [b("top.environment#$#8")],
+    target : controller > < off : EnvInPort | properties : none,content : * # [
+    (false).Boolean],envCache : * # [b("top.environment#$#9")],target :
+    controller > < out : EnvOutPort | properties : none,content : [r(
+    "top.environment#$#17")] # [b("top.environment#$#11")],envCache : [r(
+    "top.environment#$#17")] # [b("top.environment#$#11")],target : controller
+    > < ee : EnvInPort | properties : none,content : [(0/1).Real] # [(
+    false).Boolean],envCache : [r("top.environment#$#10")] # [b(
+    "top.environment#$#10")],target : controller >),subcomponents : (< x : Data
+    | properties : none,features : none,subcomponents : none,connections :
+    empty,value : [r("top.environment#$#15")] # [(true).Boolean] > < e : Data |
+    properties : DataModel::InitialValue => {{(0).Zero}},features : none,
+    subcomponents : none,connections : empty,value : [b("top.environment#$#10")
+    ? r("top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)] # [b("top.environment#$#10") or ((
+    true).Boolean or b("top.environment#$#6"))] >),connections : ((x ==> out) ;
+    ee =>> e),varGen : < "top.environment",18,12 >,currMode : loc([r(
+    "top.environment#$#14")]),jumps : ((loc([(0/1).Real]) -[on]-> loc([(
+    0/1).Real])) ; (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(
+    1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(
+    1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[
+    5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    5.0e-1]]))]),sampling : controller :(0,2),response : controller :(3,4) >),
+    connections : (((controller .. on) --> (environment .. on)) ; ((controller
+    .. off) --> (environment .. off)) ; ((controller .. ce) --> (environment ..
+    ee)) ; (environment .. out) --> (controller .. temp)) >
+T:Time --> (10).NzNat
+
+Solution 3 (state 3)
+states: 4  rewrites: 7526
+B:BoolExp --> [b("top.environment#$#11") and (r("top.environment#$#17") === r(
+    "top.environment#$#24") and ((r("top.environment#$#24") === r(
+    "top.environment#$#15") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (1/2).Real * r(
+    "top.environment#$#19")) and (r("top.environment#$#23") === r(
+    "top.environment#$#15") + ((2/1).Real * (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + ((b("top.environment#$#14") ? r(
+    "top.environment#$#18") : (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real))) + (1/2).Real * r(
+    "top.environment#$#21"))) and ((b("top.environment#$#12") and (r(
+    "top.environment#$#19") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#19") and ((0/1).Real === r(
+    "top.environment#$#14") and (r("top.environment#$#20") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#20") and (r("top.environment#$#19") <= r(
+    "top.environment#$#20") and (r("top.environment#$#21") === (5/1).Real and
+    r("top.environment#$#20") <= r("top.environment#$#21")))))))) or r(
+    "top.environment#$#21") === (5/1).Real and (r("top.environment#$#20") <= r(
+    "top.environment#$#21") and (not b("top.environment#$#13") and (not b(
+    "top.environment#$#12") and (r("top.environment#$#19") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#19") and ((0/1).Real === r("top.environment#$#14") and (
+    r("top.environment#$#20") <= (75660473739824333/18014398509481984).Real and
+    ((3/1).Real <= r("top.environment#$#20") and r("top.environment#$#19") <=
+    r("top.environment#$#20")))))))))) and r("top.environment#$#22") === (
+    0/1).Real) or r("top.environment#$#23") === r("top.environment#$#15") + ((
+    2/1).Real * (b("top.environment#$#10") ? r("top.environment#$#10") : (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real)) + (r(
+    "top.environment#$#20") + ((b("top.environment#$#14") ? r(
+    "top.environment#$#18") : (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real))) + (-1/2).Real * r(
+    "top.environment#$#21")))) and (b("top.environment#$#13") and (r(
+    "top.environment#$#19") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#19") and ((0/1).Real === r(
+    "top.environment#$#14") and (r("top.environment#$#20") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#20") and (r("top.environment#$#19") <= r(
+    "top.environment#$#20") and (r("top.environment#$#21") === (5/1).Real and (
+    r("top.environment#$#20") <= r("top.environment#$#21") and r(
+    "top.environment#$#22") === (1/1).Real)))))))))) or (r(
+    "top.environment#$#23") === r("top.environment#$#15") + ((2/1).Real * (b(
+    "top.environment#$#10") ? r("top.environment#$#10") : (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real)) + ((
+    -1/1).Real * r("top.environment#$#20") + ((b("top.environment#$#14") ? r(
+    "top.environment#$#18") : (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real))) + (1/2).Real * r(
+    "top.environment#$#21")))) and (r("top.environment#$#24") === r(
+    "top.environment#$#15") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#19")) and (b("top.environment#$#12") and (r(
+    "top.environment#$#19") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#19") and ((1/1).Real === r(
+    "top.environment#$#14") and (r("top.environment#$#20") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#20") and (r("top.environment#$#19") <= r(
+    "top.environment#$#20") and (r("top.environment#$#21") === (5/1).Real and (
+    r("top.environment#$#20") <= r("top.environment#$#21") and r(
+    "top.environment#$#22") === (0/1).Real)))))))))) or (r(
+    "top.environment#$#23") === r("top.environment#$#15") + ((2/1).Real * (b(
+    "top.environment#$#10") ? r("top.environment#$#10") : (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real)) + ((b(
+    "top.environment#$#14") ? r("top.environment#$#18") : (b(
+    "top.environment#$#10") ? r("top.environment#$#10") : (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real))) + (
+    -1/2).Real * r("top.environment#$#21"))) and (r("top.environment#$#24") ===
+    r("top.environment#$#15") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#19")) and (r("top.environment#$#21") === (5/1).Real and
+    (r("top.environment#$#20") <= r("top.environment#$#21") and (not b(
+    "top.environment#$#13") and (not b("top.environment#$#12") and (r(
+    "top.environment#$#19") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#19") and ((1/1).Real === r(
+    "top.environment#$#14") and (r("top.environment#$#20") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#20") and (r("top.environment#$#19") <= r(
+    "top.environment#$#20") and r("top.environment#$#22") === (
+    1/1).Real))))))))))) or r("top.environment#$#23") === r(
+    "top.environment#$#15") + ((2/1).Real * (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + ((b("top.environment#$#14") ? r(
+    "top.environment#$#18") : (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real))) + (-1/2).Real * r(
+    "top.environment#$#21"))) and (r("top.environment#$#24") === r(
+    "top.environment#$#15") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#19")) and (b("top.environment#$#13") and (r(
+    "top.environment#$#19") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#19") and ((1/1).Real === r(
+    "top.environment#$#14") and (r("top.environment#$#20") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#20") and (r("top.environment#$#19") <= r(
+    "top.environment#$#20") and (r("top.environment#$#21") === (5/1).Real and (
+    r("top.environment#$#20") <= r("top.environment#$#21") and r(
+    "top.environment#$#22") === (1/1).Real))))))))))))) and (b(
+    "top.controller#$#3") === b("top.environment#$#8") and (b(
+    "top.controller#$#4") === b("top.environment#$#9") and (b(
+    "top.controller#$#5") === b("top.environment#$#10") and (r(
+    "top.controller#$#1") === r("top.environment#$#10") and (((1/8).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + ((
+    1/4).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) + (1/2).Real * (b("top.environment#$#11") ? r(
+    "top.environment#$#17") : r("top.environment#$#9"))) <= (145/8).Real and ((
+    65/8).Real <= (1/8).Real * (b("top.environment#$#3") ? r(
+    "top.environment#$#1") : (0/1).Real) + ((1/4).Real * (b(
+    "top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) + (1/2).Real * (b("top.environment#$#11") ? r(
+    "top.environment#$#17") : r("top.environment#$#9"))) and ((b(
+    "top.environment#$#11") or b("top.environment#$#7")) and (not b(
+    "top.controller#$#6") and (not b("top.controller#$#7") and (not b(
+    "top.controller#$#8") and r("top.controller#$#2") === (0/1).Real))))) or (
+    not (65/8).Real <= (1/8).Real * (b("top.environment#$#3") ? r(
+    "top.environment#$#1") : (0/1).Real) + ((1/4).Real * (b(
+    "top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) + (1/2).Real * (b("top.environment#$#11") ? r(
+    "top.environment#$#17") : r("top.environment#$#9"))) and ((b(
+    "top.environment#$#11") or b("top.environment#$#7")) and (r(
+    "top.controller#$#2") === (1/1).Real and (b("top.controller#$#6") and not
+    b("top.controller#$#7")))) or not (1/8).Real * (b("top.environment#$#3") ?
+    r("top.environment#$#1") : (0/1).Real) + ((1/4).Real * (b(
+    "top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) + (1/2).Real * (b("top.environment#$#11") ? r(
+    "top.environment#$#17") : r("top.environment#$#9"))) <= (145/8).Real and ((
+    65/8).Real <= (1/8).Real * (b("top.environment#$#3") ? r(
+    "top.environment#$#1") : (0/1).Real) + ((1/4).Real * (b(
+    "top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) + (1/2).Real * (b("top.environment#$#11") ? r(
+    "top.environment#$#17") : r("top.environment#$#9"))) and ((b(
+    "top.environment#$#11") or b("top.environment#$#7")) and (r(
+    "top.controller#$#2") === (-1/1).Real and (not b("top.controller#$#6") and
+    b("top.controller#$#7")))))) and b("top.controller#$#8")) and (b(
+    "top.environment#$#3") and (r("top.environment#$#1") === r(
+    "top.environment#$#2") + (1/2).Real * r("top.environment#$#4") and ((r(
+    "top.environment#$#8") === r("top.environment#$#2") + ((b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + (
+    1/2).Real * r("top.environment#$#6")) and ((b("top.environment#$#4") and (
+    r("top.environment#$#4") <= (39631676720860365/18014398509481984).Real and
+    ((0/1).Real <= r("top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and (r("top.environment#$#4") <= r(
+    "top.environment#$#5") and (r("top.environment#$#6") === (5/1).Real and r(
+    "top.environment#$#5") <= r("top.environment#$#6"))))))) or r(
+    "top.environment#$#6") === (5/1).Real and (r("top.environment#$#5") <= r(
+    "top.environment#$#6") and (not b("top.environment#$#5") and (not b(
+    "top.environment#$#4") and (r("top.environment#$#4") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and r("top.environment#$#4") <= r(
+    "top.environment#$#5"))))))))) and r("top.environment#$#7") === (0/1).Real)
+    or r("top.environment#$#8") === r("top.environment#$#2") + (r(
+    "top.environment#$#5") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#6"))) and (b("top.environment#$#5") and (r(
+    "top.environment#$#4") <= (39631676720860365/18014398509481984).Real and ((
+    0/1).Real <= r("top.environment#$#4") and (r("top.environment#$#5") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#5") and (r("top.environment#$#4") <= r(
+    "top.environment#$#5") and (r("top.environment#$#6") === (5/1).Real and (r(
+    "top.environment#$#5") <= r("top.environment#$#6") and r(
+    "top.environment#$#7") === (1/1).Real))))))))) and (not b(
+    "top.environment#$#0") and (not b("top.environment#$#1") and (b(
+    "top.environment#$#2") and ((0/1).Real === r("top.environment#$#0") and (((
+    not b("top.environment#$#3") or r("top.environment#$#1") <= (25/1).Real)
+    and (b("top.environment#$#3") and (r("top.environment#$#1") >= (5/1).Real
+    and (not b("top.controller#$#0") and (not b("top.controller#$#1") and (not
+    b("top.controller#$#2") and r("top.controller#$#0") === (0/1).Real))))) or
+    (not (b("top.environment#$#3") and r("top.environment#$#1") >= (5/1).Real)
+    and (b("top.environment#$#3") and (r("top.controller#$#0") === (1/1).Real
+    and (b("top.controller#$#0") and not b("top.controller#$#1")))) or not (not
+    b("top.environment#$#3") or r("top.environment#$#1") <= (25/1).Real) and (
+    b("top.environment#$#3") and (r("top.environment#$#1") >= (5/1).Real and (
+    r("top.controller#$#0") === (-1/1).Real and (not b("top.controller#$#0")
+    and b("top.controller#$#1")))))) and b("top.controller#$#2")) and (b(
+    "top.environment#$#7") and (r("top.environment#$#9") === r(
+    "top.environment#$#16") and ((r("top.environment#$#16") === r(
+    "top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (1/2).Real * r(
+    "top.environment#$#11")) and (r("top.environment#$#15") === r(
+    "top.environment#$#8") + ((2/1).Real * (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (1/2).Real * r(
+    "top.environment#$#13"))) and ((b("top.environment#$#8") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((0/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and
+    r("top.environment#$#12") <= r("top.environment#$#13")))))))) or r(
+    "top.environment#$#13") === (5/1).Real and (r("top.environment#$#12") <= r(
+    "top.environment#$#13") and (not b("top.environment#$#9") and (not b(
+    "top.environment#$#8") and (r("top.environment#$#11") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#11") and ((0/1).Real === r("top.environment#$#7") and (
+    r("top.environment#$#12") <= (75660473739824333/18014398509481984).Real and
+    ((3/1).Real <= r("top.environment#$#12") and r("top.environment#$#11") <=
+    r("top.environment#$#12")))))))))) and r("top.environment#$#14") === (
+    0/1).Real) or r("top.environment#$#15") === r("top.environment#$#8") + ((
+    2/1).Real * (b("top.environment#$#6") ? r("top.environment#$#3") : (
+    0/1).Real) + (r("top.environment#$#12") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#13")))) and (b("top.environment#$#9") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((0/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and (
+    r("top.environment#$#12") <= r("top.environment#$#13") and r(
+    "top.environment#$#14") === (1/1).Real)))))))))) or (r(
+    "top.environment#$#15") === r("top.environment#$#8") + ((2/1).Real * (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + ((
+    -1/1).Real * r("top.environment#$#12") + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (1/2).Real * r(
+    "top.environment#$#13")))) and (r("top.environment#$#16") === r(
+    "top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#11")) and (b("top.environment#$#8") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((1/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and (
+    r("top.environment#$#12") <= r("top.environment#$#13") and r(
+    "top.environment#$#14") === (0/1).Real)))))))))) or (r(
+    "top.environment#$#15") === r("top.environment#$#8") + ((2/1).Real * (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real) + ((b(
+    "top.environment#$#10") ? r("top.environment#$#10") : (b(
+    "top.environment#$#6") ? r("top.environment#$#3") : (0/1).Real)) + (
+    -1/2).Real * r("top.environment#$#13"))) and (r("top.environment#$#16") ===
+    r("top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#11")) and (r("top.environment#$#13") === (5/1).Real and
+    (r("top.environment#$#12") <= r("top.environment#$#13") and (not b(
+    "top.environment#$#9") and (not b("top.environment#$#8") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((1/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and r("top.environment#$#14") === (
+    1/1).Real))))))))))) or r("top.environment#$#15") === r(
+    "top.environment#$#8") + ((2/1).Real * (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + ((b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real)) + (-1/2).Real * r(
+    "top.environment#$#13"))) and (r("top.environment#$#16") === r(
+    "top.environment#$#8") + ((b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real) + (-1/2).Real * r(
+    "top.environment#$#11")) and (b("top.environment#$#9") and (r(
+    "top.environment#$#11") <= (39631676720860365/18014398509481984).Real and (
+    (0/1).Real <= r("top.environment#$#11") and ((1/1).Real === r(
+    "top.environment#$#7") and (r("top.environment#$#12") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#12") and (r("top.environment#$#11") <= r(
+    "top.environment#$#12") and (r("top.environment#$#13") === (5/1).Real and (
+    r("top.environment#$#12") <= r("top.environment#$#13") and r(
+    "top.environment#$#14") === (1/1).Real))))))))))))) and (b(
+    "top.controller#$#0") === b("top.environment#$#4") and (b(
+    "top.controller#$#1") === b("top.environment#$#5") and (b(
+    "top.controller#$#2") === b("top.environment#$#6") and (r(
+    "top.controller#$#0") === r("top.environment#$#3") and ((1/4).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) and ((b("top.environment#$#3") or b(
+    "top.environment#$#7")) and (not b("top.controller#$#3") and (not b(
+    "top.controller#$#4") and (not b("top.controller#$#5") and r(
+    "top.controller#$#1") === (0/1).Real))))) or (not (25/4).Real <= (1/4).Real
+    * (b("top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) and ((b("top.environment#$#3") or b(
+    "top.environment#$#7")) and (r("top.controller#$#1") === (1/1).Real and (b(
+    "top.controller#$#3") and not b("top.controller#$#4")))) or not (1/4).Real
+    * (b("top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#3") ? r("top.environment#$#1") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#7") ? r("top.environment#$#9") : r(
+    "top.environment#$#1")) and ((b("top.environment#$#3") or b(
+    "top.environment#$#7")) and (r("top.controller#$#1") === (-1/1).Real and (
+    not b("top.controller#$#3") and b("top.controller#$#4")))))) and b(
+    "top.controller#$#5"))))))))))))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [b("top.controller#$#6")] > <
+    off : DataOutPort | properties : none,content : * # [b(
+    "top.controller#$#7")] > < temp : DataInPort | properties :
+    DataModel::InitialValue => {{(15).NzNat}},content : [(0/1).Real] # [(
+    false).Boolean],cache : [r("top.environment#$#17")] # [b(
+    "top.environment#$#11")] > < ce : DataOutPort | properties :
+    DataModel::InitialValue => {{(0).Zero}},content : [r("top.controller#$#2")]
+    # [b("top.controller#$#8")] >),subcomponents : (< lower : Data | properties
+    : DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [((((15/1).Real + (b("top.environment#$#3") ? r("top.environment#$#1") :
+    (0/1).Real)) / (2/1).Real + (b("top.environment#$#7") ? r(
+    "top.environment#$#9") : r("top.environment#$#1"))) / (2/1).Real + (b(
+    "top.environment#$#11") ? r("top.environment#$#17") : r(
+    "top.environment#$#9"))) / (2/1).Real] # [(true).Boolean] >),connections :
+    empty,varGen : < "top.controller",3,9 >,currState : loc([(0/1).Real]),
+    completeStates : loc([(0/1).Real]),variables : x : Real,transitions : ((
+    loc([(0/1).Real]) -[on dispatch]-> loc([(1/1).Real]) {(v{x} := ((c[curr] +
+    f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[lower]){on ! ; f{ce} := [[(
+    1).NzNat]]} (elsif(v[x] > c[upper]){off ! ; f{ce} := [[(-1).NzInt]]}) end
+    if ; c{curr} := v[x]}) ; loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real])
+    {skip}),loopBound : 0,transBound : 5 > < environment : Env | properties : (
+    (TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#12")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#13")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#25")] # [b(
+    "top.environment#$#15")],envCache : [r("top.environment#$#25")] # [b(
+    "top.environment#$#15")],target : controller > < ee : EnvInPort |
+    properties : none,content : [(0/1).Real] # [(false).Boolean],envCache : [r(
+    "top.environment#$#18")] # [b("top.environment#$#14")],target : controller
+    >),subcomponents : (< x : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : [r(
+    "top.environment#$#23")] # [(true).Boolean] > < e : Data | properties :
+    DataModel::InitialValue => {{(0).Zero}},features : none,subcomponents :
+    none,connections : empty,value : [b("top.environment#$#14") ? r(
+    "top.environment#$#18") : (b("top.environment#$#10") ? r(
+    "top.environment#$#10") : (b("top.environment#$#6") ? r(
+    "top.environment#$#3") : (0/1).Real))] # [b("top.environment#$#14") or (b(
+    "top.environment#$#10") or ((true).Boolean or b("top.environment#$#6")))]
+    >),connections : ((x ==> out) ; ee =>> e),varGen : < "top.environment",26,
+    16 >,currMode : loc([r("top.environment#$#22")]),jumps : ((loc([(
+    0/1).Real]) -[on]-> loc([(0/1).Real])) ; (loc([(0/1).Real]) -[off]-> loc([(
+    1/1).Real])) ; (loc([(1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(
+    1/1).Real]) -[off]-> loc([(1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)=
+    ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] +
+    c[e]) - (v[t] * [[5.0e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4) >),connections : (((controller .. on) --> (environment ..
+    on)) ; ((controller .. off) --> (environment .. off)) ; ((controller .. ce)
+    --> (environment .. ee)) ; (environment .. out) --> (controller .. temp)) >
+T:Time --> (15).NzNat
+
+No more solutions.
+states: 4  rewrites: 7526
+Bye.

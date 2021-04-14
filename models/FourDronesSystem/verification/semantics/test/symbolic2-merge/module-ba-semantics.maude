@@ -1,0 +1,134 @@
+
+
+mod TEST-FEATURE-OPERATION is
+  inc FEATURE-OPERATION .
+  pr SMT-CHECKSAT .
+
+  ops a b c d e : -> FeatureId .
+endm
+
+
+mod TEST-DATA-OPERATION is
+  inc DATA-OPERATION .
+  pr SMT-CHECKSAT .
+
+  ops c1 c2 : -> ComponentRef .
+endm
+
+
+mod TEST-BEHAVIOR-EXPRESSION-SEMANTICS is
+  inc BEHAVIOR-EXPRESSION-SEMANTICS .
+  inc BEHAVIOR-ACTION-CONF .
+  inc DEFAULT-PROPERTIES .
+  pr SMT-CHECKSAT .
+
+  op cr : -> ComponentRef .
+  op a : -> FeatureId .
+  op x : -> VarId .
+
+  op bcf : -> BehaviorConf .
+  eq bcf = local(x |-> real(2) # bool(true)) feature(a |-> (real(100) # b(0)) : bool(true)) data(cr |=> real(3/4) # b(1)) prop(TimingProperties::Period => {{60.1}}) const(bool(true)) .
+endm
+
+
+mod TEST-BEHAVIOR-ACTION-SEMANTICS is
+  including BEHAVIOR-ACTION-SEMANTICS .
+  inc DEFAULT-PROPERTIES .
+  pr SMT-CHECKSAT .
+
+  op cr : -> ComponentRef .
+  ops a b : -> FeatureId .
+  ops x y : -> VarId .
+
+  ops bcf bcf' : -> BehaviorConf .
+
+  eq bcf = local((x |-> real(2) # bool(true)) ; (y |-> real(4) # b(0))) feature((a |-> real(100) # b(1) : bool(true), b |-> * # b(2))) data(cr |=> real(3/4) # b(2)) prop(TimingProperties::Period => {{60.1}}) lbound(5) const(bool(true)) .
+
+  eq bcf' = local((x |-> r(0) # b(0)) ; (y |-> r(1) # bool(true))) feature((a |-> (r(2) + real(1)) # b(1) : bool(true), b |-> * # bool(false))) data(cr |=> real(3/4) # b(2)) prop(TimingProperties::Period => {{60.1}}) lbound(5) const(bool(true)) .
+endm
+
+
+mod TEST-BEHAVIOR-TRANSITION-SEMANTICS is
+  inc BEHAVIOR-TRANSITION-SEMANTICS .
+  inc BEHAVIOR-SYMBOLIC-LOCATION .
+  inc DEFAULT-PROPERTIES .
+  inc SMT-VAR-GEN .
+  inc SMT-CHECKSAT .
+
+  op cr : -> ComponentRef .
+  ops a b : -> FeatureId .
+  ops x y : -> VarId .
+
+  ops trans1 trans2 trans3 : -> Set{Transition} .
+  eq trans1 =
+    (loc(real(0)) -[ on dispatch ]-> loc(real(1)) {
+      (c{cr} := v[x] + [[1]])
+    })
+    ;
+    (loc(real(1)) -[ v[x] > [[4]] ]-> loc(real(0)) {
+        if (v[x] > [[3]])
+            (f{b} := v[x] - [[1]])
+        (elsif (v[y] < [[4]])
+            (f{b} := v[x] + [[3]]))
+        else
+            (f{b} := v[x] + [[1]])
+        end if
+        ;
+        (c{cr} := (c[cr] + v[y]) + f[a])
+        ;
+        (c{cr} := (c[cr] + v[x]) + p[TimingProperties::Period])
+    })
+  .
+
+  eq trans2 =
+    (loc(real(0)) -[ on dispatch ]-> loc(real(1)) {
+      (c{cr} := v[x] + [[1]])
+    })
+    ;
+    (loc(real(1)) -[ v[x] > [[4]] ]-> loc(real(0)) {
+        if (v[x] > [[3]])
+            (f{b} := v[x] - [[1]])
+        (elsif (v[y] < [[4]])
+            (f{b} := v[x] + [[3]]))
+        else
+            (f{b} := v[x] + [[1]])
+        end if
+        ;
+        (c{cr} := (c[cr] + v[y]) + f[a])
+    })
+    ;
+    (loc(real(1)) -[ v[x] < [[-1]] ]-> loc(real(0)) {
+        (c{cr} := (v[x] - v[y])) 
+    })
+    ;
+    (loc(real(1)) -[ otherwise ]-> loc(real(0)) {
+        (c{cr} := (v[x] + v[y])) 
+    })
+  .
+
+  eq trans3 =
+    (loc(real(0)) -[ on dispatch ]-> loc(real(1)) {
+      (c{cr} := v[x] + [[1]])
+    })
+    ;
+    (loc(real(1)) -[ c[cr] > [[4]] ]-> loc(real(1)) {
+        if (v[x] > [[3]])
+            (f{b} := v[x] - [[1]])
+        (elsif (v[y] < [[4]])
+            (f{b} := v[x] + [[3]]))
+        else
+            (f{b} := v[x] + [[1]])
+        end if
+        ;
+        (c{cr} := (c[cr] + v[y]) + f[a])
+    })
+    ;
+    (loc(real(1)) -[ otherwise ]-> loc(real(0)) {
+        (c{cr} := (v[x] + v[y])) 
+    })
+  .
+
+  op bcf : -> BehaviorConf .
+  eq bcf = local((x |-> r(0) # b(0)) ; (y |-> r(1) # b(1))) feature((a |-> (r(2) + [1] # b(2) : bool(true)), b |-> [0] # bool(false))) data(cr |=> r(4) # b(4)) prop(TimingProperties::Period => {{60.1}}) lbound(3) tbound(10) vargen(< "a.b", 100, 200 >) const(bool(true)) .
+
+endm

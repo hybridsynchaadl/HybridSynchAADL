@@ -1,0 +1,24 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+
+select SMT-VAR-GEN .
+
+red type([true]) .
+red type([0/1]) .
+red type(*) .
+
+
+red gen(< "a", 0, 0 >, Boolean) .
+red gen(< "a", 0, 0 >, Real) .
+red gen(< "a", 0, 0 >, Unit) .
+
+
+red fresh?(r(0), < "a", 1, 2 >)  .
+red fresh?(r(1), < "a", 1, 2 >)  .
+red fresh?(b(0), < "a", 1, 2 >)  .
+red fresh?(b(1), < "a", 1, 2 >)  .
+red fresh?(b(2), < "a", 1, 2 >)  .
+
+

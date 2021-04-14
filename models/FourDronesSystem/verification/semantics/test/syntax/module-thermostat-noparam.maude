@@ -1,0 +1,220 @@
+
+mod THERMOSTAT-SYSTEM-NOPARAM is
+  including ENSEMBLE-COMPONENT .
+  including THREAD-COMPONENT .
+  including DATA-COMPONENT .
+  including ENV-COMPONENT .
+  including DEFAULT-PROPERTIES .
+  including HYBRID-SYNCHAADL-PROPERTIES .
+
+  ops top controller environment lower upper curr x e : -> ComponentId [format (c! o)] .
+  ops x t : -> VarId .
+  ops on off temp out : -> FeatureId [format (m! o)] .
+  ops l1 l2 : -> Location [format (b! o)] .
+
+  ops objC objC2 objE model : -> Object .
+
+  eq objC =
+    < controller : Thread |
+        features :
+            < temp : DataInPort | content : null(Real),
+                                  cache : null(Real),
+                                  properties : none >
+            < on  : DataOutPort | content : null(Unit),
+                                  properties : none >
+            < off : DataOutPort | content : null(Unit),
+                                  properties : none >,
+        subcomponents :
+            < lower : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{10}},
+                             connections : empty >
+            < upper : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{30}},
+                             connections : empty >
+            < curr : Data | value : null(Real),
+                            features : none,
+                            subcomponents : none,
+                            properties : DataModel::InitialValue => {{0}},
+                            connections : empty >,
+        properties : (TimingProperties::Period => {{5}}) ;
+                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+        currState : l1,
+        completeStates : l1,
+        variables : (x : Real),
+        transitions :
+            (l1 -[ on dispatch ]-> l2 {
+                (v{x} := (c[curr] + f[temp]) / [[2]]) ;
+                if (v[x] < c[lower])
+                    (on !)
+                (elsif (v[x] > c[upper])
+                    (off !))
+                end if
+                ;
+                c{curr} := v[x]
+            })
+            ;
+            (l2 -[ otherwise ]-> l1 {
+                skip
+            }),
+        loopBound : 0,
+        transBound : 2,
+        varGen : < "top.controller" >,
+        connections : empty > .
+
+  eq objC2 =
+    < controller : Thread |
+        features :
+            < temp : DataInPort | content : null(Real),
+                                  cache : null(Real),
+                                  properties : none >
+            < on  : DataOutPort | content : null(Unit),
+                                  properties : none >
+            < off : DataOutPort | content : null(Unit),
+                                  properties : none >,
+        subcomponents :
+            < lower : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{10}},
+                             connections : empty >
+            < upper : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{30}},
+                             connections : empty >
+            < curr : Data | value : null(Real),
+                            features : none,
+                            subcomponents : none,
+                            properties : DataModel::InitialValue => {{15}},
+                            connections : empty >,
+        properties : (TimingProperties::Period => {{5}}) ;
+                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+        currState : l1,
+        completeStates : l1,
+        variables : (x : Real),
+        transitions :
+            (l1 -[ on dispatch ]-> l2 {
+                (v{x} := (c[curr] + f[temp]) / [[2]]) ;
+                c{curr} := v[x]
+            })
+            ;
+            (l2 -[ [[true]] ]-> l1 {
+                (on !) 
+            })
+			;
+			(l2 -[ [[true]] ]-> l1 {
+			    (off !) 	
+			}),
+        loopBound : 0,
+        transBound : 2,
+        varGen : < "top.controller" >,
+        connections : empty > .
+
+  eq objC2 =
+    < controller : Thread |
+        features :
+            < temp : DataInPort | content : null(Real),
+                                  cache : null(Real),
+                                  properties : none >
+            < on  : DataOutPort | content : null(Unit),
+                                  properties : none >
+            < off : DataOutPort | content : null(Unit),
+                                  properties : none >,
+        subcomponents :
+            < lower : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{10}},
+                             connections : empty >
+            < upper : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{30}},
+                             connections : empty >
+            < curr : Data | value : null(Real),
+                            features : none,
+                            subcomponents : none,
+                            properties : DataModel::InitialValue => {{15}},
+                            connections : empty >,
+        properties : (TimingProperties::Period => {{5}}) ;
+                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+        currState : l1,
+        completeStates : l1,
+        variables : (x : Real),
+        transitions :
+            (l1 -[ on dispatch ]-> l2 {
+                (v{x} := (c[curr] + f[temp]) / [[2]]) ;
+                c{curr} := v[x]
+            })
+            ;
+            (l2 -[ [[true]] ]-> l1 {
+                (on !) 
+            })
+			;
+			(l2 -[ [[true]] ]-> l1 {
+			    (off !) 	
+			}),
+        loopBound : 0,
+        transBound : 2,
+        varGen : < "top.controller" >,
+        connections : empty > .
+
+  eq objE =
+        < environment : Env |
+            features :
+                < on  :  EnvInPort | content  : null(Unit),
+                                     properties : none,
+                                     envCache : null(Unit),
+                                     target : controller >
+                < off :  EnvInPort | content  : null(Unit),
+                                     properties : none,
+                                     envCache : null(Unit),
+                                     target : controller >
+                < out : EnvOutPort | content  : null(Real),
+                                     envCache : null(Real),
+                                     properties : none,
+                                     target : controller >,
+            subcomponents :
+                < x : Data | value : null(Real),
+                             features : none,
+                             subcomponents : none,
+                             properties : DataModel::InitialValue => {{16}},
+                             connections : empty >,
+            connections :
+                (x ==> out),
+            properties : (HybridSynchAADL::MaxClockDeviation => {{0.1}}) ; (TimingProperties::Period => {{5}}),
+            currMode : l1,
+            jumps :
+                (l1 -[ on  ]-> l1)
+                ;
+                (l1 -[ off ]-> l2)
+                ;
+                (l2 -[ on  ]-> l1)
+                ;
+                (l2 -[ off ]-> l2),
+            flows :
+                ((l1)[(x(t) = (c[x]) + (v[t] * [[0.2]]))])
+                ;
+                ((l2)[(x(t) = (c[x]) - (v[t] * [[0.1]]))]),
+            varGen : < "top.environment" >,
+            sampling : ((controller : (0,2))),
+            response : ((controller : (3,4))) > .
+
+  eq model =
+        < top : System |
+                features : none,
+                subcomponents : objC objE,
+                connections :
+                    (controller .. on --> environment .. on) ;
+                    (controller .. off --> environment .. off) ;
+                    (environment .. out --> controller .. temp),
+                properties : (TimingProperties::Period => {{5}}) >
+        .
+endm

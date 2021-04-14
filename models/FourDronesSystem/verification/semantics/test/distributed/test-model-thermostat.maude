@@ -1,0 +1,23 @@
+set show timing off .
+
+load ../../interpreter-distributed.maude
+load ../syntax/module-thermostat-noparam.maude 
+
+---------------------------------------------
+mod TEST-THERMOSTAT-SYSTEM is
+  including THERMOSTAT-SYSTEM-NOPARAM .
+  including MODEL-TRANSITION-SYSTEM .
+
+  op initState : -> Object .
+  eq initState = initialize(model) .
+
+  eq #sample = 4 .
+  eq #response = 4 .
+endm
+
+--- set print attribute on .
+
+rew  [100] {initState | 0 | infty} .
+
+--- the number of reachable states up to 5 synchronous step
+search [,5] {initState | 0 | infty} =>* {none | T:Time | infty} .

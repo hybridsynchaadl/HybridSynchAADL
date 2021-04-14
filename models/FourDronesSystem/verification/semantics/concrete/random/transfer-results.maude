@@ -1,0 +1,81 @@
+
+
+mod TOENV-CONX-TABLE is
+  including CONX-TABLE .
+  including ENV-COMPONENT .
+
+  var CR : ComponentRef .
+  var P : FeatureId .
+  var CTB : ConxTable .
+  var PN : FeatureRef .
+  var CONXS : Set{Connection} .
+  var COMPS : Configuration .
+  var ATTS : AttributeSet .
+
+  op toenv-tb : Set{Connection} Configuration ~> ConxTable [memo format (m! o)] .
+  op toenv-tb : Set{Connection} ConxTable Configuration ~> ConxTable [format (m! o)] .
+
+  eq toenv-tb(CONXS, COMPS) = toenv-tb(CONXS, none, COMPS) .
+
+  eq toenv-tb((PN --> CR .. P) ; CONXS, CTB, < CR : C:Env | ATTS > COMPS)
+   = toenv-tb(CONXS, (PN |-> CR .. P) CTB, < CR : C:Env | ATTS > COMPS) .
+
+  eq toenv-tb(CONXS, CTB, COMPS) = normalize(CTB) [owise] .
+endm
+
+
+--- transfer outputs to the ensemble' ontput ports and the environment component
+mod TRANSFER-RESULTS is
+  protecting TRANSFER-FUNCTIONS .
+  including TOENV-CONX-TABLE .
+
+  var CR : ComponentRef . 
+  var P : FeatureId .
+  var E : Exp .
+  var D : DataContent .
+  vars B : BoolExp .
+  vars PORTS COMPS : Configuration . 
+  var CONXS : Set{Connection} .
+  var NPS : NeSet{FeatureRef} . 
+  vars ICTB OCTB ECTB : ConxTable .
+  vars ATTS ATTS' : AttributeSet .
+
+  op transferResults : Object ~> Object [format (m! o)] .
+  eq transferResults(
+      < CR : C:Ensemble | 
+          subcomponents : COMPS, 
+          connections : CONXS, ATTS >)
+   = 
+      < CR : C:Ensemble | 
+          subcomponents : transEnvOut(COMPS,outer-tb(CONXS),inner-tb(CONXS),toenv-tb(CONXS,COMPS)), 
+          connections : CONXS, ATTS > .
+
+  op transEnvOut : Configuration ConxTable ConxTable ConxTable ~> Configuration [format (m! o)] .
+ ceq transEnvOut(
+       < CR : C:Component | 
+           features : < P : C:OutPort | content : E # B, ATTS > PORTS, ATTS' > 
+        COMPS,
+       (CR .. P |-> NPS) OCTB, ICTB, ECTB)
+   =
+     transOut(E # B,NPS)
+     transEnvOut(
+       < CR : C:Component | 
+           features : < P : C:OutPort | content : D, ATTS > PORTS, ATTS' > COMPS,
+       OCTB, ICTB, ECTB) 
+   if D := (if contains?(CR .. P, ICTB) then E # B else bot(type(E)) fi) .  --- feedback output?
+
+  --- also transfer data to the environment component
+  eq transEnvOut(
+       < CR : C:Component | 
+           features : < P : C:OutPort | content : E # B, ATTS > PORTS, ATTS' > 
+       COMPS, OCTB, ICTB, (CR .. P |-> NPS) ECTB)
+   =
+     transIn(E # B,NPS)
+     transEnvOut(
+       < CR : C:Component | 
+           features : < P : C:OutPort | content : bot(type(E)), ATTS > PORTS, ATTS' > 
+      COMPS, OCTB, ICTB, ECTB) .
+
+  eq transEnvOut(COMPS, OCTB, ICTB, ECTB) = COMPS [owise] .
+endm
+

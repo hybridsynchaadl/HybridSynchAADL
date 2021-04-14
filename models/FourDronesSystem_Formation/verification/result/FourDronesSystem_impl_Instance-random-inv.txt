@@ -1,0 +1,306 @@
+(
+Time: 0
+FourDronesSystemimplInstance ->[
+  drone4 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 0.0),(refVY0 |=> 0.0),refVX0
+    |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 0.0),(dotdotx |=> 0.0),(dotdoty |=> 0.0),(x |=>
+    5.4991337518834351),(y |=> 5.4934590269819505),doty |=> 0.0
+      currMode: @@default@loc@@]]
+  drone3 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 0.0),(refVY0 |=> 0.0),
+    refVX0 |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 0.0),(dotdotx |=> 0.0),(dotdoty |=> 0.0),(x |=>
+    2.5064959541746634),(y |=> 2.4921442148932593),doty |=> 0.0
+      currMode: @@default@loc@@]]
+  drone2 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 5.0e-1),(refVY0 |=> 0.0),refVX0
+    |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 0.0),(dotdotx |=> 0.0),(dotdoty |=> 0.0),(x |=>
+    5.0337211686032168e-1),(y |=> 5.0634678229138874e-1),doty |=> 0.0
+      currMode: @@default@loc@@]]
+  drone1 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 5.0e-1),(refVY0 |=> 0.0),
+    refVX0 |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 0.0),(dotdotx |=> 0.0),(dotdoty |=> 0.0),(x |=>
+    -9.9081648040814707e-2),(y |=> -1.0053714045103107e-1),doty |=> 0.0
+      currMode: @@default@loc@@]]
+  refDrone ->[
+    (refDrone . refProc . refThread) ->[
+      variables: (nx |=> 0.0),ny |=> 0.0
+      currState: init]
+    env ->[
+      variables: (dotx |=> 0.0),(dotdotx |=> 0.0),(dotdoty |=> 0.0),(x |=>
+    3.0177623407723758e-1),(y |=> 3.0764567338341042e-1),doty |=> 0.0
+      currMode: @@default@loc@@]]])
+(
+Time: 100
+FourDronesSystemimplInstance ->[
+  drone4 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 0.0),(refVY0 |=> 0.0),refVX0
+    |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -6.1919306251667305e-1),(dotdotx |=> -4.0e+1),(
+    dotdoty |=> -4.0e+1),(x |=> 5.4943412512750758),(y |=> 5.4886665263735912),
+    doty |=> -6.1919306251667305e-1
+      currMode: @@default@loc@@]]
+  drone3 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 0.0),(refVY0 |=> 0.0),
+    refVX0 |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -9.0990662158231883e-1),(dotdotx |=> -4.0e+1),(
+    dotdoty |=> -4.0e+1),(x |=> 2.4961468284246715),(y |=> 2.4817950891432674),
+    doty |=> -9.0990662158231883e-1
+      currMode: @@default@loc@@]]
+  drone2 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 5.0e-1),(refVY0 |=> 0.0),refVX0
+    |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -5.3312806294605364e-1),(dotdotx |=> -4.0e+1),(
+    dotdoty |=> -4.0e+1),(x |=> 4.9981929771656403e-1),(y |=>
+    5.0279396314763114e-1),doty |=> -5.3312806294605364e-1
+      currMode: @@default@loc@@]]
+  drone1 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 5.0e-1),(refVY0 |=> 0.0),
+    refVX0 |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 0.0),(dotdotx |=> 0.0),(dotdoty |=> 0.0),(x |=>
+    -9.9081648040814707e-2),(y |=> -1.0053714045103107e-1),doty |=> 0.0
+      currMode: @@default@loc@@]]
+  refDrone ->[
+    (refDrone . refProc . refThread) ->[
+      variables: (nx |=> 1.0),ny |=> 1.0
+      currState: init]
+    env ->[
+      variables: (dotx |=> 2.5494456085258747e-2),(dotdotx |=> 1.0),(dotdoty
+    |=> 1.0),(x |=> 3.021012177227792e-1),(y |=> 3.0797065702895204e-1),doty
+    |=> 2.5494456085258747e-2
+      currMode: @@default@loc@@]]])
+(
+Time: 200
+FourDronesSystemimplInstance ->[
+  drone4 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 0.0),(refVY0 |=> 0.0),refVX0
+    |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -3.7069402436974794),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> -4.0e+1),(x |=> 5.3273661772541363),(y |=> 5.3216914523526517),doty |=>
+    -3.7069402436974794
+      currMode: @@default@loc@@]]
+  drone3 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 0.0),(refVY0 |=> 0.0),
+    refVX0 |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -3.6052097693097807),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> -4.0e+1),(x |=> 2.3440267356655795),(y |=> 2.3296749963841754),doty |=>
+    -3.6052097693097807
+      currMode: @@default@loc@@]]
+  drone2 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 5.0e-1),(refVY0 |=> 0.0),refVX0
+    |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -1.6037825661720206),(dotdotx |=> 0.0),(dotdoty |=>
+    4.0e+1),(x |=> 4.167406363613097e-1),(y |=> 4.4279410060329721e-1),doty |=>
+    -2.4499490620684705e-1
+      currMode: @@default@loc@@]]
+  drone1 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 5.0e-1),(refVY0 |=> 0.0),
+    refVX0 |=> 0.0
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 1.3773785292583938),(dotdotx |=> 4.0e+1),(dotdoty
+    |=> 4.0e+1),(x |=> -7.5367002880039502e-2),(y |=> -7.6822495290255866e-2),
+    doty |=> 1.3773785292583938
+      currMode: @@default@loc@@]]
+  refDrone ->[
+    (refDrone . refProc . refThread) ->[
+      variables: (nx |=> 2.0),ny |=> 2.0
+      currState: init]
+    env ->[
+      variables: (dotx |=> 1.2871892265014329e-1),(dotdotx |=> 2.0),(dotdoty
+    |=> 2.0),(x |=> 3.0684750368527797e-1),(y |=> 3.1271694299145081e-1),doty
+    |=> 1.2871892265014329e-1
+      currMode: @@default@loc@@]]])
+(
+Time: 300
+FourDronesSystemimplInstance ->[
+  drone4 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 0.0),(refVY0 |=>
+    5.6147827758953876e-2),refVX0 |=> 5.6147827758953876e-2
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -6.2698228303039976),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> -4.0e+1),(x |=> 5.0077502728409202),(y |=> 5.0020755479394357),doty |=>
+    -6.2698228303039976
+      currMode: @@default@loc@@]]
+  drone3 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 0.0),(refVY0 |=>
+    5.6147827758953876e-2),refVX0 |=> 5.6147827758953876e-2
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -6.2198144186799915),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> -4.0e+1),(x |=> 2.0229198116394187),(y |=> 2.008568072358015),doty |=>
+    -6.2198144186799915
+      currMode: @@default@loc@@]]
+  drone2 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 5.0e-1),(refVY0 |=>
+    5.6147827758953876e-2),refVX0 |=> 5.6147827758953876e-2
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -4.172191215719141e-1),(dotdotx |=> 4.0e+1),(dotdoty
+    |=> 0.0),(x |=> 3.1809745212489327e-1),(y |=> 5.1250502211701954e-1),doty
+    |=> 1.4676462368731491
+      currMode: @@default@loc@@]]
+  drone1 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 5.0e-1),(refVY0 |=>
+    5.6147827758953876e-2),refVX0 |=> 5.6147827758953876e-2
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 3.9606803247613565),(dotdotx |=> 4.0e+1),(dotdoty
+    |=> 4.0e+1),(x |=> 9.7005709896081843e-2),(y |=> 9.555021748586548e-2),doty
+    |=> 3.9606803247613565
+      currMode: @@default@loc@@]]
+  refDrone ->[
+    (refDrone . refProc . refThread) ->[
+      variables: (nx |=> 0.0),ny |=> 0.0
+      currState: init]
+    env ->[
+      variables: (dotx |=> 2.2110555339397531e-1),(dotdotx |=> 0.0),(dotdoty
+    |=> 0.0),(x |=> 3.2079739454161216e-1),(y |=> 3.26666833847785e-1),doty |=>
+    2.2110555339397531e-1
+      currMode: @@default@loc@@]]])
+(
+Time: 400
+FourDronesSystemimplInstance ->[
+  drone4 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 0.0),(refVY0 |=>
+    1.8323444255004512e-1),refVX0 |=> 1.8323444255004512e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -9.0155460266898277),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> -4.0e+1),(x |=> 4.4831328748914014),(y |=> 4.4774581499899169),doty |=>
+    -9.0155460266898277
+      currMode: @@default@loc@@]]
+  drone3 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 0.0),(refVY0 |=>
+    1.8323444255004512e-1),refVX0 |=> 1.8323444255004512e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -8.673681991611069),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> -4.0e+1),(x |=> 1.5660864630296862),(y |=> 1.5517347237482826),doty |=>
+    -8.673681991611069
+      currMode: @@default@loc@@]]
+  drone2 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 5.0e-1),(refVY0 |=>
+    1.8323444255004512e-1),refVX0 |=> 1.8323444255004512e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 8.5165342885340878e-1),(dotdotx |=> 0.0),(dotdoty
+    |=> 0.0),(x |=> 3.5229318736913678e-1),(y |=> 6.0611623628770139e-1),doty
+    |=> 1.4676462368731491
+      currMode: @@default@loc@@]]
+  drone1 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 5.0e-1),(refVY0 |=>
+    1.8323444255004512e-1),refVX0 |=> 1.8323444255004512e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 6.7002532160608697),(dotdotx |=> 4.0e+1),(dotdoty
+    |=> 4.0e+1),(x |=> 4.6208576645086064e-1),(y |=> 4.6063027404064427e-1),
+    doty |=> 6.7002532160608697
+      currMode: @@default@loc@@]]
+  refDrone ->[
+    (refDrone . refProc . refThread) ->[
+      variables: (nx |=> 1.0),ny |=> 1.0
+      currState: init]
+    env ->[
+      variables: (dotx |=> 2.5617090108948087e-1),(dotdotx |=> 1.0),(dotdoty
+    |=> 1.0),(x |=> 3.376215480965884e-1),(y |=> 3.4349098740276124e-1),doty
+    |=> 2.5617090108948087e-1
+      currMode: @@default@loc@@]]])
+
+Time: 500
+FourDronesSystemimplInstance ->[
+  drone4 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 0.0),(refVY0 |=>
+    2.2110555339397531e-1),refVX0 |=> 2.2110555339397531e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -1.1616966851711501e+1),(dotdotx |=> -4.0e+1),(
+    dotdoty |=> -4.0e+1),(x |=> 3.8122097664613883),(y |=> 3.8065350415599037),
+    doty |=> -1.1616966851711501e+1
+      currMode: @@default@loc@@]]
+  drone3 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 0.0),(refVY0 |=>
+    2.2110555339397531e-1),refVX0 |=> 2.2110555339397531e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> -1.118290547458057e+1),(dotdotx |=> -4.0e+1),(
+    dotdoty |=> 4.0e+1),(x |=> 9.4327876850711201e-1),(y |=>
+    9.6689362665036649e-1),doty |=> -8.7182238342981382
+      currMode: @@default@loc@@]]
+  drone2 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> 0.0),(offsetY |=> 5.0e-1),(refVY0 |=>
+    2.2110555339397531e-1),refVX0 |=> 2.2110555339397531e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 8.5165342885340878e-1),(dotdotx |=> 0.0),(dotdoty
+    |=> 0.0),(x |=> 4.035840321230324e-1),(y |=> 6.9450526020139114e-1),doty
+    |=> 1.4676462368731491
+      currMode: @@default@loc@@]]
+  drone1 ->[
+    (drone . droneProc . droneThread) ->[
+      variables: (offsetX |=> -5.0e-1),(offsetY |=> 5.0e-1),(refVY0 |=>
+    2.2110555339397531e-1),refVX0 |=> 2.2110555339397531e-1
+      currState: init]
+    environment ->[
+      variables: (dotx |=> 6.5361813804451812),(dotdotx |=> -4.0e+1),(dotdoty
+    |=> 4.0e+1),(x |=> 9.7141544466347218e-1),(y |=> 1.0243583569892187),doty
+    |=> 9.4863923487920303
+      currMode: @@default@loc@@]]
+  refDrone ->[
+    (refDrone . refProc . refThread) ->[
+      variables: (nx |=> 2.0),ny |=> 2.0
+      currState: init]
+    env ->[
+      variables: (dotx |=> 3.6272542260883506e-1),(dotdotx |=> 2.0),(dotdoty
+    |=> 2.0),(x |=> 3.5801400338535128e-1),(y |=> 3.6388344269152412e-1),doty
+    |=> 3.6272542260883506e-1
+      currMode: @@default@loc@@]]]

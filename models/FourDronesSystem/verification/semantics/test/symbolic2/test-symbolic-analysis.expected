@@ -1,0 +1,701 @@
+==========================================
+reduce in TEST-SYMBOLIC-ANALYSIS-MOD : eval((top . environment) | ((c[e] < [[
+    2.0]]) and (c[e] > [[1.5]])), initState) .
+rewrites: 255
+result SMTBoolExp: [(true).Boolean and (true).Boolean and ((true).Boolean and (
+    true).Boolean) and (r("top.environment#$#1") < (2/1).Real and r(
+    "top.environment#$#1") > (3/2).Real)]
+==========================================
+search [, 2] in TEST-SYMBOLIC-ANALYSIS-MOD : {eval((top . environment) | ((c[e]
+    < [[2.0]]) and (c[e] > [[1.5]])), initState) || initState | 0 | infty} =>*
+    {B:BoolExp || OBJ:Object | T:Time | infty} such that check-sat(B:BoolExp
+    and finalConst(OBJ:Object)) = (true).Bool .
+
+Solution 1 (state 0)
+states: 1  rewrites: 314
+B:BoolExp --> [(true).Boolean and (true).Boolean and ((true).Boolean and (
+    true).Boolean) and (r("top.environment#$#1") < (2/1).Real and r(
+    "top.environment#$#1") > (3/2).Real)]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [(0/1).Real] # [(false).Boolean]
+    >),subcomponents : (< lower : Data | properties : DataModel::InitialValue
+    => {{(10).NzNat}},features : none,subcomponents : none,connections : empty,
+    value : [(10/1).Real] # [(true).Boolean] > < upper : Data | properties :
+    DataModel::InitialValue => {{(20).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(20/1).Real] # [(true).Boolean] > < curr
+    : Data | properties : DataModel::InitialValue => {{(15).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]}) ;
+    loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#0")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#1")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")],envCache : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(16/1).Real] # [(
+    true).Boolean] > < e : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")]
+    # [(true).Boolean] >),connections : x ==> out,varGen : < "top.environment",
+    2,3 >,currMode : loc([(0/1).Real]),jumps : ((loc([(0/1).Real]) -[on]-> loc(
+    [(0/1).Real])) ; (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(
+    1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(
+    1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[
+    5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    5.0e-1]]))]),sampling : controller :(0,2),response : controller :(3,4) >),
+    connections : (((controller .. on) --> (environment .. on)) ; ((controller
+    .. off) --> (environment .. off)) ; (environment .. out) --> (controller ..
+    temp)) >
+T:Time --> (0).Zero
+
+Solution 2 (state 1)
+states: 2  rewrites: 3173
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    r("top.environment#$#4") === (5/1).Real and (r("top.environment#$#3") <= r(
+    "top.environment#$#4") and (not b("top.environment#$#4") and (not b(
+    "top.environment#$#3") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and ((not b("top.environment#$#2") or r(
+    "top.environment#$#0") <= (25/1).Real) and (r("top.environment#$#0") >= (
+    5/1).Real and (not (2/1).Real <= r("top.environment#$#1") and not r(
+    "top.environment#$#1") <= (3/2).Real)))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real] # [(true).Boolean] >),connections : empty,varGen
+    : < "top.controller",0,0 >,currState : loc([(0/1).Real]),completeStates :
+    loc([(0/1).Real]),variables : x : Real,transitions : ((loc([(0/1).Real]) -[
+    on dispatch]-> loc([(1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(
+    2).NzNat]])) ; if(v[x] < c[lower])(on !) (elsif(v[x] > c[upper])off !) end
+    if ; c{curr} := v[x]}) ; loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real])
+    {skip}),loopBound : 0,transBound : 5 > < environment : Env | properties : (
+    (TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#3")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#4")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")],envCache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + ((16/1).Real + r("top.environment#$#1") + (
+    1/2).Real * (r("top.environment#$#2") - (0/1).Real)) + (1/2).Real * (r(
+    "top.environment#$#3") - r("top.environment#$#2"))) + (1/2).Real * (r(
+    "top.environment#$#4") - r("top.environment#$#3"))] # [(true).Boolean] > <
+    e : Data | properties : none,features : none,subcomponents : none,
+    connections : empty,value : [r("top.environment#$#1")] # [(true).Boolean]
+    >),connections : x ==> out,varGen : < "top.environment",6,6 >,currMode :
+    loc([(0/1).Real]),jumps : ((loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ;
+    (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]->
+    loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(1/1).Real])),flows :
+    ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(
+    1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[5.0e-1]]))]),sampling :
+    controller :(0,2),response : controller :(3,4) >),connections : (((
+    controller .. on) --> (environment .. on)) ; ((controller .. off) --> (
+    environment .. off)) ; (environment .. out) --> (controller .. temp)) >
+T:Time --> (5).NzNat
+
+Solution 3 (state 2)
+states: 3  rewrites: 5567
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    r("top.environment#$#4") === (5/1).Real and (r("top.environment#$#3") <= r(
+    "top.environment#$#4") and (not b("top.environment#$#4") and (not b(
+    "top.environment#$#3") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and ((not b("top.environment#$#2") or r(
+    "top.environment#$#0") <= (25/1).Real) and (r("top.environment#$#0") >= (
+    5/1).Real and (not (2/1).Real <= r("top.environment#$#1") and (not r(
+    "top.environment#$#1") <= (3/2).Real and (b("top.environment#$#5") and (r(
+    "top.environment#$#5") === (16/1).Real + ((4/1).Real * r(
+    "top.environment#$#1") + ((1/2).Real * r("top.environment#$#4") + (
+    1/2).Real * r("top.environment#$#6"))) and (b("top.environment#$#7") and (
+    r("top.environment#$#6") <= (39631676720860365/18014398509481984).Real and
+    ((0/1).Real <= r("top.environment#$#6") and (r("top.environment#$#7") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#7") and (r("top.environment#$#6") <= r(
+    "top.environment#$#7") and (r("top.environment#$#8") === (5/1).Real and (r(
+    "top.environment#$#7") <= r("top.environment#$#8") and (not (1/4).Real * (
+    b("top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) and (b("top.environment#$#2") or b(
+    "top.environment#$#5"))))))))))))))))))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(true).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [(((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real + (b("top.environment#$#5") ? r(
+    "top.environment#$#5") : r("top.environment#$#0"))) / (2/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]}) ;
+    loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#6")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#7")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],envCache : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + (r("top.environment#$#1") + (r(
+    "top.environment#$#1") + (r("top.environment#$#1") + ((16/1).Real + r(
+    "top.environment#$#1") + (1/2).Real * (r("top.environment#$#2") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#3") - r(
+    "top.environment#$#2"))) + (1/2).Real * (r("top.environment#$#4") - r(
+    "top.environment#$#3"))) + (1/2).Real * (r("top.environment#$#6") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#7") - r(
+    "top.environment#$#6"))) - (1/2).Real * (r("top.environment#$#8") - r(
+    "top.environment#$#7"))] # [(true).Boolean] > < e : Data | properties :
+    none,features : none,subcomponents : none,connections : empty,value : [r(
+    "top.environment#$#1")] # [(true).Boolean] >),connections : x ==> out,
+    varGen : < "top.environment",10,9 >,currMode : loc([(1/1).Real]),jumps : ((
+    loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ; (loc([(0/1).Real]) -[off]->
+    loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(
+    1/1).Real]) -[off]-> loc([(1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)=
+    ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] +
+    c[e]) - (v[t] * [[5.0e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4) >),connections : (((controller .. on) --> (environment ..
+    on)) ; ((controller .. off) --> (environment .. off)) ; (environment ..
+    out) --> (controller .. temp)) >
+T:Time --> (10).NzNat
+
+No more solutions.
+states: 3  rewrites: 6002
+==========================================
+search [, 2] in TEST-SYMBOLIC-ANALYSIS-MOD : {eval((top . environment) | ((c[e]
+    < [[1.0e+1]]) and (c[e] > [[0.0]])), initState) || initState | 0 | infty}
+    =>* {B:BoolExp || OBJ:Object | T:Time | infty} such that check-sat(
+    B:BoolExp and finalConst(OBJ:Object) and eval((top . environment) | (c[x] >
+    [[1.0e+1]]), OBJ:Object)) = (true).Bool .
+
+Solution 1 (state 0)
+states: 1  rewrites: 341
+B:BoolExp --> [(true).Boolean and (true).Boolean and ((true).Boolean and (
+    true).Boolean) and (r("top.environment#$#1") < (10/1).Real and r(
+    "top.environment#$#1") > (0/1).Real)]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [(0/1).Real] # [(false).Boolean]
+    >),subcomponents : (< lower : Data | properties : DataModel::InitialValue
+    => {{(10).NzNat}},features : none,subcomponents : none,connections : empty,
+    value : [(10/1).Real] # [(true).Boolean] > < upper : Data | properties :
+    DataModel::InitialValue => {{(20).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(20/1).Real] # [(true).Boolean] > < curr
+    : Data | properties : DataModel::InitialValue => {{(15).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(15/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]}) ;
+    loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#0")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#1")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")],envCache : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [(16/1).Real] # [(
+    true).Boolean] > < e : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")]
+    # [(true).Boolean] >),connections : x ==> out,varGen : < "top.environment",
+    2,3 >,currMode : loc([(0/1).Real]),jumps : ((loc([(0/1).Real]) -[on]-> loc(
+    [(0/1).Real])) ; (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(
+    1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(
+    1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[
+    5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    5.0e-1]]))]),sampling : controller :(0,2),response : controller :(3,4) >),
+    connections : (((controller .. on) --> (environment .. on)) ; ((controller
+    .. off) --> (environment .. off)) ; (environment .. out) --> (controller ..
+    temp)) >
+T:Time --> (0).Zero
+
+Solution 2 (state 1)
+states: 2  rewrites: 2767
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    b("top.environment#$#4") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and (r("top.environment#$#4") === (5/1).Real and (r(
+    "top.environment#$#3") <= r("top.environment#$#4") and (not (not b(
+    "top.environment#$#2") or r("top.environment#$#0") <= (25/1).Real) and (r(
+    "top.environment#$#0") >= (5/1).Real and (not (10/1).Real <= r(
+    "top.environment#$#1") and not r("top.environment#$#1") <= (
+    0/1).Real))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(true).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real] # [(true).Boolean] >),connections : empty,varGen
+    : < "top.controller",0,0 >,currState : loc([(0/1).Real]),completeStates :
+    loc([(0/1).Real]),variables : x : Real,transitions : ((loc([(0/1).Real]) -[
+    on dispatch]-> loc([(1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(
+    2).NzNat]])) ; if(v[x] < c[lower])(on !) (elsif(v[x] > c[upper])off !) end
+    if ; c{curr} := v[x]}) ; loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real])
+    {skip}),loopBound : 0,transBound : 5 > < environment : Env | properties : (
+    (TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#3")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#4")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")],envCache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + ((16/1).Real + r("top.environment#$#1") + (
+    1/2).Real * (r("top.environment#$#2") - (0/1).Real)) + (1/2).Real * (r(
+    "top.environment#$#3") - r("top.environment#$#2"))) - (1/2).Real * (r(
+    "top.environment#$#4") - r("top.environment#$#3"))] # [(true).Boolean] > <
+    e : Data | properties : none,features : none,subcomponents : none,
+    connections : empty,value : [r("top.environment#$#1")] # [(true).Boolean]
+    >),connections : x ==> out,varGen : < "top.environment",6,6 >,currMode :
+    loc([(1/1).Real]),jumps : ((loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ;
+    (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]->
+    loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(1/1).Real])),flows :
+    ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(
+    1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[5.0e-1]]))]),sampling :
+    controller :(0,2),response : controller :(3,4) >),connections : (((
+    controller .. on) --> (environment .. on)) ; ((controller .. off) --> (
+    environment .. off)) ; (environment .. out) --> (controller .. temp)) >
+T:Time --> (5).NzNat
+
+Solution 3 (state 2)
+states: 3  rewrites: 3331
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    r("top.environment#$#4") === (5/1).Real and (r("top.environment#$#3") <= r(
+    "top.environment#$#4") and (not b("top.environment#$#4") and (not b(
+    "top.environment#$#3") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and ((not b("top.environment#$#2") or r(
+    "top.environment#$#0") <= (25/1).Real) and (r("top.environment#$#0") >= (
+    5/1).Real and (not (10/1).Real <= r("top.environment#$#1") and not r(
+    "top.environment#$#1") <= (0/1).Real)))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#0")] # [b(
+    "top.environment#$#2")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real] # [(true).Boolean] >),connections : empty,varGen
+    : < "top.controller",0,0 >,currState : loc([(0/1).Real]),completeStates :
+    loc([(0/1).Real]),variables : x : Real,transitions : ((loc([(0/1).Real]) -[
+    on dispatch]-> loc([(1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(
+    2).NzNat]])) ; if(v[x] < c[lower])(on !) (elsif(v[x] > c[upper])off !) end
+    if ; c{curr} := v[x]}) ; loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real])
+    {skip}),loopBound : 0,transBound : 5 > < environment : Env | properties : (
+    (TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#3")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#4")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")],envCache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + ((16/1).Real + r("top.environment#$#1") + (
+    1/2).Real * (r("top.environment#$#2") - (0/1).Real)) + (1/2).Real * (r(
+    "top.environment#$#3") - r("top.environment#$#2"))) + (1/2).Real * (r(
+    "top.environment#$#4") - r("top.environment#$#3"))] # [(true).Boolean] > <
+    e : Data | properties : none,features : none,subcomponents : none,
+    connections : empty,value : [r("top.environment#$#1")] # [(true).Boolean]
+    >),connections : x ==> out,varGen : < "top.environment",6,6 >,currMode :
+    loc([(0/1).Real]),jumps : ((loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ;
+    (loc([(0/1).Real]) -[off]-> loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]->
+    loc([(0/1).Real])) ; loc([(1/1).Real]) -[off]-> loc([(1/1).Real])),flows :
+    ((loc([(0/1).Real]) [x(t)= ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(
+    1/1).Real]) [x(t)= ((c[x] + c[e]) - (v[t] * [[5.0e-1]]))]),sampling :
+    controller :(0,2),response : controller :(3,4) >),connections : (((
+    controller .. on) --> (environment .. on)) ; ((controller .. off) --> (
+    environment .. off)) ; (environment .. out) --> (controller .. temp)) >
+T:Time --> (5).NzNat
+
+Solution 4 (state 3)
+states: 4  rewrites: 5757
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    b("top.environment#$#4") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and (r("top.environment#$#4") === (5/1).Real and (r(
+    "top.environment#$#3") <= r("top.environment#$#4") and (not (not b(
+    "top.environment#$#2") or r("top.environment#$#0") <= (25/1).Real) and (r(
+    "top.environment#$#0") >= (5/1).Real and (not (10/1).Real <= r(
+    "top.environment#$#1") and (not r("top.environment#$#1") <= (0/1).Real and
+    (not b("top.environment#$#3") and (b("top.environment#$#5") and (r(
+    "top.environment#$#5") === (16/1).Real + ((4/1).Real * r(
+    "top.environment#$#1") + (r("top.environment#$#3") + ((-1/2).Real * r(
+    "top.environment#$#4") + (-1/2).Real * r("top.environment#$#6")))) and (b(
+    "top.environment#$#7") and (r("top.environment#$#6") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#6") and (r("top.environment#$#7") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#7") and (r("top.environment#$#6") <= r(
+    "top.environment#$#7") and (r("top.environment#$#8") === (5/1).Real and (r(
+    "top.environment#$#7") <= r("top.environment#$#8") and (not (1/4).Real * (
+    b("top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) and (b("top.environment#$#5") or b(
+    "top.environment#$#2"))))))))))))))))))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(true).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [(((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real + (b("top.environment#$#5") ? r(
+    "top.environment#$#5") : r("top.environment#$#0"))) / (2/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]}) ;
+    loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#6")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#7")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],envCache : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + (r("top.environment#$#1") + (r(
+    "top.environment#$#1") + (r("top.environment#$#1") + ((16/1).Real + r(
+    "top.environment#$#1") + (1/2).Real * (r("top.environment#$#2") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#3") - r(
+    "top.environment#$#2"))) - (1/2).Real * (r("top.environment#$#4") - r(
+    "top.environment#$#3"))) - (1/2).Real * (r("top.environment#$#6") - (
+    0/1).Real)) - (1/2).Real * (r("top.environment#$#7") - r(
+    "top.environment#$#6"))) - (1/2).Real * (r("top.environment#$#8") - r(
+    "top.environment#$#7"))] # [(true).Boolean] > < e : Data | properties :
+    none,features : none,subcomponents : none,connections : empty,value : [r(
+    "top.environment#$#1")] # [(true).Boolean] >),connections : x ==> out,
+    varGen : < "top.environment",10,9 >,currMode : loc([(1/1).Real]),jumps : ((
+    loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ; (loc([(0/1).Real]) -[off]->
+    loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(
+    1/1).Real]) -[off]-> loc([(1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)=
+    ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] +
+    c[e]) - (v[t] * [[5.0e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4) >),connections : (((controller .. on) --> (environment ..
+    on)) ; ((controller .. off) --> (environment .. off)) ; (environment ..
+    out) --> (controller .. temp)) >
+T:Time --> (10).NzNat
+
+Solution 5 (state 4)
+states: 5  rewrites: 8618
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    r("top.environment#$#4") === (5/1).Real and (r("top.environment#$#3") <= r(
+    "top.environment#$#4") and (not b("top.environment#$#4") and (not b(
+    "top.environment#$#3") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and ((not b("top.environment#$#2") or r(
+    "top.environment#$#0") <= (25/1).Real) and (r("top.environment#$#0") >= (
+    5/1).Real and (not (10/1).Real <= r("top.environment#$#1") and (not r(
+    "top.environment#$#1") <= (0/1).Real and (b("top.environment#$#5") and (r(
+    "top.environment#$#5") === (16/1).Real + ((4/1).Real * r(
+    "top.environment#$#1") + ((1/2).Real * r("top.environment#$#4") + (
+    1/2).Real * r("top.environment#$#6"))) and (b("top.environment#$#7") and (
+    r("top.environment#$#6") <= (39631676720860365/18014398509481984).Real and
+    ((0/1).Real <= r("top.environment#$#6") and (r("top.environment#$#7") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#7") and (r("top.environment#$#6") <= r(
+    "top.environment#$#7") and (r("top.environment#$#8") === (5/1).Real and (r(
+    "top.environment#$#7") <= r("top.environment#$#8") and (not (1/4).Real * (
+    b("top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) and (b("top.environment#$#5") or b(
+    "top.environment#$#2"))))))))))))))))))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(true).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [(((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real + (b("top.environment#$#5") ? r(
+    "top.environment#$#5") : r("top.environment#$#0"))) / (2/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]}) ;
+    loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#6")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#7")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],envCache : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + (r("top.environment#$#1") + (r(
+    "top.environment#$#1") + (r("top.environment#$#1") + ((16/1).Real + r(
+    "top.environment#$#1") + (1/2).Real * (r("top.environment#$#2") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#3") - r(
+    "top.environment#$#2"))) + (1/2).Real * (r("top.environment#$#4") - r(
+    "top.environment#$#3"))) + (1/2).Real * (r("top.environment#$#6") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#7") - r(
+    "top.environment#$#6"))) - (1/2).Real * (r("top.environment#$#8") - r(
+    "top.environment#$#7"))] # [(true).Boolean] > < e : Data | properties :
+    none,features : none,subcomponents : none,connections : empty,value : [r(
+    "top.environment#$#1")] # [(true).Boolean] >),connections : x ==> out,
+    varGen : < "top.environment",10,9 >,currMode : loc([(1/1).Real]),jumps : ((
+    loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ; (loc([(0/1).Real]) -[off]->
+    loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(
+    1/1).Real]) -[off]-> loc([(1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)=
+    ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] +
+    c[e]) - (v[t] * [[5.0e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4) >),connections : (((controller .. on) --> (environment ..
+    on)) ; ((controller .. off) --> (environment .. off)) ; (environment ..
+    out) --> (controller .. temp)) >
+T:Time --> (10).NzNat
+
+Solution 6 (state 5)
+states: 6  rewrites: 9182
+B:BoolExp --> [not b("top.environment#$#0") and (not b("top.environment#$#1")
+    and (b("top.environment#$#2") and (r("top.environment#$#0") === (16/1).Real
+    + (r("top.environment#$#1") + (1/2).Real * r("top.environment#$#2")) and (
+    r("top.environment#$#4") === (5/1).Real and (r("top.environment#$#3") <= r(
+    "top.environment#$#4") and (not b("top.environment#$#4") and (not b(
+    "top.environment#$#3") and (r("top.environment#$#2") <= (
+    39631676720860365/18014398509481984).Real and ((0/1).Real <= r(
+    "top.environment#$#2") and (r("top.environment#$#3") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#3") and (r("top.environment#$#2") <= r(
+    "top.environment#$#3") and ((not b("top.environment#$#2") or r(
+    "top.environment#$#0") <= (25/1).Real) and (r("top.environment#$#0") >= (
+    5/1).Real and (not (10/1).Real <= r("top.environment#$#1") and (not r(
+    "top.environment#$#1") <= (0/1).Real and (b("top.environment#$#5") and (r(
+    "top.environment#$#5") === (16/1).Real + ((4/1).Real * r(
+    "top.environment#$#1") + ((1/2).Real * r("top.environment#$#4") + (
+    1/2).Real * r("top.environment#$#6"))) and (r("top.environment#$#8") === (
+    5/1).Real and (r("top.environment#$#7") <= r("top.environment#$#8") and (
+    not b("top.environment#$#7") and (not b("top.environment#$#6") and (r(
+    "top.environment#$#6") <= (39631676720860365/18014398509481984).Real and ((
+    0/1).Real <= r("top.environment#$#6") and (r("top.environment#$#7") <= (
+    75660473739824333/18014398509481984).Real and ((3/1).Real <= r(
+    "top.environment#$#7") and (r("top.environment#$#6") <= r(
+    "top.environment#$#7") and ((1/4).Real * (b("top.environment#$#2") ? r(
+    "top.environment#$#0") : (0/1).Real) + (1/2).Real * (b(
+    "top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) <= (65/4).Real and ((25/4).Real <= (1/4).Real * (b(
+    "top.environment#$#2") ? r("top.environment#$#0") : (0/1).Real) + (
+    1/2).Real * (b("top.environment#$#5") ? r("top.environment#$#5") : r(
+    "top.environment#$#0")) and (b("top.environment#$#5") or b(
+    "top.environment#$#2")))))))))))))))))))))))))))))))]
+OBJ:Object --> < top : System | properties : TimingProperties::Period => {{(
+    5).NzNat}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{(5).NzNat}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < off :
+    DataOutPort | properties : none,content : * # [(false).Boolean] > < temp :
+    DataInPort | properties : DataModel::InitialValue => {{(15).NzNat}},content
+    : [(0/1).Real] # [(false).Boolean],cache : [r("top.environment#$#5")] # [b(
+    "top.environment#$#5")] >),subcomponents : (< lower : Data | properties :
+    DataModel::InitialValue => {{(10).NzNat}},features : none,subcomponents :
+    none,connections : empty,value : [(10/1).Real] # [(true).Boolean] > < upper
+    : Data | properties : DataModel::InitialValue => {{(20).NzNat}},features :
+    none,subcomponents : none,connections : empty,value : [(20/1).Real] # [(
+    true).Boolean] > < curr : Data | properties : DataModel::InitialValue => {{
+    (15).NzNat}},features : none,subcomponents : none,connections : empty,value
+    : [(((15/1).Real + (b("top.environment#$#2") ? r("top.environment#$#0") : (
+    0/1).Real)) / (2/1).Real + (b("top.environment#$#5") ? r(
+    "top.environment#$#5") : r("top.environment#$#0"))) / (2/1).Real] # [(
+    true).Boolean] >),connections : empty,varGen : < "top.controller",0,0 >,
+    currState : loc([(0/1).Real]),completeStates : loc([(0/1).Real]),variables
+    : x : Real,transitions : ((loc([(0/1).Real]) -[on dispatch]-> loc([(
+    1/1).Real]) {(v{x} := ((c[curr] + f[temp]) / [[(2).NzNat]])) ; if(v[x] < c[
+    lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{curr} := v[x]}) ;
+    loc([(1/1).Real]) -[otherwise]-> loc([(0/1).Real]) {skip}),loopBound : 0,
+    transBound : 5 > < environment : Env | properties : ((
+    TimingProperties::Period => {{(5).NzNat}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : * # [(false).Boolean],
+    envCache : * # [b("top.environment#$#6")],target : controller > < off :
+    EnvInPort | properties : none,content : * # [(false).Boolean],envCache : *
+    # [b("top.environment#$#7")],target : controller > < out : EnvOutPort |
+    properties : none,content : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],envCache : [r("top.environment#$#9")] # [b(
+    "top.environment#$#8")],target : controller >),subcomponents : (< x : Data
+    | properties : DataModel::InitialValue => {{(16).NzNat}},features : none,
+    subcomponents : none,connections : empty,value : [r("top.environment#$#1")
+    + (r("top.environment#$#1") + (r("top.environment#$#1") + (r(
+    "top.environment#$#1") + (r("top.environment#$#1") + ((16/1).Real + r(
+    "top.environment#$#1") + (1/2).Real * (r("top.environment#$#2") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#3") - r(
+    "top.environment#$#2"))) + (1/2).Real * (r("top.environment#$#4") - r(
+    "top.environment#$#3"))) + (1/2).Real * (r("top.environment#$#6") - (
+    0/1).Real)) + (1/2).Real * (r("top.environment#$#7") - r(
+    "top.environment#$#6"))) + (1/2).Real * (r("top.environment#$#8") - r(
+    "top.environment#$#7"))] # [(true).Boolean] > < e : Data | properties :
+    none,features : none,subcomponents : none,connections : empty,value : [r(
+    "top.environment#$#1")] # [(true).Boolean] >),connections : x ==> out,
+    varGen : < "top.environment",10,9 >,currMode : loc([(0/1).Real]),jumps : ((
+    loc([(0/1).Real]) -[on]-> loc([(0/1).Real])) ; (loc([(0/1).Real]) -[off]->
+    loc([(1/1).Real])) ; (loc([(1/1).Real]) -[on]-> loc([(0/1).Real])) ; loc([(
+    1/1).Real]) -[off]-> loc([(1/1).Real])),flows : ((loc([(0/1).Real]) [x(t)=
+    ((c[x] + c[e]) + (v[t] * [[5.0e-1]]))]) ; loc([(1/1).Real]) [x(t)= ((c[x] +
+    c[e]) - (v[t] * [[5.0e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4) >),connections : (((controller .. on) --> (environment ..
+    on)) ; ((controller .. off) --> (environment .. off)) ; (environment ..
+    out) --> (controller .. temp)) >
+T:Time --> (10).NzNat
+
+No more solutions.
+states: 6  rewrites: 9182
+Bye.

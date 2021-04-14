@@ -1,0 +1,13 @@
+load Thermostat2Con_impl_Instance.maude . 
+mod THERMOSTAT2CON_IMPL_INSTANCE-MODEL-SYMBOLIC is
+    including THERMOSTAT2CON_IMPL_INSTANCE-MODEL .
+    including BEHAVIOR-SYMBOLIC-LOCATION .
+
+    eq init = loc(real(0)) .
+    eq s00 = loc(real(1)) .
+    eq s11 = loc(real(2)) .
+    eq select = loc(real(3)) .
+    eq s10 = loc(real(4)) .
+    eq idle = loc(real(5)) .
+    eq s01 = loc(real(6)) .
+endm

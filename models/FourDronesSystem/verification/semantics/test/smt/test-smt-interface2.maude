@@ -1,0 +1,17 @@
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+
+select SMT-CHECKSAT .
+red check-sat(r(0) < [3/1] and r(0) > [1/1]) .
+red check-sat(r(0) < [3/1] and r(0) > [1/1]) .
+
+red check-sat(r("a.b",0) < [3/1] and r("a.b",0) > [1/1]) .
+red check-sat(r("a",0) < [3/1] and r("b",0) > [1/1]) .
+
+red check-sat(r(0) < [3/1] and r(0) > [1/2]) .
+red check-sat(r(0) < [3/7] and r(0) > [1/2]) .
+
+red check-sat(r("a.b",0) < [3/1] and r("a.b",0) > [1/2]) .
+red check-sat(r("a",0) < [3/7] and r("b",0) > [1/2]) .
+red check-sat(r("a",0) < [3/7] and r("a",0) > [1/2]) .

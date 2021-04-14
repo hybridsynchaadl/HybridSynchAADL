@@ -1,0 +1,255 @@
+
+
+
+--- Defines a transition step of each component.
+mod COMPONENT-DYNAMICS is
+  protecting COMPONENT .
+  protecting PORT .
+  protecting CONC-CHECKSAT .
+
+  sort ConfigWithRand .
+  subsort Configuration < ConfigWithRand .
+  op {_,_} : Configuration Nat -> ConfigWithRand [ctor] .
+
+  var CR : ComponentRef .
+  var COMPS : Configuration .
+  var ATTS : AttributeSet .
+  var N : Nat .
+
+  eq  < CR : C:Component | subcomponents : {COMPS,N}, ATTS >
+   = {< CR : C:Component | subcomponents : COMPS, ATTS >, N} .
+
+--- A sampling transition for each env components
+--- the second argument is for pseudo random generation
+  op execSample : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+
+--- A transition relation of each controller component
+  op executeStep : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+
+--- A response transition for each env componets
+--- the second argument is for pseudo random generation
+  op execResponse : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+endm
+
+
+--- The behavior of a thread; which is basically identical to the symbolic semantics
+mod THREAD-DYNAMICS is
+  including THREAD-COMPONENT .
+  including FEATURE-OPERATION .
+  including DATA-OPERATION .
+  including COMPONENT-DYNAMICS .
+  including BEHAVIOR-TRANSITION-SEMANTICS .
+  including BEHAVIOR-CHOOSE-TRANS .
+
+  var THREAD : Object .
+  var CR : ComponentRef .  
+  var ATTS : AttributeSet .
+  vars BCF : BehaviorConf .
+  vars COMPS PORTS PORTS' : Configuration .  
+  var PROPS : PropertyAssociation .
+  var LS : Set{Location} .
+  var VIS : Map{VarId,DataType} .
+  var TRS : Set{Transition} .  
+  vars DATA : DataValuation .
+  vars FMAP : FeatureMap .
+  vars L L' : Location . 
+  vars N N' : Nat .
+  vars LB TB : Bound .
+
+  eq execSample({< CR : C:Thread | ATTS >, N}) =  {< CR : C:Thread | ATTS >, N} .
+  eq execResponse({< CR : C:Thread | ATTS >, N}) =  {< CR : C:Thread | ATTS >, N} .
+
+--- executeStep
+
+  --- 1] read data in its input ports and data subcomponents
+  eq executeStep({< CR : C:Thread | features : PORTS, subcomponents : COMPS, ATTS >, N})
+   =  execThread(< CR : C:Thread | features : PORTS, subcomponents : COMPS, ATTS >, 
+                 readFeature(PORTS), readData(COMPS), threadConf(ATTS), N) .
+
+  --- 2] execute its transition system 
+  op execThread : Object FeatureReadResult DataValuation BehaviorConf Nat ~> Configuration [format (m! o)] .
+  eq execThread(THREAD, {PORTS,FMAP}, DATA, BCF, N)
+   = execThread(THREAD, PORTS, execTrans(feature(FMAP) data(DATA) randC(N) BCF), N) .
+
+  --- 3] its ports, data, and state will be update accordingly
+  op execThread : Object Configuration BATransResult Nat ~> Configuration [format (m! o)] .
+  eq execThread(
+      < CR : C:Thread | features : PORTS, subcomponents : COMPS, currState : L, ATTS >, 
+      PORTS', {location(L') feature(FMAP) data(DATA) randC(N') BCF}, N)
+   = 
+      {< CR : C:Thread | features : writeFeature(FMAP,PORTS'),
+                         subcomponents : writeData(DATA,COMPS), currState : L', ATTS >, N'} .
+
+  --- behavior conf for thread
+  op threadConf : AttributeSet ~> BehaviorConf [format (m! o)] .
+  eq threadConf((properties : PROPS,  currState : L,   transitions : TRS, 
+                 completeStates : LS, variables : VIS, loopBound : LB, transBound : TB, ATTS))
+   = 
+     local(defaultVal(VIS)) prop(PROPS) location(L) complete(LS) trans(TRS) lbound(LB) tbound(TB) const(bool(true)) .
+endm
+
+
+--- Define the behavior of data (nothing happens)
+mod DATA-DYNAMICS is
+  including COMPONENT-DYNAMICS .
+  including DATA-COMPONENT .
+
+  var CR : ComponentRef .  
+  var COMPS : Configuration .
+  var ATTS : AttributeSet .
+  var N : Nat .
+
+  eq executeStep({< CR : C:Data | ATTS >, N}) = {< CR : C:Data | ATTS >, N} .
+  eq execSample({< CR : C:Data | ATTS >, N}) = {< CR : C:Data | ATTS >, N} .
+  eq execResponse({< CR : C:Data | ATTS >, N}) =  {< CR : C:Data | ATTS >, N} .
+endm
+
+
+
+--- Define the behavior of ensembles. It runs execSample, transferInputs, executeStep,
+--- transferResults, and execResponse in order.
+mod ENSEMBLE-DYNAMICS is
+  including COMPONENT-DYNAMICS .
+  including DEFAULT-PROPERTIES .
+  protecting TRANSFER-INPUT .
+  protecting TRANSFER-RESULTS .
+
+  var CR : ComponentRef .  
+  var OBJ : Object .  
+  vars COMPS COMPS' : Configuration .
+  var ATTS : AttributeSet .
+  var N : Nat .
+
+--- an ensemble component is considered as a controller component from the outside.
+  eq execSample({< CR : C:Ensemble | ATTS >, N}) = {< CR : C:Ensemble | ATTS >, N} .
+  eq execResponse({< CR : C:Ensemble | ATTS >, N}) =  {< CR : C:Ensemble | ATTS >, N} .
+
+--- executeStep
+  eq  executeStep({< CR : C:Ensemble | ATTS >, N})
+   = execResponseSub(
+         transferResults(
+             propagateExecSub(
+                 transferInputs(
+                     execSampleSub({< CR : C:Ensemble | ATTS >, N}))))) .
+
+  op execSampleSub : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+  eq execSampleSub({< CR : C:Ensemble | subcomponents : COMPS, ATTS >, N})
+   = < CR : C:Ensemble | subcomponents : propagateSample({COMPS, N}, none), ATTS > .
+
+  op execResponseSub : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+  eq execResponseSub({< CR : C:Ensemble | subcomponents : COMPS, ATTS >, N})
+   = < CR : C:Ensemble | subcomponents : propagateResp({COMPS, N}, none), ATTS > .
+
+  op propagateExecSub : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+  eq propagateExecSub({< CR : C:Component | subcomponents : COMPS, ATTS >, N})
+   = < CR : C:Component | subcomponents : propagateExec({COMPS, N}, none), ATTS > .
+
+  op transferInputs : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+  eq transferInputs({COMPS, N}) = {transferInputs(COMPS), N} .
+
+  op transferResults : ConfigWithRand ~> ConfigWithRand [format (m! o)] .
+  eq transferResults({COMPS, N}) = {transferResults(COMPS), N} .
+
+--- Propagate functions to subcomponents
+  op propagateSample : ConfigWithRand Configuration ~> ConfigWithRand [format (m! o)] .
+  op propagateSample : ConfigWithRand Configuration Configuration ~> ConfigWithRand [format (m! o)] .
+  eq propagateSample({< CR : C:Component | ATTS > COMPS, N}, COMPS')
+   = propagateSample(execSample({< CR : C:Component | ATTS >, N}), COMPS, COMPS') . 
+  eq propagateSample({< CR : C:Component | ATTS >, N}, COMPS, COMPS')
+   = propagateSample({COMPS, N}, COMPS' < CR : C:Component | ATTS >) .
+  eq propagateSample({none, N}, COMPS) = {COMPS,N} .
+
+  op propagateResp : ConfigWithRand Configuration ~> ConfigWithRand [format (m! o)] .
+  op propagateResp : ConfigWithRand Configuration Configuration ~> ConfigWithRand [format (m! o)] .
+  eq propagateResp({< CR : C:Component | ATTS > COMPS, N}, COMPS')
+   = propagateResp(execResponse({< CR : C:Component | ATTS >, N}), COMPS, COMPS') .
+  eq propagateResp({< CR : C:Component | ATTS >, N}, COMPS, COMPS')
+   = propagateResp({COMPS, N}, COMPS' < CR : C:Component | ATTS >) .
+  eq propagateResp({none, N}, COMPS) = {COMPS,N} .
+
+  op propagateExec : ConfigWithRand Configuration ~> Configuration [format (m! o)] .
+  op propagateExec : ConfigWithRand Configuration Configuration ~> Configuration [format (m! o)] .
+  eq propagateExec({< CR : C:Component | ATTS > COMPS, N}, COMPS')
+   = propagateExec(executeStep({< CR : C:Component | ATTS >, N}), COMPS, COMPS') .
+  eq propagateExec({< CR : C:Component | ATTS >, N}, COMPS, COMPS')
+   = propagateExec({COMPS, N}, COMPS' < CR : C:Component | ATTS >) .
+  eq propagateExec({none, N}, COMPS) = {COMPS,N} .
+endm
+
+--- Define the behavior of environments
+mod ENV-DYNAMICS is
+  including ENV-FEATURE-OPERATION .
+  including DATA-OPERATION .
+  including COMPONENT-DYNAMICS .
+  including ENV-WITH-TIMER-COMPONENT .
+  including ENV-TRANSITION-SEMANTICS .
+
+  var ENV : Object .
+  vars COMPS PORTS PORTS' PORTS'' : Configuration .  
+  vars BCF BCF' : BehaviorConf .
+  var DATA : DataValuation .
+  var PROPS : PropertyAssociation .
+  vars FMAP : FeatureMap .
+  var JUMPS : Set{EnvJump} .
+  var FLOWS : Set{EnvFlow} .
+  var CR : ComponentRef .  
+  vars L L' : Location . 
+  var CONXS : Set{Connection} .
+  vars T T' SK PER : Rat .
+  vars STS RTS : Set{InterTiming} .
+  vars SIL RIL : List{ComponentRef} .
+  var ATTS : AttributeSet .
+  var N : Nat .
+
+--- executeStep
+  eq executeStep({< CR : C:Env | ATTS >, N}) = {< CR : C:Env | ATTS >, N} .
+
+--- execSample
+  eq execSample({< CR : C:Env | features : PORTS, subcomponents : COMPS, ATTS >, N})
+   = execSample(< CR : C:Env | features : PORTS, subcomponents : COMPS, ATTS >, 
+                   readData(COMPS), envConf(ATTS,PORTS,N)) .
+
+  op execSample : Object DataValuation BehaviorConf ~> Configuration [format (m! o)] .
+  eq execSample(ENV, DATA, BCF)
+   = execSample(ENV, execSample(feature(empty) data(DATA) BCF)) .
+
+  op execSample : Object BATransResult ~> Configuration [format (m! o)] .
+  eq execSample(< CR : C:Env | timer : 0, features : PORTS, ATTS >, {time(T) mode(L) feature(FMAP) data(DATA) randC(N) BCF})
+   = {< CR : C:Env | timer : T, features : writeEnvFeature(FMAP,PORTS), ATTS >, N} .
+
+--- execResponse
+  eq execResponse({< CR : C:Env | features : PORTS, subcomponents : COMPS, ATTS >, N})
+   = execResponse(< CR : C:Env | features : PORTS, subcomponents : COMPS, ATTS >,
+                     readEnvFeature(PORTS), readData(COMPS), envConf(ATTS,PORTS,N)) .
+
+  op execResponse : Object EnvFeatureReadResult DataValuation BehaviorConf ~> Configuration [format (m! o)] .
+  eq execResponse(ENV, [PORTS',FMAP], DATA, BCF)
+   = execResponse(ENV, PORTS', execResp(feature(FMAP) data(DATA) BCF)) .
+
+  --- 3] its ports, data, and mode will be update accordingly
+  op execResponse : Object Configuration BATransResult ~> Configuration [format (m! o)] .
+  eq execResponse(
+      < CR : C:Env | features : PORTS,
+                     subcomponents : COMPS,
+                     currMode : L, 
+                     timer : T,
+                     ATTS >,
+      PORTS', {mode(L') data(DATA) randC(N) BCF})
+   = 
+      {< CR : C:Env | features : PORTS',
+                      subcomponents : writeData(DATA,COMPS), 
+                      currMode : L', 
+                      timer : 0, ATTS >, N} .
+
+  --- behavior conf for env
+  op envConf : AttributeSet Configuration Nat ~> BehaviorConf [format (m! o)] .
+  eq envConf(
+       (connections : CONXS, currMode : L,   jumps : JUMPS,     
+        properties : PROPS,  samplingIDs : SIL, flows : FLOWS, 
+        responseIDs : RIL,   sampling : STS, response : RTS, timer : T, ATTS), PORTS, N)
+   = 
+     time(T) mode(L) envcon(CONXS,PORTS) prop(PROPS) randC(N) sIds(SIL) rIds(RIL)
+     sampling(STS) response(RTS) jumps(JUMPS) flows(FLOWS) const(bool(true)) .
+
+endm
+

@@ -1,0 +1,141 @@
+mod REACHABILITY-PATH is
+	including MODEL-TRANSITION-SYSTEM .
+	including BEHAVIOR-SYMBOLIC-LOCATION .
+	including CONVERSION .
+
+	sort ReachabilityPath .
+	op _->`[_`] : ComponentRef ReachabilityPathSet -> ReachabilityPath [ctor format(r o d n++i d --)] .
+	op variables:_ : ReachabilityPathValue -> ReachabilityPath [ctor prec 124 format(b o d)] .
+	op currState:_ : Qid -> ReachabilityPath [ctor format(b o d)] .
+	op currMode:_ : Qid -> ReachabilityPath [ctor format(b o d)] .
+	op outputs:_ : ReachabilityPathValue -> ReachabilityPath [ctor prec 124 format(b o d)] .
+
+	sort ReachabilityPathValue .
+	op _|=>_ : ComponentRef Float -> ReachabilityPathValue [ctor] .
+	op none : -> ReachabilityPathValue [ctor] .	
+	op _,_ : ReachabilityPathValue ReachabilityPathValue -> ReachabilityPathValue [ctor assoc id: none] .
+	
+	sort ReachabilityPathSet .
+	subsort ReachabilityPath < ReachabilityPathSet .
+	op none : -> ReachabilityPathSet [ctor] .
+	op __ : ReachabilityPathSet ReachabilityPathSet -> ReachabilityPathSet [ctor assoc id: none format(d ni d) prec 126] .
+		
+	sort TimedReachabilityPath .
+	op nil : -> TimedReachabilityPath .
+	op Time:__ : Time ReachabilityPathSet -> TimedReachabilityPath [ctor format(n d n d)] .
+	op __ : TimedReachabilityPath TimedReachabilityPath -> TimedReachabilityPath [ctor assoc id: nil format(d ni d)] .
+	
+	var OBJ : Object .
+	vars REST COMPS PORTS : Configuration .
+	vars CR CR' : ComponentRef .
+	var RPS : ReachabilityPathSet .
+	var ATTS : AttributeSet .
+	var R : Real .
+	var BE : BoolExp .
+	var T : Time .
+	var TI : TimeInf .
+	var GSL : GlobalSystemList .
+	var L : Location .
+	
+
+	---removes redundant information
+	eq CR ->[ CR' -> [RPS] ] = CR . CR' -> [RPS] .
+	eq CR ->[(outputs: none) RPS] = CR -> [RPS] .
+
+
+	--- simplify
+    op simplify : GlobalSystemList -> TimedReachabilityPath .
+	eq simplify({BE || OBJ | T | TI}, GSL) = (Time: T simplifyConfig(OBJ)) simplify(GSL) .
+	eq simplify(GSL) = nil .
+
+	op simplifyConfig : Configuration -> ReachabilityPathSet .
+	eq simplifyConfig(< CR : C:Ensemble | subcomponents : COMPS, features : PORTS, ATTS > REST) 
+		= (CR ->[ outputs: simplifyFeatures(PORTS) simplifyConfig(COMPS) ]) simplifyConfig(REST) .
+	
+	eq simplifyConfig(< CR : C:Thread | subcomponents : COMPS, currState : L, features : PORTS, ATTS > REST)	
+		= (CR ->[ outputs: simplifyFeatures(PORTS) variables: simplifyData(COMPS) currState: locName(L)]) simplifyConfig(REST) .
+
+	eq simplifyConfig(< CR : C:Env | subcomponents : COMPS, features : PORTS, ATTS, currMode : L > REST) 
+		= (CR ->[ outputs: simplifyFeatures(PORTS) variables: simplifyData(COMPS) currMode: locName(L) ]) simplifyConfig(REST) .
+	eq simplifyConfig(REST) = none [owise] .
+
+	op simplifyData : Configuration -> ReachabilityPathValue .
+	eq simplifyData(< CR : C:Data | value : [R] # BE, ATTS > REST) 
+		= if bval(BE) then (CR |=> fval([R])) else (CR |=> none) fi , simplifyData(REST) .
+	eq simplifyData(REST) = none [owise] .
+
+	op simplifyFeatures : Configuration -> ReachabilityPathValue .
+	eq simplifyFeatures(< CR : OutPort | content : [R] # BE, ATTS > REST) 
+		= if bval(BE) then (CR |=> fval([R])) else (CR |=> none) fi , simplifyFeatures(REST) .
+	eq simplifyFeatures(REST) = none [owise] . 
+
+	--- for unused DataContent
+	op none : -> Float [ctor] .
+endm 
+
+mod REACHABILITY-ANALYSIS is
+	including REACHABILITY-PATH .
+	including SPECIFICATION-LANGUAGE-SEMANTICS .
+	including META-SMT-INTERFACE .
+	including SMT-CHECK .
+
+	vars OBJLISTTERM TSATASSIGN TE : Term .
+	var TY : Type .
+	var TRACE : Trace .
+	var RU : Rule .
+	var SU : Substitution .
+	vars OBJ : Object .
+	var TI : TimeInf .
+	vars IC GC : PropSpec .
+	var GSLIST : GlobalSystemList .
+
+    sort Pair{Term,Term} .
+    op {_|_} : Term Term -> Pair{Term,Term} [ctor] .
+	op none : -> Pair{Term,Term} [ctor] .
+
+	op reachAnalysis : Object PropSpec PropSpec TimeInf ~> TimedReachabilityPath . 	
+    ceq reachAnalysis(OBJ, IC, GC, TI) 
+    =  simplify(GSLIST) 
+	if {OBJLISTTERM | TSATASSIGN} := getReachTrace(OBJ, IC, GC, TI) 
+	/\ GSLIST := getGlobalSystemList(metaBuiltinInst(@m@, OBJLISTTERM, TSATASSIGN)) .
+	--- for failure case
+    eq reachAnalysis(OBJ, IC, GC, TI) = nil [owise] .
+
+    op getReachTrace : Object PropSpec PropSpec TimeInf -> Pair{Term,Term} .
+    ceq getReachTrace(OBJ, IC, GC, TI) =
+        {buildMetaTrace(TRACE, TE) | getSatAssignment(SU)}
+    if {TE, TY, SU} := metaSearch(@m@, searchInit(OBJ,IC,TI), searchGoal, searchCond(GC), '*, unbounded, 0)
+    /\ TRACE :=        metaSearchPath(@m@, searchInit(OBJ,IC,TI), searchGoal, searchCond(GC), '*, unbounded, 0) [print "DEBUG " TRACE] .
+
+	--- for failure case 
+    eq getReachTrace(OBJ, IC, GC, TI) = none [owise] .
+
+	op searchInit : Object PropSpec TimeInf -> Term .
+    eq searchInit(OBJ, IC, TI) = upTerm({eval(IC, OBJ) || OBJ | 0 | TI}) .
+
+    op searchGoal : -> Term .
+    eq searchGoal = '`{_|_|_`}['_||_['B':BoolExp, 'OBJ':Object], 'T':Time, 'TI':TimeInf] .
+
+    op searchCond : PropSpec -> EqCondition .
+    eq searchCond(GC)
+   	 = ('`[_`]['BE:BooleanExpr] := '_and_['B':BoolExp, 'finalConst['OBJ':Object], 'eval[upTerm(GC) , 'OBJ':Object]]) 
+	/\ ('check-sat['`[_`]['BE:BooleanExpr]] = 'true.Bool)
+	/\ ('`{_`}['SS:SatAssignmentSet] := 'smtCheck['BE:BooleanExpr, 'true.Bool]) . 
+
+    --- Return {  '_,_[T1,T2,...,Tn]
+    op buildMetaTrace : Trace Term -> Term .
+	eq buildMetaTrace(nil, TE) = TE .
+	eq buildMetaTrace(TRACE, TE) = '_`,_[buildMetaTrace(TRACE), TE] .
+
+	op buildMetaTrace : Trace -> TermList .
+	eq buildMetaTrace({TE, TY, RU} TRACE) = (TE, buildMetaTrace(TRACE)) .
+	eq buildMetaTrace(TRACE) = empty .
+
+   --- return the value of the variable 'SS:SatAssignmentSet in the substitution
+    op getSatAssignment : Substitution -> Term .
+	eq getSatAssignment(SU ; 'SS:SatAssignmentSet <- TE) = TE .
+
+	op getGlobalSystemList : Term -> GlobalSystemList .
+	eq getGlobalSystemList(TE) = downTerm(TE, errorGlobalSystemList) .
+	
+endm

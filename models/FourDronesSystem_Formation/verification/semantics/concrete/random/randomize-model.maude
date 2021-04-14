@@ -1,0 +1,168 @@
+mod PARAM is
+	including RAT .
+	including COMPONENT-REF .
+
+	sort Param ParamSet .
+	subsort Param < ParamSet .
+	op empty : -> ParamSet [ctor] .
+	op _,_ : ParamSet ParamSet -> ParamSet [ctor assoc comm id: empty] .
+
+	vars CR CR' : ComponentRef .
+	var LT UT R : Rat .
+	var PRS : ParamSet .
+	
+	op _In_ : ComponentRef ParamSet -> Bool .
+	eq CR In ((CR' : (LT, UT) ==> R), PRS) = CR == CR' or (CR In (PRS)) .
+	eq CR In empty = false .
+
+	op bot : -> Rat [ctor] .
+	op _:(_,_)==>_ : ComponentRef Rat Rat Rat -> Param [ctor] .
+
+ 	op ParamCompRef : -> ComponentRef .
+	op ParamCompId : -> ComponentId . 
+
+endm
+
+mod RAND-FROM-PROPSPEC is
+    including SPECIFICATION-LANGUAGE-SEMANTICS .
+    including CONVERSION .
+    including CONC-REAL-EXP .
+    including CONC-BOOL-EXP .
+    including SAMPLER .
+	including PARAM .
+
+    var PS : PropSpec .
+    vars NPS NPS' NPS'' : NPropSpec .
+    vars F F' LTF UTF : Float .
+    var R LT UT : Rat .
+    vars CR CR' : ComponentRef .
+    var CId : ComponentId .
+    var RAND : Nat .
+    var PRS : ParamSet .
+
+    op randomizePropSpec : PropSpec Nat -> ParamSet . 
+    eq randomizePropSpec(PS, RAND) = merge(transform((normalize(nilComponentRef, PS))), RAND) .
+   
+    op transform : NPropSpec -> ParamSet .
+    eq transform(NPS and NPS') = transform(NPS), transform(NPS') .
+    eq transform((CR | c[CR']) <= [[F]]) = CR . CR' : (bot, rat(F)) ==> bot .
+    eq transform((CR | c[CR']) <  [[F]]) = CR . CR' : (bot, rat(F)) ==> bot .
+    eq transform((CR | c[CR']) >= [[F]]) = CR . CR' : (rat(F), bot) ==> bot .
+    eq transform((CR | c[CR']) >  [[F]]) = CR . CR' : (rat(F), bot) ==> bot .
+
+    eq transform([[F]] <= (CR | c[CR'])) = CR . CR' : (rat(F), bot) ==> bot .
+    eq transform([[F]] <  (CR | c[CR'])) = CR . CR' : (rat(F), bot) ==> bot .
+    eq transform([[F]] >= (CR | c[CR'])) = CR . CR' : (bot, rat(F)) ==> bot .
+    eq transform([[F]] >  (CR | c[CR'])) = CR . CR' : (bot, rat(F)) ==> bot .
+
+	--- For abs case
+    eq transform([[F]] <= abs((CR | c[CR']))) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+    eq transform([[F]] <  abs((CR | c[CR']))) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+    eq transform([[F]] >= abs((CR | c[CR']))) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+    eq transform([[F]] >  abs((CR | c[CR']))) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+
+    eq transform([[F]] <= abs((CR | c[CR']) - [[F']])) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+    eq transform([[F]] <  abs((CR | c[CR']) - [[F']])) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+    eq transform([[F]] >= abs((CR | c[CR']) - [[F']])) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+    eq transform([[F]] >  abs((CR | c[CR']) - [[F']])) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+
+    eq transform([[F]] <= abs((CR | c[CR']) + [[F']])) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+    eq transform([[F]] <  abs((CR | c[CR']) + [[F']])) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+    eq transform([[F]] >= abs((CR | c[CR']) + [[F']])) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+    eq transform([[F]] >  abs((CR | c[CR']) + [[F']])) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+
+    eq transform(abs((CR | c[CR'])) <= [[F]]) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+    eq transform(abs((CR | c[CR'])) <  [[F]]) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+    eq transform(abs((CR | c[CR'])) >= [[F]]) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+    eq transform(abs((CR | c[CR'])) >  [[F]]) = CR . CR' : (rat(- F), rat(F)) ==> bot .
+
+    eq transform(abs((CR | c[CR']) - [[F']]) <= [[F]]) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+    eq transform(abs((CR | c[CR']) - [[F']]) <  [[F]]) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+    eq transform(abs((CR | c[CR']) - [[F']]) >= [[F]]) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+    eq transform(abs((CR | c[CR']) - [[F']]) >  [[F]]) = CR . CR' : (rat(- F + F'), rat(F + F')) ==> bot .
+
+    eq transform(abs((CR | c[CR']) + [[F']]) <= [[F]]) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+    eq transform(abs((CR | c[CR']) + [[F']]) <  [[F]]) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+    eq transform(abs((CR | c[CR']) + [[F']]) >= [[F]]) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+    eq transform(abs((CR | c[CR']) + [[F']]) >  [[F]]) = CR . CR' : (rat(- F - F'), rat(F - F')) ==> bot .
+
+    --- For minus case
+    eq transform((CR | c[CR']) <= minus([[F]])) = CR . CR' : (bot, rat(- F)) ==> bot .
+    eq transform((CR | c[CR']) <  minus([[F]])) = CR . CR' : (bot, rat(- F)) ==> bot .
+    eq transform((CR | c[CR']) >= minus([[F]])) = CR . CR' : (rat(- F), bot) ==> bot .
+    eq transform((CR | c[CR']) >  minus([[F]])) = CR . CR' : (rat(- F), bot) ==> bot .
+
+    eq transform(minus([[F]]) <= (CR | c[CR'])) = CR . CR' : (rat(- F), bot) ==> bot .
+    eq transform(minus([[F]]) <  (CR | c[CR'])) = CR . CR' : (rat(- F), bot) ==> bot .
+    eq transform(minus([[F]]) >= (CR | c[CR'])) = CR . CR' : (bot, rat(- F)) ==> bot .
+    eq transform(minus([[F]]) >  (CR | c[CR'])) = CR . CR' : (bot, rat(- F)) ==> bot .
+
+	--- For Param case
+	eq transform((ParamCompRef | c[ParamCompId]) <= [[F]]) = ParamCompRef . ParamCompId : (bot, rat(F)) ==> bot .
+	eq transform((ParamCompRef | c[ParamCompId]) <= minus([[F]])) = ParamCompRef . ParamCompId : (bot, rat(- F)) ==> bot .
+	eq transform((ParamCompRef | c[ParamCompId]) >= [[F]]) = ParamCompRef . ParamCompId : (rat(F), bot) ==> bot .
+	eq transform((ParamCompRef | c[ParamCompId]) >= minus([[F]])) = ParamCompRef . ParamCompId : (rat(- F), bot) ==> bot .
+
+    op merge : ParamSet Nat -> ParamSet .
+    ceq merge(((CR : (LT, bot) ==> bot), (CR : (bot, UT) ==> bot), PRS), RAND) = ((CR : (LT, UT) ==> R), merge(PRS, s RAND)) 
+     if R := rand(LT, UT, RAND) .
+	ceq merge(((CR : (LT, UT) ==> bot), PRS), RAND) = ((CR : (LT, UT) ==> R), merge(PRS, s RAND))
+	 if R := rand(LT, UT, RAND) .
+
+    eq merge(empty, RAND) = empty .
+endm
+
+mod RANDOMZIE-OBJECT is
+	including RAND-FROM-PROPSPEC .
+	including THREAD-COMPONENT .
+	including ENV-COMPONENT .
+	including DATA-COMPONENT .
+	including ENSEMBLE-COMPONENT .
+
+	vars CR CR' : ComponentRef .
+	var PRS : ParamSet .
+	var OBJ : Object .
+	var PS : PropSpec .
+	vars COMPS REST : Configuration .
+	var ATTS : AttributeSet .
+	vars LT UT R R' : Rat .
+	var N : Nat .
+	var E : RealExp .
+	vars B B' : BoolExp .
+	var TY : DataType .
+	
+	op randomize : Object PropSpec Nat -> Object .
+	eq randomize(OBJ, PS, N) = randomize(OBJ, randomizePropSpec(PS, N), N) .
+	
+	op randomize : Object ParamSet Nat -> Object .
+	eq randomize(< CR : C:Ensemble | subcomponents : COMPS, ATTS > REST, PRS, N)
+	 = < CR : C:Ensemble | subcomponents : randomize(COMPS, detach(CR, PRS), N), ATTS > randomize(REST, PRS, N) . 
+
+	eq randomize(< CR : C:Thread | subcomponents : COMPS, ATTS > REST, PRS, N)
+	 = < CR : C:Thread | subcomponents : randomize(COMPS, detach(CR, PRS), N), ATTS > randomize(REST, PRS, N) .
+
+    eq randomize(< CR : C:Env | subcomponents : COMPS, ATTS > REST, PRS, N)
+	 = < CR : C:Env | subcomponents : randomize(COMPS, detach(CR, PRS), N), ATTS > randomize(REST, PRS, N) .
+
+	eq randomize(< CR : C:Data | value : param(TY), ATTS > REST, ((CR : (LT, UT) ==> R), PRS), N) 
+	 = < CR : C:Data | value : real(R) # bool(true), ATTS > randomize(REST, PRS, N) .
+
+	ceq randomize(< CR : C:Data | value : param(TY), ATTS > REST, ((ParamCompRef . ParamCompId : (LT, UT) ==> R), PRS), N)
+     = < CR : C:Data | value : real(R) # bool(true), ATTS > randomize(REST, ((ParamCompRef . ParamCompId : (LT, UT) ==> R'), PRS), s N)
+     if not CR In PRS  
+	 /\ R' := rand(LT, UT, s N) .
+
+	eq randomize(< CR : C:Data | value : E # B, ATTS > REST, PRS, N) 
+	 = < CR : C:Data | value : E # B, ATTS > randomize(REST, PRS, N) .
+
+	eq randomize(< CR : C:Data | value : B # B', ATTS > REST, PRS, N) 
+	 = < CR : C:Data | value : B # B', ATTS > randomize(REST, PRS, N) .
+
+	eq randomize(none, PRS, N) = none .
+	
+	op detach : ComponentRef ParamSet -> ParamSet .
+	eq detach(CR, ((CR . CR' : (LT, UT) ==> R), PRS)) = (CR' : (LT, UT) ==> R), detach(CR, PRS) .
+    eq detach(CR, empty) = empty .
+	eq detach(CR, PRS) = PRS [owise] .
+
+endm

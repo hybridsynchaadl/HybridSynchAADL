@@ -1,0 +1,32 @@
+set show timing off .
+
+load ../../interpreter-random.maude
+load ../syntax/module-thermostat-noparam.maude 
+
+
+-------------------------------------------------------
+mod TEST-ENSEMBLE-DYNAMICS is
+  including THERMOSTAT-SYSTEM-NOPARAM .
+  including MODEL-INIT .
+  including THREAD-DYNAMICS .
+  including ENV-DYNAMICS .
+  including ENSEMBLE-DYNAMICS .
+  including TRANSFER-INPUT .
+  including TRANSFER-RESULTS .
+  including CONC-REAL-EXP .
+
+  op ensemble : -> Object .
+  eq ensemble = initialize(model) .
+endm
+
+rew execSample({ensemble, 0}) .
+rew execResponse({ensemble, 0}) .
+
+rew execSampleSub({ensemble, 0}) .
+rew transferInputs(execSampleSub({ensemble, 0})) .
+rew propagateExecSub(transferInputs(execSampleSub({ensemble, 0}))) .
+rew transferResults(propagateExecSub(transferInputs(execSampleSub({ensemble, 0})))) .
+rew execResponseSub(transferResults(propagateExecSub(transferInputs(execSampleSub({ensemble, 0}))))) .
+
+
+rew executeStep({ensemble, 0}) .

@@ -1,0 +1,33 @@
+package Environment
+public
+    with Hybrid_SynchAADL;    
+    with Base_Types;
+    with Data_Model;
+    
+system Environment
+	features
+        cX : out data port Base_Types::Float;
+        cY : out data port Base_Types::Float;
+        vX : in data port Base_Types::Float;
+        vY : in data port Base_Types::Float;        
+    properties
+        Hybrid_SynchAADL::isEnvironment => true;
+end Environment;
+
+system implementation Environment.impl
+    subcomponents
+        x : data Base_Types::Float;
+        y : data Base_Types::Float; 
+        velx : data Base_Types::Float;
+        vely : data Base_Types::Float;
+	connections
+        C1: port x -> cX;
+        C2: port y -> cY;   
+        C3: port vX -> velx;
+        C4: port vY -> vely;
+	properties
+		Hybrid_SynchAADL::ContinuousDynamics =>
+        	 "x(t) = 0.001 * velx * t + x(0); y(t) = 0.001 * vely * t + y(0);";
+        Data_Model::Initial_Value => ("param") applies to x, y, velx, vely;
+ end Environment.impl;
+end Environment;

@@ -1,0 +1,144 @@
+
+mod THERMOSTAT-SYSTEM-SYNTAX is
+  including ENSEMBLE-COMPONENT .
+  including THREAD-COMPONENT .
+  including DATA-COMPONENT .
+  including ENV-COMPONENT .
+  including DEFAULT-PROPERTIES .
+  including HYBRID-SYNCHAADL-PROPERTIES .
+
+  ops top cthread cproc csys environment lower upper curr x e : -> ComponentId [format (c! o)] .
+  ops x t : -> VarId .
+  ops on off temp out : -> FeatureId .
+  ops init state : -> Location .
+
+  op model : -> Object .
+  eq model =
+        < top : System |
+                features : none,
+                subcomponents :
+                    < csys : System |
+                        features :
+                            < temp : DataInPort | content : null(Real),
+                                                  cache : null(Real),
+                                                  properties : DataModel::InitialValue => {{16}} >
+                            < on  : DataOutPort | content : null(Unit),
+                                                  properties : none >
+                            < off : DataOutPort | content : null(Unit),
+                                                  properties : none >,
+                        subcomponents :
+                            < cproc : Process |
+                                features :
+                                    < temp : DataInPort | content : null(Real),
+                                                          cache : null(Real),
+                                                          properties : none >
+                                    < on  : DataOutPort | content : null(Unit),
+                                                          properties : none >
+                                    < off : DataOutPort | content : null(Unit),
+                                                          properties : none >,
+                                subcomponents :
+                                    < cthread : Thread |
+                                        features :
+                                            < temp : DataInPort | content : null(Real),
+                                                                  cache : null(Real),
+                                                                  properties : none >
+                                            < on  : DataOutPort | content : null(Unit),
+                                                                  properties : none >
+                                            < off : DataOutPort | content : null(Unit),
+                                                                  properties : none >,
+                                        subcomponents :
+                                            < lower : Data | value : null(Real),
+                                                             features : none,
+                                                             subcomponents : none,
+                                                             properties : DataModel::InitialValue => {{10}},
+                                                             connections : empty >
+                                            < upper : Data | value : null(Real),
+                                                             features : none,
+                                                             subcomponents : none,
+                                                             properties : DataModel::InitialValue => {{20}},
+                                                             connections : empty >
+                                            < curr : Data | value : null(Real),
+                                                            features : none,
+                                                            subcomponents : none,
+                                                            properties : DataModel::InitialValue => {{16}},
+                                                            connections : empty >,
+                                        properties : (TimingProperties::Period => {{5}}) ;
+                                                     (HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+                                                     (HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),
+                                        currState : init,
+                                        completeStates : init,
+                                        variables : (x : Real),
+                                        transitions :
+                                            (init -[ on dispatch ]-> init {
+                                                (v{x} := (c[curr] + f[temp]) / [[2]]) ;
+                                                if (v[x] < c[lower])
+                                                    (on !)
+                                                (elsif (v[x] > c[upper])
+                                                    (off !))
+                                                end if
+                                                ;
+                                                c{curr} := v[x]
+                                            })
+                                            ,
+                                        loopBound : 0,
+                                        transBound : 10,
+                                        varGen : < "top.cthread" >,
+                                        connections : empty >,
+                                connections :
+                                    (cthread .. on --> on) ;
+                                    (cthread .. off --> off) ;
+                                    (temp --> cthread .. temp),
+                                properties : none >,
+                        connections :
+                            (cproc .. on --> on) ;
+                            (cproc .. off --> off) ;
+                            (temp --> cproc .. temp),
+                        properties : none >
+                    < environment : Env |
+                        features :
+                            < on  :  EnvInPort | content  : null(Unit),
+                                                 properties : none,
+                                                 envCache : null(Unit),
+                                                 target : csys >
+                            < off :  EnvInPort | content  : null(Unit),
+                                                 properties : none,
+                                                 envCache : null(Unit),
+                                                 target : csys >
+                            < out : EnvOutPort | content  : null(Real),
+                                                 envCache : null(Real),
+                                                 properties : none,
+                                                 target : csys >,
+                        subcomponents :
+                            < x : Data | value : null(Real),
+                                         features : none,
+                                         subcomponents : none,
+                                         properties : DataModel::InitialValue => {{16}},
+                                         connections : empty >,
+                        connections :
+                            (x ==> out),
+                        properties : (HybridSynchAADL::MaxClockDeviation => {{0.1}}) ;
+                                     (TimingProperties::Period => {{5}}),
+                        currMode : init,
+                        jumps :
+                            (init -[ on  ]-> init)
+                            ;
+                            (init -[ off ]-> state)
+                            ;
+                            (state -[ on  ]-> init)
+                            ;
+                            (state -[ off ]-> state),
+                        flows :
+                            ((init)[(x(t) = (c[x]) + (v[t] * [[0.5]]))])
+                            ;
+                            ((state)[(x(t) = (c[x]) - (v[t] * [[0.5]]))]),
+                        varGen : < "top.environment" >,
+                        sampling : ((csys : (0,2))),
+                        response : ((csys : (3,4))) >,
+                connections :
+                    (csys .. on --> environment .. on) ;
+                    (csys .. off --> environment .. off) ;
+                    (environment .. out --> csys .. temp),
+                properties : (TimingProperties::Period => {{5}}) >
+        .
+endm
+

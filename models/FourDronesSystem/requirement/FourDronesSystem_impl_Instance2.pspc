@@ -1,0 +1,33 @@
+name: FourDronesSystem_impl_Instance;
+
+model: FourDronesSystem::FourDronesSystem.impl;
+
+instance: "/FourDronesSystem/package/instances/FourDroneSystem_FourDronesSystem_impl_Instance.aaxl2";
+
+invariant [safety] : ?initial and ?velconst ==> not(?collision) in time 500;
+
+reachability [rendezvous] : ?initial and ?velconst ==> ?allClose in time 500;
+
+proposition [initial] : abs(dr1.env.x - 1.1) < 0.01 and abs(dr1.env.y - 1.5) < 0.01 and
+ 						abs(dr2.env.x + 1.5) < 0.01 and abs(dr2.env.y + 1.1) < 0.01 and
+ 						abs(dr3.env.x - 1.5) < 0.01 and abs(dr3.env.y - 1.1) < 0.01 and
+ 						abs(dr4.env.x + 1.1) < 0.01 and abs(dr4.env.y + 1.5) < 0.01;  
+ 						
+proposition [velconst] : abs(dr1.env.vx) < 0.01 and abs(dr1.env.vy) < 0.01 and
+						 abs(dr2.env.vx) < 0.01 and abs(dr2.env.vy) < 0.01 and
+						 abs(dr3.env.vx) < 0.01 and abs(dr3.env.vy) < 0.01 and
+						 abs(dr4.env.vx) < 0.01 and abs(dr4.env.vy) < 0.01;						
+
+proposition [allClose] : abs(dr1.env.x - dr2.env.x) < 1.0 and abs(dr1.env.y - dr2.env.y) < 1.0 and
+						 abs(dr1.env.x - dr3.env.x) < 1.0 and abs(dr1.env.y - dr3.env.y) < 1.0 and
+						 abs(dr1.env.x - dr4.env.x) < 1.0 and abs(dr1.env.y - dr4.env.y) < 1.0 and
+						 abs(dr2.env.x - dr3.env.x) < 1.0 and abs(dr2.env.y - dr3.env.y) < 1.0 and
+						 abs(dr2.env.x - dr4.env.x) < 1.0 and abs(dr2.env.y - dr4.env.y) < 1.0 and
+						 abs(dr3.env.x - dr4.env.x) < 1.0 and abs(dr3.env.y - dr4.env.y) < 1.0;
+ 						
+proposition [collision] : (abs(dr1.env.x - dr2.env.x) < 0.1 and abs(dr1.env.y - dr2.env.y) < 0.1) or
+						  (abs(dr1.env.x - dr3.env.x) < 0.1 and abs(dr1.env.y - dr3.env.y) < 0.1) or
+						  (abs(dr1.env.x - dr4.env.x) < 0.1 and abs(dr1.env.y - dr4.env.y) < 0.1) or
+						  (abs(dr2.env.x - dr3.env.x) < 0.1 and abs(dr2.env.y - dr3.env.y) < 0.1) or
+						  (abs(dr2.env.x - dr4.env.x) < 0.1 and abs(dr2.env.y - dr4.env.y) < 0.1) or
+						  (abs(dr3.env.x - dr4.env.x) < 0.1 and abs(dr3.env.y - dr4.env.y) < 0.1);       

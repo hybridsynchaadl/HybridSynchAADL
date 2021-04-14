@@ -1,0 +1,30 @@
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load ../syntax/Thermostat1Con_impl_Instance-symbolic.maude
+
+mod TEST-THERMOSTATCON1CON-SYSTEM is
+  including THERMOSTAT1CON_IMPL_INSTANCE-MODEL-SYMBOLIC .
+
+  op initState : -> Object .
+  eq initState = initialize(initial) .
+
+  op cinitState : -> Object .
+  eq cinitState = initialize(collapse(initial)) .
+endm
+
+red initState .
+
+search [,5] 
+	{bool(true) || initState | 0 | infty} 
+	=>+ 
+	{B:BoolExp || OBJ:Object | T:Time | infty}
+	such that
+		check-sat(B:BoolExp and finalConst(OBJ:Object)) .
+
+search [,5] 
+	{bool(true) || cinitState | 0 | infty} 
+	=>+ 
+	{B:BoolExp || OBJ:Object | T:Time | infty}
+	such that
+		check-sat(B:BoolExp and finalConst(OBJ:Object)) .

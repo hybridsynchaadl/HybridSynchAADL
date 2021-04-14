@@ -1,0 +1,13 @@
+load Airplane_nondet_Instance.maude .
+mod AIRPLANE_NONDET_INSTANCE-MODEL-SYMBOLIC is
+    including AIRPLANE_NONDET_INSTANCE-MODEL .
+    including BEHAVIOR-SYMBOLIC-LOCATION .
+
+    eq init = loc(real(0)) .
+    eq move = loc(real(1)) .
+    eq select = loc(real(2)) .
+    eq idle = loc(real(3)) .
+    eq rudder = loc(real(4)) .
+    eq update = loc(real(5)) .
+    eq yaw = loc(real(6)) .
+endm

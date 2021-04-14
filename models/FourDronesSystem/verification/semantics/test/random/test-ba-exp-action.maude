@@ -1,0 +1,92 @@
+
+set show timing off .
+
+load ../../interpreter-random.maude
+
+load module-ba-semantics
+
+
+---------------------------------------------------
+select TEST-BEHAVIOR-ACTION-SEMANTICS .
+
+rew execAction({(v{x} := [[4]] + [[6]]) ; skip}, bcf(2)) .
+
+rew execAction( 
+      {
+          if (v[x] > [[3]]) {
+              (f{a} := (v[x] - [[1]])) ;
+              (b !)
+          }
+          else
+              f{a} := (v[x] + [[1]])
+          end if
+          ;
+          v{y} := (v[y] * v[x]) + [[1]]
+      }
+,
+    bcf(2)) .
+
+
+rew execAction( 
+      {
+          if (v[x] > [[3]])
+              v{x} := (v[x] - [[1]])
+          else
+              v{x} := (v[x] + [[1]])
+          end if
+          ;
+          v{y} := (v[y] * v[x]) + [[1]]
+      }
+,
+    bcf(4)) .
+
+rew execAction( 
+    {
+        if (v[x] > [[3]])
+            (v{x} := v[x] - [[1]])
+        (elsif (v[y] < [[4]])
+            (v{y} := v[x] + [[3]]))
+        else
+            (v{x} := v[x] + [[1]])
+        end if
+        ;
+        (v{y} := v[y] + f[a])
+        ;
+        (v{x} := f[a] + p[TimingProperties::Period])
+    }
+, 
+    bcf(4)) .
+
+rew execAction( 
+    {
+        while (v[x] > [[5]]) {
+            (v{x} := v[x] - [[1]])
+            ;
+            (v{y} := v[y] + [[2]])
+        }
+        ;
+        (v{y} := v[y] + f[a])
+        ;
+        (v{x} := f[a] + p[TimingProperties::Period])
+    }
+, 
+    bcf(20)) .
+
+rew execAction( 
+    {
+        while (v[x] > [[5]]) {
+            while (v[y] < [[10]]) {
+                (c{cr} := v[x] + [[1]])
+                ;
+                (v{y} := v[y] + [[2]])
+            }
+            ;
+            (v{x} := v[x] - [[1]])
+        }
+        ;
+        (v{y} := v[y] + f[a])
+        ;
+        (v{x} := f[a] + p[TimingProperties::Period])
+    }
+, 
+    bcf(20)) .

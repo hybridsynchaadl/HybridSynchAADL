@@ -1,0 +1,426 @@
+	   --- Welcome to Maude ---
+		     /||||||||||||||||||\
+	     Maude 3.0 built: Mar  8 2020 16:17:31
+	     Copyright 1997-2019 SRI International
+		   Sun Apr 11 05:42:50 2021
+==========================================
+rewrite in TEST-FOURDRONESSYSTEM_IMPL_INSTANCE : repeat({initState,9}, 500, (
+    FourDronesSystemimplInstance | initial) and (minParam and maxParam),
+    FourDronesSystemimplInstance | allClose) .
+rewrites: 12 in 0ms cpu (0ms real) (57416 rewrites/second)
+result [TimedReachabilityPath]: repeat({initialize(collapse(<
+    FourDronesSystemimplInstance : System | properties : ((
+    TimingProperties::Period => {{1.0e+2}}) ; (HybridSynchAADL::Synchronous =>
+    {{true}}) ; HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}),features :
+    none,subcomponents : (< dr1 : System | properties : ((
+    TimingProperties::Period => {{1.0e+2}}) ; (HybridSynchAADL::Synchronous =>
+    {{true}}) ; (HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content
+    : null(Real) > < oY : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : null(Real) > < iX : DataInPort | properties : none,
+    content : null(Real),cache : null(Real) >),subcomponents : (< ctrl : System
+    | properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < ctrlProc : Process | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < cThread : Thread | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; (HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < close : Data | properties : DataModel::InitialValue => {{false}},
+    features : none,subcomponents : none,connections : empty,value : null(
+    Boolean) >,connections : empty,varGen : <
+    "FourDronesSystemimplInstance.dr1.ctrl.ctrlProc.cThread" >,currState :
+    init,completeStates : init,variables : ((nx : Real) ; ny : Real),
+    transitions : ((output -[[[true]]]-> init {(f{oX} := f[cX]) ; f{oY} := f[
+    cY]}) ; (init -[on dispatch]-> exec {skip}) ; (exec -[otherwise]-> output {
+    (v{nx} := minus([[1.0]] * (f[cX] - f[iX]))) ; (v{ny} := minus([[1.0]] * (f[
+    cY] - f[iY]))) ; if(v[nx] > [[2.9999999999999999e-1]]){f{vX} := [[2.5]]} (
+    elsif(v[nx] > [[1.4999999999999999e-1]]){if(c[close]){f{vX} := [[1.5]]}
+    else {f{vX} := [[0.0]]} end if}) else {f{vX} := minus([[2.5]])} end if ;
+    if(v[ny] > [[2.9999999999999999e-1]]){f{vY} := [[2.5]]} (elsif(v[ny] > [[
+    1.4999999999999999e-1]]){if(c[close]){f{vY} := [[1.5]]} else {f{vY} := [[
+    0.0]]} end if}) else {f{vY} := minus([[2.5]])} end if ; c{close} := [[
+    false]]}) ; exec -[(abs(f[cX] - f[iX]) < [[1.0000000000000001e-1]]) and (
+    abs(f[cY] - f[iY]) < [[1.0000000000000001e-1]])]-> output {(f{vX} := [[0]])
+    ; (f{vY} := [[0]]) ; c{close} := [[true]]}),loopBound : unbounded,
+    transBound : unbounded >,connections : ((iY --> (cThread .. iY)) ; (cX -->
+    (cThread .. cX)) ; (cY --> (cThread .. cY)) ; (iX --> (cThread .. iX)) ; ((
+    cThread .. vX) --> vX) ; ((cThread .. vY) --> vY) ; ((cThread .. oX) -->
+    oX) ; (cThread .. oY) --> oY) >,connections : ((iY --> (ctrlProc .. iY)) ;
+    (cX --> (ctrlProc .. cX)) ; (cY --> (ctrlProc .. cY)) ; (iX --> (ctrlProc
+    .. iX)) ; ((ctrlProc .. vX) --> vX) ; ((ctrlProc .. vY) --> vY) ; ((
+    ctrlProc .. oX) --> oX) ; (ctrlProc .. oY) --> oY) > < env : Env |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (HybridSynchAADL::isEnvironment
+    => {{true}}) ; (HybridSynchAADL::ContinuousDynamics => {{
+    "x(t) = 0.001 * velx * t + x(0); y(t) = 0.001 * vely * t + y(0);"}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< vX :
+    EnvInPort | properties : none,content : null(Real),envCache : null(Real),
+    target : cThread > < vY : EnvInPort | properties : none,content : null(
+    Real),envCache : null(Real),target : cThread > < cX : EnvOutPort |
+    properties : none,content : null(Real),envCache : null(Real),target :
+    cThread > < cY : EnvOutPort | properties : none,content : null(Real),
+    envCache : null(Real),target : cThread >),subcomponents : (< vely : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < velx : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) > < x : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < y : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) >),connections
+    : ((x ==> cX) ; (y ==> cY) ; (vX =>> velx) ; vY =>> vely),varGen : <
+    "FourDronesSystemimplInstance.dr1.env" >,currMode : @@default@loc@@,jumps :
+    empty,flows : @@default@loc@@ [(x(t)= ((([[1.0e-3]] * c[velx]) * v[t]) + c[
+    x])) ; y(t)= ((([[1.0e-3]] * c[vely]) * v[t]) + c[y])],sampling : cThread
+    :(2,4),response : cThread :(6,9) >),connections : ((iY --> (ctrl .. iY)) ;
+    (iX --> (ctrl .. iX)) ; ((ctrl .. vX) --> (env .. vX)) ; ((ctrl .. vY) -->
+    (env .. vY)) ; ((ctrl .. oX) --> oX) ; ((ctrl .. oY) --> oY) ; ((env .. cX)
+    --> (ctrl .. cX)) ; (env .. cY) --> (ctrl .. cY)) > < dr3 : System |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content
+    : null(Real) > < oY : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : null(Real) > < iX : DataInPort | properties : none,
+    content : null(Real),cache : null(Real) >),subcomponents : (< ctrl : System
+    | properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < ctrlProc : Process | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < cThread : Thread | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; (HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < close : Data | properties : DataModel::InitialValue => {{false}},
+    features : none,subcomponents : none,connections : empty,value : null(
+    Boolean) >,connections : empty,varGen : <
+    "FourDronesSystemimplInstance.dr3.ctrl.ctrlProc.cThread" >,currState :
+    init,completeStates : init,variables : ((nx : Real) ; ny : Real),
+    transitions : ((output -[[[true]]]-> init {(f{oX} := f[cX]) ; f{oY} := f[
+    cY]}) ; (init -[on dispatch]-> exec {skip}) ; (exec -[otherwise]-> output {
+    (v{nx} := minus([[1.0]] * (f[cX] - f[iX]))) ; (v{ny} := minus([[1.0]] * (f[
+    cY] - f[iY]))) ; if(v[nx] > [[2.9999999999999999e-1]]){f{vX} := [[2.5]]} (
+    elsif(v[nx] > [[1.4999999999999999e-1]]){if(c[close]){f{vX} := [[1.5]]}
+    else {f{vX} := [[0.0]]} end if}) else {f{vX} := minus([[2.5]])} end if ;
+    if(v[ny] > [[2.9999999999999999e-1]]){f{vY} := [[2.5]]} (elsif(v[ny] > [[
+    1.4999999999999999e-1]]){if(c[close]){f{vY} := [[1.5]]} else {f{vY} := [[
+    0.0]]} end if}) else {f{vY} := minus([[2.5]])} end if ; c{close} := [[
+    false]]}) ; exec -[(abs(f[cX] - f[iX]) < [[1.0000000000000001e-1]]) and (
+    abs(f[cY] - f[iY]) < [[1.0000000000000001e-1]])]-> output {(f{vX} := [[0]])
+    ; (f{vY} := [[0]]) ; c{close} := [[true]]}),loopBound : unbounded,
+    transBound : unbounded >,connections : ((iY --> (cThread .. iY)) ; (cX -->
+    (cThread .. cX)) ; (cY --> (cThread .. cY)) ; (iX --> (cThread .. iX)) ; ((
+    cThread .. vX) --> vX) ; ((cThread .. vY) --> vY) ; ((cThread .. oX) -->
+    oX) ; (cThread .. oY) --> oY) >,connections : ((iY --> (ctrlProc .. iY)) ;
+    (cX --> (ctrlProc .. cX)) ; (cY --> (ctrlProc .. cY)) ; (iX --> (ctrlProc
+    .. iX)) ; ((ctrlProc .. vX) --> vX) ; ((ctrlProc .. vY) --> vY) ; ((
+    ctrlProc .. oX) --> oX) ; (ctrlProc .. oY) --> oY) > < env : Env |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (HybridSynchAADL::isEnvironment
+    => {{true}}) ; (HybridSynchAADL::ContinuousDynamics => {{
+    "x(t) = 0.001 * velx * t + x(0); y(t) = 0.001 * vely * t + y(0);"}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< vX :
+    EnvInPort | properties : none,content : null(Real),envCache : null(Real),
+    target : cThread > < vY : EnvInPort | properties : none,content : null(
+    Real),envCache : null(Real),target : cThread > < cX : EnvOutPort |
+    properties : none,content : null(Real),envCache : null(Real),target :
+    cThread > < cY : EnvOutPort | properties : none,content : null(Real),
+    envCache : null(Real),target : cThread >),subcomponents : (< vely : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < velx : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) > < x : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < y : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) >),connections
+    : ((x ==> cX) ; (y ==> cY) ; (vX =>> velx) ; vY =>> vely),varGen : <
+    "FourDronesSystemimplInstance.dr3.env" >,currMode : @@default@loc@@,jumps :
+    empty,flows : @@default@loc@@ [(x(t)= ((([[1.0e-3]] * c[velx]) * v[t]) + c[
+    x])) ; y(t)= ((([[1.0e-3]] * c[vely]) * v[t]) + c[y])],sampling : cThread
+    :(2,4),response : cThread :(6,9) >),connections : ((iY --> (ctrl .. iY)) ;
+    (iX --> (ctrl .. iX)) ; ((ctrl .. vX) --> (env .. vX)) ; ((ctrl .. vY) -->
+    (env .. vY)) ; ((ctrl .. oX) --> oX) ; ((ctrl .. oY) --> oY) ; ((env .. cX)
+    --> (ctrl .. cX)) ; (env .. cY) --> (ctrl .. cY)) > < dr2 : System |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content
+    : null(Real) > < oY : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : null(Real) > < iX : DataInPort | properties : none,
+    content : null(Real),cache : null(Real) >),subcomponents : (< ctrl : System
+    | properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < ctrlProc : Process | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < cThread : Thread | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; (HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < close : Data | properties : DataModel::InitialValue => {{false}},
+    features : none,subcomponents : none,connections : empty,value : null(
+    Boolean) >,connections : empty,varGen : <
+    "FourDronesSystemimplInstance.dr2.ctrl.ctrlProc.cThread" >,currState :
+    init,completeStates : init,variables : ((nx : Real) ; ny : Real),
+    transitions : ((output -[[[true]]]-> init {(f{oX} := f[cX]) ; f{oY} := f[
+    cY]}) ; (init -[on dispatch]-> exec {skip}) ; (exec -[otherwise]-> output {
+    (v{nx} := minus([[1.0]] * (f[cX] - f[iX]))) ; (v{ny} := minus([[1.0]] * (f[
+    cY] - f[iY]))) ; if(v[nx] > [[2.9999999999999999e-1]]){f{vX} := [[2.5]]} (
+    elsif(v[nx] > [[1.4999999999999999e-1]]){if(c[close]){f{vX} := [[1.5]]}
+    else {f{vX} := [[0.0]]} end if}) else {f{vX} := minus([[2.5]])} end if ;
+    if(v[ny] > [[2.9999999999999999e-1]]){f{vY} := [[2.5]]} (elsif(v[ny] > [[
+    1.4999999999999999e-1]]){if(c[close]){f{vY} := [[1.5]]} else {f{vY} := [[
+    0.0]]} end if}) else {f{vY} := minus([[2.5]])} end if ; c{close} := [[
+    false]]}) ; exec -[(abs(f[cX] - f[iX]) < [[1.0000000000000001e-1]]) and (
+    abs(f[cY] - f[iY]) < [[1.0000000000000001e-1]])]-> output {(f{vX} := [[0]])
+    ; (f{vY} := [[0]]) ; c{close} := [[true]]}),loopBound : unbounded,
+    transBound : unbounded >,connections : ((iY --> (cThread .. iY)) ; (cX -->
+    (cThread .. cX)) ; (cY --> (cThread .. cY)) ; (iX --> (cThread .. iX)) ; ((
+    cThread .. vX) --> vX) ; ((cThread .. vY) --> vY) ; ((cThread .. oX) -->
+    oX) ; (cThread .. oY) --> oY) >,connections : ((iY --> (ctrlProc .. iY)) ;
+    (cX --> (ctrlProc .. cX)) ; (cY --> (ctrlProc .. cY)) ; (iX --> (ctrlProc
+    .. iX)) ; ((ctrlProc .. vX) --> vX) ; ((ctrlProc .. vY) --> vY) ; ((
+    ctrlProc .. oX) --> oX) ; (ctrlProc .. oY) --> oY) > < env : Env |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (HybridSynchAADL::isEnvironment
+    => {{true}}) ; (HybridSynchAADL::ContinuousDynamics => {{
+    "x(t) = 0.001 * velx * t + x(0); y(t) = 0.001 * vely * t + y(0);"}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< vX :
+    EnvInPort | properties : none,content : null(Real),envCache : null(Real),
+    target : cThread > < vY : EnvInPort | properties : none,content : null(
+    Real),envCache : null(Real),target : cThread > < cX : EnvOutPort |
+    properties : none,content : null(Real),envCache : null(Real),target :
+    cThread > < cY : EnvOutPort | properties : none,content : null(Real),
+    envCache : null(Real),target : cThread >),subcomponents : (< vely : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < velx : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) > < x : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < y : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) >),connections
+    : ((x ==> cX) ; (y ==> cY) ; (vX =>> velx) ; vY =>> vely),varGen : <
+    "FourDronesSystemimplInstance.dr2.env" >,currMode : @@default@loc@@,jumps :
+    empty,flows : @@default@loc@@ [(x(t)= ((([[1.0e-3]] * c[velx]) * v[t]) + c[
+    x])) ; y(t)= ((([[1.0e-3]] * c[vely]) * v[t]) + c[y])],sampling : cThread
+    :(2,4),response : cThread :(6,9) >),connections : ((iY --> (ctrl .. iY)) ;
+    (iX --> (ctrl .. iX)) ; ((ctrl .. vX) --> (env .. vX)) ; ((ctrl .. vY) -->
+    (env .. vY)) ; ((ctrl .. oX) --> oX) ; ((ctrl .. oY) --> oY) ; ((env .. cX)
+    --> (ctrl .. cX)) ; (env .. cY) --> (ctrl .. cY)) > < dr4 : System |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : DataModel::InitialValue => {{0.0}},content
+    : null(Real) > < oY : DataOutPort | properties : DataModel::InitialValue =>
+    {{0.0}},content : null(Real) > < iX : DataInPort | properties : none,
+    content : null(Real),cache : null(Real) >),subcomponents : (< ctrl : System
+    | properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < ctrlProc : Process | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; HybridSynchAADL::Synchronous => {{true}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < cThread : Thread | properties : ((TimingProperties::Period => {{
+    1.0e+2}}) ; (HybridSynchAADL::Synchronous => {{true}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< iY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    vX : DataOutPort | properties : none,content : null(Real) > < vY :
+    DataOutPort | properties : none,content : null(Real) > < cX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) > < cY :
+    DataInPort | properties : none,content : null(Real),cache : null(Real) > <
+    oX : DataOutPort | properties : none,content : null(Real) > < oY :
+    DataOutPort | properties : none,content : null(Real) > < iX : DataInPort |
+    properties : none,content : null(Real),cache : null(Real) >),subcomponents
+    : < close : Data | properties : DataModel::InitialValue => {{false}},
+    features : none,subcomponents : none,connections : empty,value : null(
+    Boolean) >,connections : empty,varGen : <
+    "FourDronesSystemimplInstance.dr4.ctrl.ctrlProc.cThread" >,currState :
+    init,completeStates : init,variables : ((nx : Real) ; ny : Real),
+    transitions : ((output -[[[true]]]-> init {(f{oX} := f[cX]) ; f{oY} := f[
+    cY]}) ; (init -[on dispatch]-> exec {skip}) ; (exec -[otherwise]-> output {
+    (v{nx} := minus([[1.0]] * (f[cX] - f[iX]))) ; (v{ny} := minus([[1.0]] * (f[
+    cY] - f[iY]))) ; if(v[nx] > [[2.9999999999999999e-1]]){f{vX} := [[2.5]]} (
+    elsif(v[nx] > [[1.4999999999999999e-1]]){if(c[close]){f{vX} := [[1.5]]}
+    else {f{vX} := [[0.0]]} end if}) else {f{vX} := minus([[2.5]])} end if ;
+    if(v[ny] > [[2.9999999999999999e-1]]){f{vY} := [[2.5]]} (elsif(v[ny] > [[
+    1.4999999999999999e-1]]){if(c[close]){f{vY} := [[1.5]]} else {f{vY} := [[
+    0.0]]} end if}) else {f{vY} := minus([[2.5]])} end if ; c{close} := [[
+    false]]}) ; exec -[(abs(f[cX] - f[iX]) < [[1.0000000000000001e-1]]) and (
+    abs(f[cY] - f[iY]) < [[1.0000000000000001e-1]])]-> output {(f{vX} := [[0]])
+    ; (f{vY} := [[0]]) ; c{close} := [[true]]}),loopBound : unbounded,
+    transBound : unbounded >,connections : ((iY --> (cThread .. iY)) ; (cX -->
+    (cThread .. cX)) ; (cY --> (cThread .. cY)) ; (iX --> (cThread .. iX)) ; ((
+    cThread .. vX) --> vX) ; ((cThread .. vY) --> vY) ; ((cThread .. oX) -->
+    oX) ; (cThread .. oY) --> oY) >,connections : ((iY --> (ctrlProc .. iY)) ;
+    (cX --> (ctrlProc .. cX)) ; (cY --> (ctrlProc .. cY)) ; (iX --> (ctrlProc
+    .. iX)) ; ((ctrlProc .. vX) --> vX) ; ((ctrlProc .. vY) --> vY) ; ((
+    ctrlProc .. oX) --> oX) ; (ctrlProc .. oY) --> oY) > < env : Env |
+    properties : ((TimingProperties::Period => {{1.0e+2}}) ; (
+    HybridSynchAADL::Synchronous => {{true}}) ; (HybridSynchAADL::isEnvironment
+    => {{true}}) ; (HybridSynchAADL::ContinuousDynamics => {{
+    "x(t) = 0.001 * velx * t + x(0); y(t) = 0.001 * vely * t + y(0);"}}) ; (
+    HybridSynchAADL::MaxClockDeviation => {{1.0e+1}}) ; (
+    HybridSynchAADL::SamplingTime => {{2.0 .. 4.0}}) ;
+    HybridSynchAADL::ResponseTime => {{6.0 .. 9.0}}),features : (< vX :
+    EnvInPort | properties : none,content : null(Real),envCache : null(Real),
+    target : cThread > < vY : EnvInPort | properties : none,content : null(
+    Real),envCache : null(Real),target : cThread > < cX : EnvOutPort |
+    properties : none,content : null(Real),envCache : null(Real),target :
+    cThread > < cY : EnvOutPort | properties : none,content : null(Real),
+    envCache : null(Real),target : cThread >),subcomponents : (< vely : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < velx : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) > < x : Data |
+    properties : none,features : none,subcomponents : none,connections : empty,
+    value : param(Real) > < y : Data | properties : none,features : none,
+    subcomponents : none,connections : empty,value : param(Real) >),connections
+    : ((x ==> cX) ; (y ==> cY) ; (vX =>> velx) ; vY =>> vely),varGen : <
+    "FourDronesSystemimplInstance.dr4.env" >,currMode : @@default@loc@@,jumps :
+    empty,flows : @@default@loc@@ [(x(t)= ((([[1.0e-3]] * c[velx]) * v[t]) + c[
+    x])) ; y(t)= ((([[1.0e-3]] * c[vely]) * v[t]) + c[y])],sampling : cThread
+    :(2,4),response : cThread :(6,9) >),connections : ((iY --> (ctrl .. iY)) ;
+    (iX --> (ctrl .. iX)) ; ((ctrl .. vX) --> (env .. vX)) ; ((ctrl .. vY) -->
+    (env .. vY)) ; ((ctrl .. oX) --> oX) ; ((ctrl .. oY) --> oY) ; ((env .. cX)
+    --> (ctrl .. cX)) ; (env .. cY) --> (ctrl .. cY)) >),connections : (((dr1
+    .. oX) --> (dr2 .. iX)) ; ((dr1 .. oY) --> (dr2 .. iY)) ; ((dr3 .. oX) -->
+    (dr4 .. iX)) ; ((dr3 .. oY) --> (dr4 .. iY)) ; ((dr2 .. oX) --> (dr3 ..
+    iX)) ; ((dr2 .. oY) --> (dr3 .. iY)) ; ((dr4 .. oX) --> (dr1 .. iX)) ; (dr4
+    .. oY) --> (dr1 .. iY)) >)),9}, 500, (FourDronesSystemimplInstance | ((((((
+    ((abs(((dr1 . env) | c[x]) - [[1.1000000000000001]]) < [[1.0e-2]]) and (
+    abs(((dr1 . env) | c[y]) - [[1.5]]) < [[1.0e-2]])) and (abs(((dr2 . env) |
+    c[x]) + [[1.5]]) < [[1.0e-2]])) and (abs(((dr2 . env) | c[y]) + [[
+    1.1000000000000001]]) < [[1.0e-2]])) and (abs(((dr3 . env) | c[x]) - [[
+    1.5]]) < [[1.0e-2]])) and (abs(((dr3 . env) | c[y]) - [[
+    1.1000000000000001]]) < [[1.0e-2]])) and (abs(((dr4 . env) | c[x]) + [[
+    1.1000000000000001]]) < [[1.0e-2]])) and (abs(((dr4 . env) | c[y]) + [[
+    1.5]]) < [[1.0e-2]]))) and ((ParamCompRef | (c[ParamCompId] >= minus([[
+    1.0e+4]]))) and ParamCompRef | (c[ParamCompId] <= [[1.0e+4]])),
+    FourDronesSystemimplInstance | ((((((((((((abs(((dr1 . env) | c[x]) - (dr2
+    . env) | c[x]) < [[1.0]]) and (abs(((dr1 . env) | c[y]) - (dr2 . env) | c[
+    y]) < [[1.0]])) and (abs(((dr1 . env) | c[x]) - (dr3 . env) | c[x]) < [[
+    1.0]])) and (abs(((dr1 . env) | c[y]) - (dr3 . env) | c[y]) < [[1.0]])) and
+    (abs(((dr1 . env) | c[x]) - (dr4 . env) | c[x]) < [[1.0]])) and (abs(((dr1
+    . env) | c[y]) - (dr4 . env) | c[y]) < [[1.0]])) and (abs(((dr2 . env) | c[
+    x]) - (dr3 . env) | c[x]) < [[1.0]])) and (abs(((dr2 . env) | c[y]) - (dr3
+    . env) | c[y]) < [[1.0]])) and (abs(((dr2 . env) | c[x]) - (dr4 . env) | c[
+    x]) < [[1.0]])) and (abs(((dr2 . env) | c[y]) - (dr4 . env) | c[y]) < [[
+    1.0]])) and (abs(((dr3 . env) | c[x]) - (dr4 . env) | c[x]) < [[1.0]])) and
+    (abs(((dr3 . env) | c[y]) - (dr4 . env) | c[y]) < [[1.0]])))

@@ -1,0 +1,51 @@
+==========================================
+rewrite [100] in TEST-THERMOSTAT-SYSTEM : {initState | 0 | infty} .
+rewrites: 7646
+result GlobalSystem: {< top : System | properties : TimingProperties::Period =>
+    {{5}},features : none,subcomponents : (< controller : AsyncThread |
+    properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    AsyncDataOutPort | properties : none,content : * # [false],destination : (
+    environment .. on) > < off : AsyncDataOutPort | properties : none,content :
+    * # [false],destination : (environment .. off) > < temp : AsyncDataInPort |
+    properties : none,content : [0.0] # [false],cache : [2.1050000000000001e+1]
+    # [true],destination : empty >),subcomponents : (< lower : Data |
+    properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : [1.0e+1] # [true] > <
+    upper : Data | properties : DataModel::InitialValue => {{30}},features :
+    none,subcomponents : none,connections : empty,value : [3.0e+1] # [true] > <
+    curr : Data | properties : DataModel::InitialValue => {{0}},features :
+    none,subcomponents : none,connections : empty,value : [
+    1.9830468750000001e+1] # [true] >),connections : empty,varGen : <
+    "top.controller" >,currState : l1,completeStates : l1,variables : x : Real,
+    transitions : ((l1 -[on dispatch]-> l2 {(v{x} := ((c[curr] + f[temp]) / [[
+    2]])) ; if(v[x] < c[lower])(on !) (elsif(v[x] > c[upper])off !) end if ; c{
+    curr} := v[x]}) ; l2 -[otherwise]-> l1 {skip}),loopBound : 0,transBound :
+    2,period : 5,perTimer : 5/2,msgTimer : infty,execTime : 5/2,execTimer :
+    infty > < environment : AsyncEnv | properties : ((TimingProperties::Period
+    => {{5}}) ; HybridSynchAADL::MaxClockDeviation => {{
+    1.0000000000000001e-1}}),features : (< on : AsyncEnvInPort | properties :
+    none,content : * # [false],envCache : null(Unit),target : controller,
+    destination : empty > < off : AsyncEnvInPort | properties : none,content :
+    * # [false],envCache : null(Unit),target : controller,destination : empty >
+    < out : AsyncEnvOutPort | properties : none,content : [0.0] # [false],
+    envCache : null(Real),target : controller,destination : (controller ..
+    temp) >),subcomponents : < x : Data | properties : DataModel::InitialValue
+    => {{16}},features : none,subcomponents : none,connections : empty,value :
+    [2.15e+1] # [true] >,connections : x ==> out,varGen : < "top.environment"
+    >,currMode : l1,jumps : ((l1 -[on]-> l1) ; (l1 -[off]-> l2) ; (l2 -[on]->
+    l1) ; l2 -[off]-> l2),flows : ((l1 [x(t)= (c[x] + (v[t] * [[
+    2.0000000000000001e-1]]))]) ; l2 [x(t)= (c[x] - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),period : 5,perTimer : 5/2,msgTimer : infty,samplingTimes
+    : controller : (1/4, 3/4, 5/4, 7/4),responseTimes : controller : (25/8,
+    27/8, 29/8, 31/8),envState : [response,controller],envTimer : 5/8 >) > |
+    55/2 | infty}
+==========================================
+search [, 5] in TEST-THERMOSTAT-SYSTEM : {initState | 0 | infty} =>* {none |
+    T:Time | infty} .
+
+No solution.
+states: 264  rewrites: 10772
+Bye.

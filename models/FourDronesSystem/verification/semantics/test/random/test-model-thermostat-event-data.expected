@@ -1,0 +1,177 @@
+==========================================
+rewrite in TEST-THERMOSTAT-SYSTEM : {{initState,0} | 0 | 500} .
+rewrites: 82835
+result GlobalSystem: {{< top : System | properties : TimingProperties::Period
+    => {{5}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : [0.0] # [false] > < off :
+    DataOutPort | properties : none,content : [0.0] # [false] > < temp :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    2.2367274116628632e+1] # [true] >),subcomponents : (< lower : Data |
+    properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : [1.0e+1] # [true] > <
+    upper : Data | properties : DataModel::InitialValue => {{30}},features :
+    none,subcomponents : none,connections : empty,value : [3.0e+1] # [true] > <
+    curr : Data | properties : DataModel::InitialValue => {{15}},features :
+    none,subcomponents : none,connections : empty,value : [
+    2.3406390440175656e+1] # [true] >),connections : empty,varGen : <
+    "top.controller" >,currState : init,completeStates : init,variables : x :
+    Real,transitions : ((init -[on dispatch]-> state {(v{x} := ((c[curr] + f[
+    temp]) / [[2]])) ; if(v[x] < c[lower])(on !([[1]])) (elsif(v[x] > c[
+    upper])off !([[-1]])) end if ; c{curr} := v[x]}) ; state -[otherwise]->
+    init {skip}),loopBound : 0,transBound : 2 > < environment : EnvWithTimer |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : [0.0] # [false],envCache :
+    null(Real),target : controller > < off : EnvInPort | properties : none,
+    content : [0.0] # [false],envCache : null(Real),target : controller > < out
+    : EnvOutPort | properties : none,content : [0.0] # [false],envCache : null(
+    Real),target : controller >),subcomponents : (< x : Data | properties :
+    DataModel::InitialValue => {{0}},features : none,subcomponents : none,
+    connections : empty,value : [2.1866368650730319e+1] # [true] > < e : Data |
+    properties : DataModel::InitialValue => {{0}},features : none,subcomponents
+    : none,connections : empty,value : [-1.0] # [true] >),connections : ((x ==>
+    out) ; (on =>> e) ; off =>> e),varGen : < "top.environment" >,currMode :
+    init,jumps : ((init -[on]-> state) ; (init -[off]-> init) ; (state -[on]->
+    state) ; state -[off]-> init),flows : ((init [x(t)= ((c[x] + c[e]) + (v[t]
+    * [[2.0000000000000001e-1]]))]) ; state [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >),connections : (((controller .. on) --> (environment .. on)) ;
+    ((controller .. off) --> (environment .. off)) ; (environment .. out) --> (
+    controller .. temp)) >,600} | 500 | 500}
+==========================================
+rewrite in TEST-THERMOSTAT-SYSTEM : {{initState,400} | 0 | 500} .
+rewrites: 82812
+result GlobalSystem: {{< top : System | properties : TimingProperties::Period
+    => {{5}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : [0.0] # [false] > < off :
+    DataOutPort | properties : none,content : [0.0] # [false] > < temp :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    2.3895885508934953e+1] # [true] >),subcomponents : (< lower : Data |
+    properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : [1.0e+1] # [true] > <
+    upper : Data | properties : DataModel::InitialValue => {{30}},features :
+    none,subcomponents : none,connections : empty,value : [3.0e+1] # [true] > <
+    curr : Data | properties : DataModel::InitialValue => {{15}},features :
+    none,subcomponents : none,connections : empty,value : [
+    2.5256581272668889e+1] # [true] >),connections : empty,varGen : <
+    "top.controller" >,currState : init,completeStates : init,variables : x :
+    Real,transitions : ((init -[on dispatch]-> state {(v{x} := ((c[curr] + f[
+    temp]) / [[2]])) ; if(v[x] < c[lower])(on !([[1]])) (elsif(v[x] > c[
+    upper])off !([[-1]])) end if ; c{curr} := v[x]}) ; state -[otherwise]->
+    init {skip}),loopBound : 0,transBound : 2 > < environment : EnvWithTimer |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : [0.0] # [false],envCache :
+    null(Real),target : controller > < off : EnvInPort | properties : none,
+    content : [0.0] # [false],envCache : null(Real),target : controller > < out
+    : EnvOutPort | properties : none,content : [0.0] # [false],envCache : null(
+    Real),target : controller >),subcomponents : (< x : Data | properties :
+    DataModel::InitialValue => {{0}},features : none,subcomponents : none,
+    connections : empty,value : [2.3873447837730289e+1] # [true] > < e : Data |
+    properties : DataModel::InitialValue => {{0}},features : none,subcomponents
+    : none,connections : empty,value : [-1.0] # [true] >),connections : ((x ==>
+    out) ; (on =>> e) ; off =>> e),varGen : < "top.environment" >,currMode :
+    init,jumps : ((init -[on]-> state) ; (init -[off]-> init) ; (state -[on]->
+    state) ; state -[off]-> init),flows : ((init [x(t)= ((c[x] + c[e]) + (v[t]
+    * [[2.0000000000000001e-1]]))]) ; state [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >),connections : (((controller .. on) --> (environment .. on)) ;
+    ((controller .. off) --> (environment .. off)) ; (environment .. out) --> (
+    controller .. temp)) >,1000} | 500 | 500}
+==========================================
+rewrite in TEST-THERMOSTAT-SYSTEM : {{initState,800} | 0 | 500} .
+rewrites: 82886
+result GlobalSystem: {{< top : System | properties : TimingProperties::Period
+    => {{5}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : [0.0] # [false] > < off :
+    DataOutPort | properties : none,content : [0.0] # [false] > < temp :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    2.38052241731028e+1] # [true] >),subcomponents : (< lower : Data |
+    properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : [1.0e+1] # [true] > <
+    upper : Data | properties : DataModel::InitialValue => {{30}},features :
+    none,subcomponents : none,connections : empty,value : [3.0e+1] # [true] > <
+    curr : Data | properties : DataModel::InitialValue => {{15}},features :
+    none,subcomponents : none,connections : empty,value : [
+    2.4958177129485481e+1] # [true] >),connections : empty,varGen : <
+    "top.controller" >,currState : init,completeStates : init,variables : x :
+    Real,transitions : ((init -[on dispatch]-> state {(v{x} := ((c[curr] + f[
+    temp]) / [[2]])) ; if(v[x] < c[lower])(on !([[1]])) (elsif(v[x] > c[
+    upper])off !([[-1]])) end if ; c{curr} := v[x]}) ; state -[otherwise]->
+    init {skip}),loopBound : 0,transBound : 2 > < environment : EnvWithTimer |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : [0.0] # [false],envCache :
+    null(Real),target : controller > < off : EnvInPort | properties : none,
+    content : [0.0] # [false],envCache : null(Real),target : controller > < out
+    : EnvOutPort | properties : none,content : [0.0] # [false],envCache : null(
+    Real),target : controller >),subcomponents : (< x : Data | properties :
+    DataModel::InitialValue => {{0}},features : none,subcomponents : none,
+    connections : empty,value : [2.3058684839317259e+1] # [true] > < e : Data |
+    properties : DataModel::InitialValue => {{0}},features : none,subcomponents
+    : none,connections : empty,value : [-1.0] # [true] >),connections : ((x ==>
+    out) ; (on =>> e) ; off =>> e),varGen : < "top.environment" >,currMode :
+    init,jumps : ((init -[on]-> state) ; (init -[off]-> init) ; (state -[on]->
+    state) ; state -[off]-> init),flows : ((init [x(t)= ((c[x] + c[e]) + (v[t]
+    * [[2.0000000000000001e-1]]))]) ; state [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >),connections : (((controller .. on) --> (environment .. on)) ;
+    ((controller .. off) --> (environment .. off)) ; (environment .. out) --> (
+    controller .. temp)) >,1400} | 500 | 500}
+==========================================
+rewrite in TEST-THERMOSTAT-SYSTEM : {{initState,1200} | 0 | 500} .
+rewrites: 82818
+result GlobalSystem: {{< top : System | properties : TimingProperties::Period
+    => {{5}},features : none,subcomponents : (< controller : Thread |
+    properties : ((TimingProperties::Period => {{5}}) ; (
+    HybridSynchAADL::SamplingTime => {{0.0 .. 2.0}}) ;
+    HybridSynchAADL::ResponseTime => {{3.0 .. 4.0}}),features : (< on :
+    DataOutPort | properties : none,content : [0.0] # [false] > < off :
+    DataOutPort | properties : none,content : [0.0] # [false] > < temp :
+    DataInPort | properties : none,content : [0.0] # [false],cache : [
+    2.3843376831967245e+1] # [true] >),subcomponents : (< lower : Data |
+    properties : DataModel::InitialValue => {{10}},features : none,
+    subcomponents : none,connections : empty,value : [1.0e+1] # [true] > <
+    upper : Data | properties : DataModel::InitialValue => {{30}},features :
+    none,subcomponents : none,connections : empty,value : [3.0e+1] # [true] > <
+    curr : Data | properties : DataModel::InitialValue => {{15}},features :
+    none,subcomponents : none,connections : empty,value : [
+    2.4867552418001289e+1] # [true] >),connections : empty,varGen : <
+    "top.controller" >,currState : init,completeStates : init,variables : x :
+    Real,transitions : ((init -[on dispatch]-> state {(v{x} := ((c[curr] + f[
+    temp]) / [[2]])) ; if(v[x] < c[lower])(on !([[1]])) (elsif(v[x] > c[
+    upper])off !([[-1]])) end if ; c{curr} := v[x]}) ; state -[otherwise]->
+    init {skip}),loopBound : 0,transBound : 2 > < environment : EnvWithTimer |
+    properties : ((TimingProperties::Period => {{5}}) ;
+    HybridSynchAADL::MaxClockDeviation => {{1.0000000000000001e-1}}),features :
+    (< on : EnvInPort | properties : none,content : [0.0] # [false],envCache :
+    null(Real),target : controller > < off : EnvInPort | properties : none,
+    content : [0.0] # [false],envCache : null(Real),target : controller > < out
+    : EnvOutPort | properties : none,content : [0.0] # [false],envCache : null(
+    Real),target : controller >),subcomponents : (< x : Data | properties :
+    DataModel::InitialValue => {{0}},features : none,subcomponents : none,
+    connections : empty,value : [2.3171791627190967e+1] # [true] > < e : Data |
+    properties : DataModel::InitialValue => {{0}},features : none,subcomponents
+    : none,connections : empty,value : [-1.0] # [true] >),connections : ((x ==>
+    out) ; (on =>> e) ; off =>> e),varGen : < "top.environment" >,currMode :
+    init,jumps : ((init -[on]-> state) ; (init -[off]-> init) ; (state -[on]->
+    state) ; state -[off]-> init),flows : ((init [x(t)= ((c[x] + c[e]) + (v[t]
+    * [[2.0000000000000001e-1]]))]) ; state [x(t)= ((c[x] + c[e]) - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >),connections : (((controller .. on) --> (environment .. on)) ;
+    ((controller .. off) --> (environment .. off)) ; (environment .. out) --> (
+    controller .. temp)) >,1800} | 500 | 500}
+Bye.

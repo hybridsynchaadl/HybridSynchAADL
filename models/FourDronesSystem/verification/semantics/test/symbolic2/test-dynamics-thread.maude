@@ -1,0 +1,19 @@
+
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+load module-component-dynamics.maude
+
+select TEST-THREAD-DYNAMICS-MOD .
+
+red finalConst(obj1) .
+
+red finalConst(obj2) .
+
+search executeStep(bool(true), transIn(r(4) # bool(true), c1 .. inp) obj1) =>* C:ConstConfig .
+
+search executeStep(bool(true), transIn(r(5) # bool(true), c2 .. inp) obj2) =>* C:ConstConfig .
+
+search executeStep(bool(true), transIn(r(5) # bool(true), c3 .. inp) obj3) =>* C:ConstConfig .
+
+search executeStep(bool(true), transIn(r(5) # bool(true), c4 .. inp) obj4) =>* C:ConstConfig .

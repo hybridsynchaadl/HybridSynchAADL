@@ -1,0 +1,33 @@
+package Drone
+public
+    with DroneControl;
+    with Environment;
+    with Base_Types;
+    with Hybrid_SynchAADL;
+
+    system Drone
+    	features
+            iX: in data port Base_Types::Float;
+            iY: in data port Base_Types::Float;
+            oX: out data port Base_Types::Float;
+            oY: out data port Base_Types::Float;
+    end Drone;
+
+    system implementation Drone.impl
+        subcomponents
+            ctrl: system DroneControl::DroneControl.impl;
+            env: system Environment::Environment.impl;
+        connections
+            C1: port ctrl.oX -> oX;
+            C2: port ctrl.oY -> oY;
+            C3: port iX -> ctrl.iX;
+            C4: port iY -> ctrl.iY;
+            C5: port ctrl.vX -> env.vX;
+            C6: port ctrl.vY -> env.vY;
+            C7: port env.cX -> ctrl.cX;
+            C8: port env.cY -> ctrl.cY;
+    	properties
+		Hybrid_SynchAADL::Sampling_Time => 2ms .. 4ms;
+            Hybrid_SynchAADL::Response_Time => 6ms .. 9ms;
+    end Drone.impl;
+end Drone;

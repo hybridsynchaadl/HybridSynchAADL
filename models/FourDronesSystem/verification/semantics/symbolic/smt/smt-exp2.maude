@@ -1,0 +1,122 @@
+
+fmod SMT-VAR-CONVERSION is
+  protecting CONVERSION .
+  protecting VAR-ID .
+
+  subsort String < SMTVarId .
+
+  var N : Nat .
+  var S : String .
+
+  op #escStr# : ~> String [memo] .
+  eq #escStr# = "#$#" .
+
+  op #escLen# : ~> Nat [memo] .
+  eq #escLen# = length(#escStr#) .
+
+  op varStr : String Nat ~> String .
+  eq varStr(S, N) = S + #escStr# + string(N, 10) .
+
+  op varIndex : String ~> Nat .
+  eq varIndex(S) = rat(substr(S, find(S,#escStr#,0) + #escLen#, length(S)), 10) .
+
+endfm
+
+
+--- Boolean expressions (redeclaration)
+fmod SMT-BOOL-EXP is
+  including SMT-BOOL-EXP-SYNTAX .
+  protecting BOOLEAN-EXPR .
+  protecting SMT-VAR-CONVERSION .
+
+  var N : Nat .
+  var S : String .
+  vars BE BE' BE'' : BooleanExpr .
+
+  op [_] : BooleanExpr -> SMTBoolExp [ctor] .
+  op [_] : Boolean -> SMTBoolValue [ctor] .
+  op [_] : BooleanVar -> SMTBoolVar [ctor] .
+
+--- variable
+  eq b(S, N) = [b(varStr(S,N))] .
+  eq b(N) = [b(varStr("",N))] .
+
+  eq getIndex([b(S)]) = varIndex(S) .
+
+--- conversion
+  eq bool(true)  = [true] .
+  eq bool(false) = [false] .
+
+  eq bval([true]) = true .
+  eq bval([false]) = false .
+
+--- constructing a single term
+  eq not [BE]       = [not BE] .
+  eq [BE] and [BE'] = [BE and BE'] .
+  eq [BE] xor [BE'] = [BE xor BE'] .
+  eq [BE] or  [BE'] = [BE or  BE'] .
+
+  eq [BE] implies [BE'] = [BE implies BE'] .
+  eq [BE] ===     [BE'] = [BE ===     BE'] .  
+  eq [BE] =/==    [BE'] = [BE =/==    BE'] . 
+
+  eq [BE] ? [BE'] : [BE''] = [BE ? BE' : BE''] .
+endfm
+
+
+
+--- Real expressions (redeclaration)
+fmod SMT-REAL-EXP is
+  including SMT-REAL-EXP-SYNTAX .
+  including REAL-EXPR .
+  protecting SMT-BOOL-EXP .
+  protecting SMT-TRANS-ATOM .
+  protecting SMT-VAR-CONVERSION .
+
+  var N : Nat .
+  var S : String .
+  var R : Rat .
+  var F : Float .
+  var BE : BooleanExpr .
+  vars RE RE' : RealExpr .
+
+  op [_] : RealExpr -> SMTRealExp [ctor] .
+  op [_] : Real -> SMTRealValue [ctor] .
+  op [_] : RealVar -> SMTRealVar [ctor] .
+
+--- variable
+  eq r(S, N) = [r(varStr(S,N))] .
+  eq r(N) = [r(varStr("",N))] .
+
+  eq getIndex([r(S)]) = varIndex(S) .
+
+--- conversion
+  op errorReal : ~> Real [ctor] .
+
+  eq real(R) = [downTerm(trAtom(upTerm(R)), errorReal)] .
+  eq real(F) = [downTerm(trAtom(upTerm(rat(F))), errorReal)] .
+
+ ceq rval([R:Real]) = if substr(S,0,2) == "0/" then 0 else rat(S,10) fi
+  if S := string(getName(upTerm(R:Real))) .
+
+  eq fval([R:Real]) = float(rval([R:Real])) .
+
+--- constructing a single term
+  eq - [RE] = [- RE] .
+
+  eq [RE] + [RE'] = [RE + RE'] .
+  eq [RE] * [RE'] = [RE * RE'] .
+  eq [RE] - [RE'] = [RE - RE'] .
+  eq [RE] / [RE'] = [RE / RE'] .
+
+  eq [RE] <  [RE'] = [RE <  RE'] .
+  eq [RE] <= [RE'] = [RE <= RE'] .
+  eq [RE] >  [RE'] = [RE >  RE'] .
+  eq [RE] >= [RE'] = [RE >= RE'] .
+
+  eq [RE] ===     [RE'] = [RE ===     RE'] .  
+  eq [RE] =/==    [RE'] = [RE =/==    RE'] . 
+
+  eq [BE] ? [RE] : [RE'] = [BE ? RE : RE'] .
+endfm
+

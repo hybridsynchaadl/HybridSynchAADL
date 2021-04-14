@@ -1,0 +1,128 @@
+--- A property specification language is given by Boolean AADL expressions
+--- over data components and property values, along with component scope.
+fmod SPECIFICATION-LANGUAGE-SYNTAX is
+  protecting BEHAVIOR-EXPRESSION-SYNTAX .
+
+  sort PropSpec .
+  subsorts AADLExp < PropSpec .
+  op _|_ : ComponentRef PropSpec -> PropSpec [ctor] .  --- component scope
+
+  ops _and_ _or_ _xor_ : PropSpec PropSpec -> PropSpec [ctor] .
+  ops _=_ _!=_ _<_ _<=_ _>_ _>=_ : PropSpec PropSpec -> PropSpec [ctor] .
+  ops _+_ _-_ _*_ _/_ _mod_ _rem_ _**_ : PropSpec PropSpec -> PropSpec [ctor] .
+  ops not plus minus abs : PropSpec -> PropSpec [ctor] .
+endfm
+
+
+--- Any property specification language can be translated into the normal 
+--- form where each atom is either an AADL value or an AADL identifer with 
+--- its component scope. This is useful to define confluent equations for
+--- the evaluation semantics. 
+fmod SPECIFICATION-LANGUAGE-NORMAL is
+  including SPECIFICATION-LANGUAGE-SYNTAX .
+
+  sort NPropSpec .
+  subsorts AADLExp < NPropSpec < PropSpec .
+  op _|_ : ComponentRef VarAADLExp -> NPropSpec [ctor] .
+
+  ops _and_ _or_ _xor_ : NPropSpec NPropSpec -> NPropSpec [ctor] .
+  ops _=_ _!=_ _<_ _<=_ _>_ _>=_ : NPropSpec NPropSpec -> NPropSpec [ctor] .
+  ops _+_ _-_ _*_ _/_ _mod_ _rem_ _**_ : NPropSpec NPropSpec -> NPropSpec [ctor] .
+  ops not plus minus abs : NPropSpec -> NPropSpec [ctor] .
+
+  vars CR CR' : ComponentRef .
+  var PS PS' : PropSpec .
+  var VAE : VarAADLExp .
+  var AV : AADLValue .
+
+  op normalize : ComponentRef PropSpec ~> NPropSpec [format (m! o)] .
+
+  eq normalize(CR, CR' | PS) = normalize(CR . CR', PS) .
+  eq normalize(CR, VAE) = CR | VAE .
+  eq normalize(CR, AV)  = AV .
+
+  eq normalize(CR, PS and PS') = normalize(CR, PS) and normalize(CR, PS') .
+  eq normalize(CR, PS or  PS') = normalize(CR, PS) or  normalize(CR, PS') .
+  eq normalize(CR, PS xor PS') = normalize(CR, PS) xor normalize(CR, PS') .
+
+  eq normalize(CR, PS =  PS') = (normalize(CR, PS) =  normalize(CR, PS')) .
+  eq normalize(CR, PS != PS') = (normalize(CR, PS) != normalize(CR, PS')) .
+  eq normalize(CR, PS <  PS') = (normalize(CR, PS) <  normalize(CR, PS')) .
+  eq normalize(CR, PS <= PS') = (normalize(CR, PS) <= normalize(CR, PS')) .
+  eq normalize(CR, PS >  PS') = (normalize(CR, PS) >  normalize(CR, PS')) .
+  eq normalize(CR, PS >= PS') = (normalize(CR, PS) >= normalize(CR, PS')) .
+
+  eq normalize(CR, PS +   PS') = normalize(CR, PS) +   normalize(CR, PS') .
+  eq normalize(CR, PS -   PS') = normalize(CR, PS) -   normalize(CR, PS') .
+  eq normalize(CR, PS *   PS') = normalize(CR, PS) *   normalize(CR, PS') .
+  eq normalize(CR, PS /   PS') = normalize(CR, PS) /   normalize(CR, PS') .
+  eq normalize(CR, PS mod PS') = normalize(CR, PS) mod normalize(CR, PS') .
+  eq normalize(CR, PS rem PS') = normalize(CR, PS) rem normalize(CR, PS') .
+  eq normalize(CR, PS **  PS') = normalize(CR, PS) **  normalize(CR, PS') .
+
+  eq normalize(CR,   not(PS)) =   not(normalize(CR, PS)) .
+  eq normalize(CR,  plus(PS)) =  plus(normalize(CR, PS)) .
+  eq normalize(CR, minus(PS)) = minus(normalize(CR, PS)) .
+  eq normalize(CR,   abs(PS)) =   abs(normalize(CR, PS)) .
+endfm
+
+
+--- The semantics of the property specification language is given by the
+--- function eval to evaluate the corresponding Exp. Only Boolean exps will
+--- be used, although rational exps can also be generated in the semantics. 
+--- NOTE: we assume there is no duplicate component path.  Currently, we do 
+--- not support mod, rem, and exp (**) operators.
+mod SPECIFICATION-LANGUAGE-SEMANTICS is
+  protecting SPECIFICATION-LANGUAGE-NORMAL .
+  protecting ENSEMBLE-COMPONENT .
+  protecting BEHAVIORAL-COMPONENT .
+  protecting BEHAVIOR-EXPRESSION-SEMANTICS .
+  protecting DATA-OPERATION .
+
+
+  vars CR CR' : ComponentRef .
+  var AV : AADLValue .
+  var VAE : VarAADLExp .
+  var PS PS' : PropSpec .
+  var PROPS : PropertyAssociation .
+  vars COMPS REST : Configuration .
+  var ATTS : AttributeSet .
+
+  op eval : PropSpec Configuration ~> BoolExp [format (m! o)] .
+  eq eval(PS, COMPS) = branchCD(evalPS(normalize(nilComponentRef, PS), COMPS)) .
+
+
+  op evalPS : NPropSpec Configuration ~> DataContent [format (m! o)] .
+
+  eq evalPS(CR . CR' | PS, < CR : C:Ensemble | subcomponents : COMPS, ATTS > REST) 
+   = evalPS(CR' | PS, COMPS) .
+
+  eq evalPS(CR | VAE, < CR : C:BehComponent | subcomponents : COMPS, properties : PROPS, ATTS > REST)
+   = eval(VAE, data(readData(COMPS)) prop(PROPS)) .
+
+  eq evalPS(AV, COMPS) = eval(AV, none) .
+
+  eq evalPS(PS and PS', COMPS) = evalPS(PS, COMPS) and evalPS(PS', COMPS) .
+  eq evalPS(PS or  PS', COMPS) = evalPS(PS, COMPS) or  evalPS(PS', COMPS) .
+  eq evalPS(PS xor PS', COMPS) = evalPS(PS, COMPS) xor evalPS(PS', COMPS) .
+
+  eq evalPS(PS =  PS', COMPS) = (evalPS(PS, COMPS) =   evalPS(PS', COMPS)) .
+  eq evalPS(PS != PS', COMPS) = (evalPS(PS, COMPS) !=  evalPS(PS', COMPS)) .
+  eq evalPS(PS <  PS', COMPS) = (evalPS(PS, COMPS) <   evalPS(PS', COMPS)) .
+  eq evalPS(PS <= PS', COMPS) = (evalPS(PS, COMPS) <=  evalPS(PS', COMPS)) .
+  eq evalPS(PS >  PS', COMPS) = (evalPS(PS, COMPS) >   evalPS(PS', COMPS)) .
+  eq evalPS(PS >= PS', COMPS) = (evalPS(PS, COMPS) >=  evalPS(PS', COMPS)) .
+
+  eq evalPS(PS +   PS', COMPS) = evalPS(PS, COMPS) +   evalPS(PS', COMPS) .
+  eq evalPS(PS -   PS', COMPS) = evalPS(PS, COMPS) -   evalPS(PS', COMPS) .
+  eq evalPS(PS *   PS', COMPS) = evalPS(PS, COMPS) *   evalPS(PS', COMPS) .
+  eq evalPS(PS /   PS', COMPS) = evalPS(PS, COMPS) /   evalPS(PS', COMPS) .
+
+  eq evalPS(  not(PS), COMPS) =   not(evalPS(PS, COMPS)) .
+  eq evalPS( plus(PS), COMPS) =  plus(evalPS(PS, COMPS)) .
+  eq evalPS(minus(PS), COMPS) = minus(evalPS(PS, COMPS)) .
+  eq evalPS(  abs(PS), COMPS) =   abs(evalPS(PS, COMPS)) .
+endm
+
+
+

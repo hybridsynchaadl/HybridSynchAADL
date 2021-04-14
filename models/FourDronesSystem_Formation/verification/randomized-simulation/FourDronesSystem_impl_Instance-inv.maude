@@ -1,0 +1,32 @@
+load /Users/jaehun/Documents/HybridSynchAADL/maude/prelude.maude
+load /Users/jaehun/Documents/HybridSynchAADL/maude/smt.maude
+load ../semantics/interpreter-random.maude
+load ../instance/FourDronesSystem_impl_Instance.maude
+mod TEST-FOURDRONESSYSTEM_IMPL_INSTANCE is
+  including FOURDRONESSYSTEM_IMPL_INSTANCE-MODEL .
+  including RANDOMZIE-OBJECT . 
+  								   including RANDOM-SIMULATION .
+  including SPECIFICATION-LANGUAGE-SEMANTICS .
+
+  op initState : -> Object .
+  eq initState = initialize(collapse(initial)) .
+  
+  eq loopBoundNum = unbounded .
+  eq transBoundNum = unbounded .
+  
+  op minParam : -> PropSpec .
+  eq minParam = ParamCompRef | (c[ParamCompId] >= minus([[10000.0]])) .
+  op maxParam : -> PropSpec .
+  eq maxParam = ParamCompRef | (c[ParamCompId] <= ([[10000.0]])) .
+  
+  
+  op initial : -> PropSpec .
+  eq initial = ((((((((((abs(((drone1 . environment | c[x] ) + [[0.1]])) < [[0.01]]) and (abs(((drone1 . environment | c[y] ) + [[0.1]])) < [[0.01]])) and (abs(((drone2 . environment | c[x] ) - [[0.5]])) < [[0.01]])) and (abs(((drone2 . environment | c[y] ) - [[0.5]])) < [[0.01]])) and (abs(((drone3 . environment | c[x] ) - [[2.5]])) < [[0.01]])) and (abs(((drone3 . environment | c[y] ) - [[2.5]])) < [[0.01]])) and (abs(((drone4 . environment | c[x] ) - [[5.5]])) < [[0.01]])) and (abs(((drone4 . environment | c[y] ) - [[5.5]])) < [[0.01]])) and (abs(((refDrone . env | c[x] ) - [[0.3]])) < [[0.01]])) and (abs(((refDrone . env | c[y] ) - [[0.3]])) < [[0.01]])) .
+  op collision : -> PropSpec .
+  eq collision = (((((((abs(((drone1 . environment | c[x] ) - (drone2 . environment | c[x] ))) < [[0.1]]) and (abs(((drone1 . environment | c[y] ) - (drone2 . environment | c[y] ))) < [[0.1]])) or ((abs(((drone1 . environment | c[x] ) - (drone3 . environment | c[x] ))) < [[0.1]]) and (abs(((drone1 . environment | c[y] ) - (drone3 . environment | c[y] ))) < [[0.1]]))) or ((abs(((drone1 . environment | c[x] ) - (drone4 . environment | c[x] ))) < [[0.1]]) and (abs(((drone1 . environment | c[y] ) - (drone4 . environment | c[y] ))) < [[0.1]]))) or ((abs(((drone2 . environment | c[x] ) - (drone3 . environment | c[x] ))) < [[0.1]]) and (abs(((drone2 . environment | c[y] ) - (drone3 . environment | c[y] ))) < [[0.1]]))) or ((abs(((drone2 . environment | c[x] ) - (drone4 . environment | c[x] ))) < [[0.1]]) and (abs(((drone2 . environment | c[y] ) - (drone4 . environment | c[y] ))) < [[0.1]]))) or ((abs(((drone3 . environment | c[x] ) - (drone4 . environment | c[x] ))) < [[0.1]]) and (abs(((drone3 . environment | c[y] ) - (drone4 . environment | c[y] ))) < [[0.1]]))) .
+  
+endm
+	  
+rew repeat({initState,0}, 500, ((FourDronesSystemimplInstance | initial) and (minParam and maxParam)), FourDronesSystemimplInstance | not(not(collision))) .
+
+quit

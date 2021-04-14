@@ -1,0 +1,80 @@
+==========================================
+rewrite in TEST-ENV-DYNAMICS : executeStep({env,0}) .
+rewrites: 42
+result ConfigWithRand: {< environment : EnvWithTimer | properties : ((
+    TimingProperties::Period => {{5}}) ; HybridSynchAADL::MaxClockDeviation =>
+    {{1.0000000000000001e-1}}),features : (< on : EnvInPort | properties :
+    none,content : * # [false],envCache : null(Unit),target : controller > <
+    off : EnvInPort | properties : none,content : * # [false],envCache : null(
+    Unit),target : controller > < out : EnvOutPort | properties : none,content
+    : [0.0] # [false],envCache : null(Real),target : controller >),
+    subcomponents : < x : Data | properties : DataModel::InitialValue => {{
+    16}},features : none,subcomponents : none,connections : empty,value : [
+    1.6e+1] # [true] >,connections : x ==> out,varGen : < "top.environment" >,
+    currMode : l1,jumps : ((l1 -[on]-> l1) ; (l1 -[off]-> l2) ; (l2 -[on]-> l1)
+    ; l2 -[off]-> l2),flows : ((l1 [x(t)= (c[x] + (v[t] * [[
+    2.0000000000000001e-1]]))]) ; l2 [x(t)= (c[x] - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >,0}
+==========================================
+rewrite in TEST-ENV-DYNAMICS : execSample({env,0}) .
+rewrites: 174
+result ConfigWithRand: {< environment : EnvWithTimer | properties : ((
+    TimingProperties::Period => {{5}}) ; HybridSynchAADL::MaxClockDeviation =>
+    {{1.0000000000000001e-1}}),features : (< on : EnvInPort | properties :
+    none,content : * # [false],envCache : null(Unit),target : controller > <
+    off : EnvInPort | properties : none,content : * # [false],envCache : null(
+    Unit),target : controller > < out : EnvOutPort | properties : none,content
+    : [1.6260851631271851e+1] # [true],envCache : null(Real),target :
+    controller >),subcomponents : < x : Data | properties :
+    DataModel::InitialValue => {{16}},features : none,subcomponents : none,
+    connections : empty,value : [1.6e+1] # [true] >,connections : x ==> out,
+    varGen : < "top.environment" >,currMode : l1,jumps : ((l1 -[on]-> l1) ; (l1
+    -[off]-> l2) ; (l2 -[on]-> l1) ; l2 -[off]-> l2),flows : ((l1 [x(t)= (c[x]
+    + (v[t] * [[2.0000000000000001e-1]]))]) ; l2 [x(t)= (c[x] - (v[t] * [[
+    1.0000000000000001e-1]]))]),sampling : controller :(0,2),response :
+    controller :(3,4),timer :
+    6727472470607199929743149/5158083495821457911447552,samplingIDs :
+    controller,responseIDs : controller >,2}
+==========================================
+rewrite in TEST-ENV-DYNAMICS : execResponse(execSample({env transIn(* # bool(
+    true), environment .. on),0})) .
+rewrites: 389
+result ConfigWithRand: {< environment : EnvWithTimer | properties : ((
+    TimingProperties::Period => {{5}}) ; HybridSynchAADL::MaxClockDeviation =>
+    {{1.0000000000000001e-1}}),features : (< on : EnvInPort | properties :
+    none,content : * # [false],envCache : null(Unit),target : controller > <
+    off : EnvInPort | properties : none,content : * # [false],envCache : null(
+    Unit),target : controller > < out : EnvOutPort | properties : none,content
+    : [1.6260851631271851e+1] # [true],envCache : null(Real),target :
+    controller >),subcomponents : < x : Data | properties :
+    DataModel::InitialValue => {{16}},features : none,subcomponents : none,
+    connections : empty,value : [1.6739148368728149e+1] # [true] >,connections
+    : x ==> out,varGen : < "top.environment" >,currMode : l1,jumps : ((l1 -[
+    on]-> l1) ; (l1 -[off]-> l2) ; (l2 -[on]-> l1) ; l2 -[off]-> l2),flows : ((
+    l1 [x(t)= (c[x] + (v[t] * [[2.0000000000000001e-1]]))]) ; l2 [x(t)= (c[x] -
+    (v[t] * [[1.0000000000000001e-1]]))]),sampling : controller :(0,2),response
+    : controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >,4}
+==========================================
+rewrite in TEST-ENV-DYNAMICS : execResponse(execSample({env transIn(* # bool(
+    true), environment .. off),0})) .
+rewrites: 397
+result ConfigWithRand: {< environment : EnvWithTimer | properties : ((
+    TimingProperties::Period => {{5}}) ; HybridSynchAADL::MaxClockDeviation =>
+    {{1.0000000000000001e-1}}),features : (< on : EnvInPort | properties :
+    none,content : * # [false],envCache : null(Unit),target : controller > <
+    off : EnvInPort | properties : none,content : * # [false],envCache : null(
+    Unit),target : controller > < out : EnvOutPort | properties : none,content
+    : [1.6260851631271851e+1] # [true],envCache : null(Real),target :
+    controller >),subcomponents : < x : Data | properties :
+    DataModel::InitialValue => {{16}},features : none,subcomponents : none,
+    connections : empty,value : [1.5630425815635926e+1] # [true] >,connections
+    : x ==> out,varGen : < "top.environment" >,currMode : l2,jumps : ((l1 -[
+    on]-> l1) ; (l1 -[off]-> l2) ; (l2 -[on]-> l1) ; l2 -[off]-> l2),flows : ((
+    l1 [x(t)= (c[x] + (v[t] * [[2.0000000000000001e-1]]))]) ; l2 [x(t)= (c[x] -
+    (v[t] * [[1.0000000000000001e-1]]))]),sampling : controller :(0,2),response
+    : controller :(3,4),timer : 0,samplingIDs : controller,responseIDs :
+    controller >,4}
+Bye.

@@ -1,0 +1,93 @@
+==========================================
+reduce in SMT-CHECKSAT : simplify(b(0) and (b(0) or [(false).Boolean])) .
+rewrites: 10
+result SMTBoolVar: [b("#$#0")]
+==========================================
+reduce in SMT-CHECKSAT : simplify(b(2) and [(true).Boolean] or b(4) === [(
+    false).Boolean]) .
+rewrites: 17
+result SMTBoolExp: [b("#$#2") or not b("#$#4")]
+==========================================
+reduce in SMT-CHECKSAT : simplify(b(0) === b(0) ? b(2) and [(true).Boolean] :
+    b(3)) .
+rewrites: 23
+result SMTBoolVar: [b("#$#2")]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean]) .
+rewrites: 2
+result SMTBoolValue: [(true).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify(not [(true).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(false).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean] and [(false).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(false).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean] xor [(false).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(true).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean] or [(false).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(true).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean] implies [(false).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(false).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean] === [(false).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(false).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(true).Boolean] =/== [(false).Boolean]) .
+rewrites: 3
+result SMTBoolValue: [(true).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(3/4).Real] * [(3/1).Real] < r(0)) .
+rewrites: 10
+result SMTBoolExp: [not r("#$#0") <= (9/4).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify(r(1) > r(1) ? [(2/1).Real] / [(5/1).Real] : [
+    (6/1).Real] + [(1/1).Real] * [(3/1).Real]) .
+rewrites: 13
+result SMTRealValue: [(9/1).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] + [(2/1).Real] + - [(2/1).Real]
+    + [(3/1).Real]) .
+rewrites: 6
+result SMTRealValue: [(4/1).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] + [(1/1).Real]) .
+rewrites: 3
+result SMTRealValue: [(2/1).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] * [(1/1).Real]) .
+rewrites: 3
+result SMTRealValue: [(1/1).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] - [(1/1).Real]) .
+rewrites: 3
+result SMTRealValue: [(0/1).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] / [(1/1).Real]) .
+rewrites: 3
+result SMTRealValue: [(1/1).Real]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] < [(1/1).Real]) .
+rewrites: 3
+result SMTBoolValue: [(false).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] <= [(1/1).Real]) .
+rewrites: 3
+result SMTBoolValue: [(true).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] > [(1/1).Real]) .
+rewrites: 3
+result SMTBoolValue: [(false).Boolean]
+==========================================
+reduce in SMT-CHECKSAT : simplify([(1/1).Real] >= [(1/1).Real]) .
+rewrites: 3
+result SMTBoolValue: [(true).Boolean]
+Bye.

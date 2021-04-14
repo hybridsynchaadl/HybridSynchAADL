@@ -1,0 +1,191 @@
+package DroneControl
+public
+	with Base_Types;
+	with DroneSpec;
+	with Data_Model;
+        
+	system DroneControl
+		features
+			currX: in data port Base_Types::Float;
+			currY: in data port Base_Types::Float;
+			currVX: in data port Base_Types::Float;
+			currVY: in data port Base_Types::Float;
+			
+			inX: in data port Base_Types::Float;
+			inY: in data port Base_Types::Float;
+			inVX: in data port Base_Types::Float;		
+			inVY: in data port Base_Types::Float;		
+			
+			outX : out data port Base_Types::Float;
+			outY : out data port Base_Types::Float;
+			outVX: out data port Base_Types::Float;	
+			outVY: out data port Base_Types::Float;	
+			
+			accX: out data port Base_Types::Float;
+			accY: out data port Base_Types::Float;
+			
+			refX: in data port Base_Types::Float;
+			refY: in data port Base_Types::Float;
+			refVX: in data port Base_Types::Float;
+			refVY: in data port Base_Types::Float;					
+	end DroneControl;
+	system implementation DroneControl.impl
+		subcomponents
+			droneProc: process DroneControlProc.impl;
+		connections
+			C1 : port currX -> droneProc.currX;
+			C2 : port currY -> droneProc.currY;
+			C3 : port currVX -> droneProc.currVX;
+			C4 : port currVY -> droneProc.currVY;
+			
+			C5 : port inX -> droneProc.inX;
+			C6 : port inY -> droneProc.inY;
+			C7 : port inVX -> droneProc.inVX;
+			C8 : port inVY -> droneProc.inVY;
+			
+			C9 : port droneProc.outX -> outX;
+			C10: port droneProc.outY -> outY;
+			C11: port droneProc.outVX -> outVX;
+			C12: port droneProc.outVY -> outVY;
+			
+			C13: port droneProc.accX -> accX;
+			C14: port droneProc.accY -> accY;
+			
+			C15: port refX -> droneProc.refX;
+			C16: port refY -> droneProc.refY;
+			C17: port refVX -> droneProc.refVX;
+			C18: port refVY -> droneProc.refVY;							
+	end DroneControl.impl;
+	
+	
+	process DroneControlProc
+		features
+			currX: in data port Base_Types::Float;
+			currY: in data port Base_Types::Float;
+			currVX: in data port Base_Types::Float;
+			currVY: in data port Base_Types::Float;
+			
+			inX: in data port Base_Types::Float;
+			inY: in data port Base_Types::Float;
+			inVX: in data port Base_Types::Float;		
+			inVY: in data port Base_Types::Float;		
+			
+			outX : out data port Base_Types::Float;
+			outY : out data port Base_Types::Float;
+			outVX: out data port Base_Types::Float;	
+			outVY: out data port Base_Types::Float;	
+			
+			accX: out data port Base_Types::Float;
+			accY: out data port Base_Types::Float;
+			
+			refX: in data port Base_Types::Float;
+			refY: in data port Base_Types::Float;
+			refVX: in data port Base_Types::Float;
+			refVY: in data port Base_Types::Float;						
+	end DroneControlProc;
+	process implementation DroneControlProc.impl
+		subcomponents
+			droneThread: thread DroneControlThread.impl;
+		connections
+			C1 : port currX -> droneThread.currX;
+			C2 : port currY -> droneThread.currY;
+			C3 : port currVX -> droneThread.currVX;
+			C4 : port currVY -> droneThread.currVY;
+			
+			C5 : port inX -> droneThread.inX;
+			C6 : port inY -> droneThread.inY;
+			C7 : port inVX -> droneThread.inVX;
+			C8 : port inVY -> droneThread.inVY;
+			
+			C9 : port droneThread.outX -> outX;
+			C10: port droneThread.outY -> outY;
+			C11: port droneThread.outVX -> outVX;
+			C12: port droneThread.outVY -> outVY;
+			
+			C13: port droneThread.accX -> accX;
+			C14: port droneThread.accY -> accY;
+			
+			C15: port refX -> droneThread.refX;
+			C16: port refY -> droneThread.refY;
+			C17: port refVX -> droneThread.refVX;
+			C18: port refVY -> droneThread.refVY;						
+	end DroneControlProc.impl;
+	
+	
+	thread DroneControlThread
+		features
+			currX: in data port Base_Types::Float;
+			currY: in data port Base_Types::Float;
+			currVX: in data port Base_Types::Float;
+			currVY: in data port Base_Types::Float;
+			
+			inX: in data port Base_Types::Float;
+			inY: in data port Base_Types::Float;
+			inVX: in data port Base_Types::Float;		
+			inVY: in data port Base_Types::Float;		
+			
+			outX : out data port Base_Types::Float;
+			outY : out data port Base_Types::Float;
+			outVX: out data port Base_Types::Float;	
+			outVY: out data port Base_Types::Float;	
+			
+			accX: out data port Base_Types::Float;
+			accY: out data port Base_Types::Float;
+			
+			refX: in data port Base_Types::Float;
+			refY: in data port Base_Types::Float;
+			refVX: in data port Base_Types::Float;
+			refVY: in data port Base_Types::Float;			
+		properties
+			Dispatch_Protocol => Periodic;
+	end DroneControlThread;
+	thread implementation DroneControlThread.impl
+		subcomponents
+			offsetX: data Base_Types::Float;
+			offsetY: data Base_Types::Float;
+			refVX0: data Base_Types::Float {Data_Model::Initial_Value => ("0");};
+			refVY0: data Base_Types::Float {Data_Model::Initial_Value => ("0");};
+		annex behavior_specification {**
+			variables
+				nx, refaX : Base_Types::Float;
+				ny, refaY : Base_Types::Float;
+			states
+				init : initial complete state;
+				exec, output : state;
+			transitions
+				init -[on dispatch]-> exec;
+                exec -[abs(currX - inX) < 0.3 and abs(currY - inY) < 0.3]-> output{
+                	accX := -currVX;
+                	accY := -currVY
+                };
+              	exec -[otherwise]-> output {
+                   	refaX := (refVX - refVX0);
+               		refaY := (refVY - refVY0);
+                   	nx := refaX - #DroneSpec::alpha * (currX - offsetX - refX + #DroneSpec::gamma * (currVX - refVX))
+                   		 	- #DroneSpec::A * (currX - offsetX - inX + #DroneSpec::gamma * (currVX - inVX));
+                   		 	                   	refaX := (refVX - refVX0);
+                   	ny := refaY - #DroneSpec::alpha * (currY - offsetY - refY + #DroneSpec::gamma * (currVY - refVY))
+                   		 	- #DroneSpec::A * (currY - offsetY - inY + #DroneSpec::gamma * (currVY - inVY));
+					if (nx > 0.5)		accX := 40
+					elsif (nx > 0)		accX := 0
+					else				accX := -40
+					end if;
+					if (ny > 0.5)		accY := 40
+					elsif (ny > 0)		accY := 0
+					else				accY := -40
+					end if
+               	};
+                output -[ ]-> init {
+                  	outX := currX - offsetX;
+                  	outY := currY - offsetY;
+                  	
+                  	outVX := currVX;
+                  	outVY := currVY;
+                   	
+                   	refVX0 := refVX;                   	
+                   	refVY0 := refVY
+             	};
+	**};
+	end DroneControlThread.impl;
+	
+end DroneControl;

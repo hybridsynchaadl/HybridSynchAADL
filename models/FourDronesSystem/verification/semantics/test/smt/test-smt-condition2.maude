@@ -1,0 +1,52 @@
+set show timing off .
+
+load ../../interpreter-symbolic2.maude
+
+select SMT-BOOL-EXP .
+red [true] .
+
+red b(2) .
+red b("a",2) .
+
+red getIndex(b(2)) .
+red getIndex(b(21)) .
+red getIndex(b("a",2)) .
+red getIndex(b("ab",21)) .
+
+red [true] and b(2) or (b(4) === [false]) .
+red b(2) or (b(4) === [false]) ? [true] : [false] or b("a",3) .
+
+red bool(true) .
+red bool(false) .
+
+red bval([true]) .
+red bval([false]) .
+
+select SMT-REAL-EXP .
+red [2/3] .
+red [4/3] + b(0) . --- kind
+red [4/3] + r(0) .
+red r("b",2) .
+
+red getIndex(r(2)) .
+red getIndex(r(21)) .
+red getIndex(r("a",2)) .
+red getIndex(r("ab",21)) .
+
+red ([0/1] > r(2)) or (r(4) === r(5)) .
+red (r(4) === r(5)) ? [1/2] + r("a",1) : r(4) * r(5) .
+
+red real(0) .
+red real(1) .
+red real(3/4) .
+red real(-1/10) .
+
+red rval([0/1]) .
+red rval([1/1]) .
+red rval([3/4]) .
+red rval([-1/10]) .
+
+red fval([0/1]) .
+red fval([1/1]) .
+red fval([3/4]) .
+red fval([-1/10]) .

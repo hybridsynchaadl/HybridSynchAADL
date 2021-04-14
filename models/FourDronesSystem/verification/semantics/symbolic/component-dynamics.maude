@@ -1,0 +1,252 @@
+
+--- a pair of symbolic constraint and configuration
+mod CONST-CONFIGURATION is
+  including COMPONENT .
+  protecting BOOL-EXP .
+
+  sort ConstConfig .
+  subsort Configuration < ConstConfig .
+  op _||_ : BoolExp Configuration -> ConstConfig [ctor] .
+  op __ : ConstConfig ConstConfig -> ConstConfig [ditto] .
+
+  var CR : ComponentRef .  
+  vars CONST CONST' : BoolExp .
+  vars CONF CONF' : Configuration .
+  var ATTS : AttributeSet .
+
+  eq (CONST || CONF) (CONST' || CONF') 
+   = (CONST and CONST') || CONF CONF' .
+
+  eq (CONST || CONF) OBJ:Object 
+   = CONST || (CONF OBJ:Object) .
+
+  eq < CR : C:Component | subcomponents : CONST || CONF, ATTS >
+   = CONST || < CR : C:Component | subcomponents : CONF, ATTS > .
+endm
+
+
+--- Defines a transition step of each component.
+mod COMPONENT-DYNAMICS is
+  protecting COMPONENT .
+  protecting PORT .
+  protecting CHECKSAT .
+  including CONST-CONFIGURATION .
+
+--- A transition relation of each component. 
+  op executeStep : BoolExp Object ~> ConstConfig [format (m! o)] .
+
+--- Complete constraints regarding the final transition step of a reachability 
+--- analysis, due to "symbolic delay" between environments and controllers
+  op finalConst : Configuration ~> BoolExp [format (m! o)] .
+  eq finalConst(none) = bool(true) .
+endm
+
+
+--- Define the behavior of a thread
+mod THREAD-DYNAMICS is
+  including THREAD-COMPONENT .
+  including BEHAVIOR-TRANSITION-SEMANTICS .
+  including BEHAVIOR-TRANSITION-TRANS .
+  including FEATURE-OPERATION .
+  including DATA-OPERATION .
+  including COMPONENT-DYNAMICS .
+
+  var THREAD : Object .
+  var CR : ComponentRef .  
+  var ATTS : AttributeSet .
+  vars BCF BCF' : BehaviorConf .
+  vars COMPS PORTS PORTS' : Configuration .  
+  var PROPS : PropertyAssociation .
+  var LS : Set{Location} .
+  var VIS : Map{VarId,DataType} .
+  var TRS : Set{Transition} .  
+  vars LB TB : Nat .
+  vars DATA : DataValuation .
+  vars FMAP : FeatureMap .
+  vars CONST CONST' : BoolExp .
+  vars L L' : Location . 
+  vars GEN GEN' : VarGen .
+
+--- executeStep
+
+  --- 1] read data in its input ports and data subcomponents
+  eq executeStep(CONST, < CR : C:Thread | features : PORTS, subcomponents : COMPS, ATTS >)
+   =  execThread(CONST, < CR : C:Thread | features : PORTS, subcomponents : COMPS, ATTS >, 
+                 readFeature(PORTS), readData(COMPS), threadConf(ATTS)) .
+
+  --- 2] execute its transition system (which is always nondeterministic)
+  op execThread : BoolExp Object FeatureReadResult DataValuation BehaviorConf ~> ConstConfig [format (m! o)] .
+ ceq execThread(CONST, THREAD, {PORTS,FMAP}, DATA, BCF)
+   = execThread(CONST, THREAD, PORTS, execTrans(BCF'))
+  if BCF' := feature(FMAP) data(DATA) BCF .
+
+  --- 3] its ports, data, and state will be update accordingly
+  op execThread : BoolExp Object Configuration BATransResult ~> ConstConfig [format (m! o)] .
+ ceq execThread(CONST, 
+      < CR : C:Thread | features : PORTS, subcomponents : COMPS, currState : L, varGen : GEN, ATTS >, 
+      PORTS', {location(L') feature(FMAP) data(DATA) const(CONST') vargen(GEN') BCF})
+   = simplify(CONST') ||
+      < CR : C:Thread | features : writeFeature(FMAP,PORTS'),
+                        subcomponents : writeData(DATA,COMPS), currState : L', varGen : GEN', ATTS > 
+  if check-sat(CONST and CONST') .
+
+  --- behavior conf for thread
+  op threadConf : AttributeSet ~> BehaviorConf [format (m! o)] .
+  eq threadConf((properties : PROPS,  currState : L,   transitions : TRS, loopBound : LB,
+                 completeStates : LS, variables : VIS, transBound : TB,   varGen : GEN, ATTS))
+   = 
+     local(defaultVal(VIS)) prop(PROPS) location(L) complete(LS) 
+     trans(TRS) lbound(LB) tbound(TB) vargen(GEN) const(bool(true)) .
+
+--- nothing needed for the final step constraint
+  eq finalConst(< CR : C:Thread | ATTS > COMPS) = finalConst(COMPS) .
+endm
+
+
+--- Define the behavior of data (nothing happens)
+mod DATA-DYNAMICS is
+  including COMPONENT-DYNAMICS .
+  including DATA-COMPONENT .
+
+  var CR : ComponentRef .  
+  var COMPS : Configuration .
+  var CONST : BoolExp .
+  var ATTS : AttributeSet .
+
+  eq executeStep(CONST, < CR : C:Data | ATTS >) = < CR : C:Data | ATTS > .
+
+  eq finalConst(< CR : C:Data | ATTS > COMPS) = finalConst(COMPS) .
+endm
+
+
+--- Define the behavior of ensembles
+mod ENSEMBLE-DYNAMICS is
+  including COMPONENT-DYNAMICS .
+  including DEFAULT-PROPERTIES .
+  protecting TRANSFER-INPUT .
+  protecting TRANSFER-RESULTS .
+
+  var CR : ComponentRef .  
+  vars OBJ OBJ' : Object .  
+  vars CONST CONST' : BoolExp .
+  var COMPS : Configuration .
+  var ATTS : AttributeSet .
+  vars CCF CCF' : ConstConfig .
+  var QUEUE : [ObjectQueue] .
+
+--- executeStep
+
+  --- 1] transfer inputs and propagate executeStep.
+  --- NOTE: finalConst is needed here to avoid a false deadlock for symbolic simulation
+  eq  executeStep(CONST, < CR : C:Ensemble | ATTS >)
+   = execEnsemble(CONST, propagateExecSub(CONST, transferInputs(< CR : C:Ensemble | ATTS >))) .
+
+  --- 2] Each executeStep will be rewritten to a constrained object.
+  --- 3] transfer results in the output ports to the enclosing ensemble
+  op execEnsemble : BoolExp ConstConfig ~> ConstConfig [format (m! o)] .
+ ceq execEnsemble(CONST, CONST' || OBJ) = simplify(CONST') || OBJ'
+  if OBJ' := transferResults(OBJ)
+  /\ check-sat(CONST and CONST' and finalConst(OBJ')) .  
+
+  --- Propagate executeStep to all subcomponents
+  op propagateExecSub : BoolExp Object ~> Object [format (m! o)] .
+  op propagateExec : BoolExp Configuration ObjectQueue ~> ConstConfig [format (m! o)] .
+
+  eq propagateExecSub(CONST, < CR : C:Component | subcomponents : COMPS, ATTS >)
+   = < CR : C:Component | subcomponents : propagateExec(CONST, COMPS, nil), ATTS > .
+
+  eq propagateExec(CONST, < CR : C:Component | ATTS > COMPS, QUEUE)
+   = propagateExec(CONST, COMPS, executeStep(CONST, < CR : C:Component | ATTS >) :: QUEUE) .
+  eq propagateExec(CONST, none, QUEUE) = QUEUE | none .
+
+--- the frozen attribute gives a deterministic order in rewriting.
+  sort ObjectQueue .
+  op nil : -> ObjectQueue [ctor format (r! o)] .
+  op _::_ : ConstConfig ObjectQueue -> ObjectQueue [ctor frozen(2)] .
+  op _|_ : ObjectQueue ConstConfig ~> ConstConfig [ctor] .
+
+  --- if the first item finishes its execution, then the next item is scheduled
+  eq CCF :: QUEUE | CCF' = QUEUE | CCF' CCF .
+  eq          nil | CCF' =         CCF' .
+
+--- finalConst
+
+  eq finalConst(< CR : C:Ensemble | ATTS > COMPS)
+   = finalConstSub(transferInputs(< CR : C:Ensemble | ATTS >)) and finalConst(COMPS) .
+
+  op finalConstSub : Object ~> BoolExp [format (m! o)] .
+  eq finalConstSub(< CR : C:Component | subcomponents : COMPS, ATTS >) = finalConst(COMPS) .
+endm
+
+
+--- Define the behavior of environments
+mod ENV-DYNAMICS is
+  including ENV-FEATURE-OPERATION .
+  including DATA-OPERATION .
+  including COMPONENT-DYNAMICS .
+  including ENV-COMPONENT .
+  including ENV-TRANSITION-SEMANTICS .
+
+  var ENV : Object .
+  vars COMPS PORTS PORTS' PORTS'' : Configuration .  
+  vars BCF BCF' : BehaviorConf .
+  var DATA : DataValuation .
+  var PROPS : PropertyAssociation .
+  vars FMAP : FeatureMap .
+  var JUMPS : Set{EnvJump} .
+  var FLOWS : Set{EnvFlow} .
+  vars CONST CONST' ICONST OCONST : BoolExp .
+  var CR : ComponentRef .  
+  vars L L' : Location . 
+  var CONXS : Set{Connection} .
+  vars SK PER : Rat .
+  vars STS RTS : Set{InterTiming} .
+  vars GEN GEN1 GEN2 : VarGen .
+  var ATTS : AttributeSet .
+
+--- executeStep
+
+  --- 1] read data in its input ports and data subcomponents
+  eq executeStep(CONST, < CR : C:Env | features : PORTS, subcomponents : COMPS, varGen : GEN, ATTS >)
+   =  execEnvMod(CONST, < CR : C:Env | features : PORTS, subcomponents : COMPS, varGen : GEN, ATTS >,
+                 readEnvFeature(PORTS,GEN), readData(COMPS), envConf(ATTS,PORTS)) .
+
+
+  --- 2] execute its transition system 
+  op execEnvMod : BoolExp Object EnvFeatureReadResult DataValuation BehaviorConf ~> ConstConfig [format (m! o)] .
+ ceq execEnvMod(CONST, ENV, {PORTS',FMAP,ICONST,GEN}, DATA, BCF)
+   = execEnvMod(CONST, ENV, PORTS', ICONST, execEnv(BCF')) 
+  if BCF' := feature(FMAP) data(DATA) vargen(GEN) BCF .
+
+  --- 3] its ports, data, and mode will be update accordingly
+  op execEnvMod : BoolExp Object Configuration BoolExp BATransResult ~> ConstConfig [format (m! o)] .
+ ceq execEnvMod(CONST, 
+      < CR : C:Env | features : PORTS,
+                     subcomponents : COMPS,
+                     currMode : L, 
+                     varGen : GEN,
+                     ATTS >,
+      PORTS', ICONST, {mode(L') feature(FMAP) data(DATA) const(CONST') vargen(GEN1) BCF})
+   = 
+      simplify(ICONST and CONST' and OCONST) || 
+      < CR : C:Env | features : PORTS'',
+                     subcomponents : writeData(DATA,COMPS), 
+                     currMode : L', 
+                     varGen : GEN2,
+                     ATTS >
+   if {PORTS'',OCONST,GEN2} := writeEnvFeature(FMAP, PORTS', GEN1)
+   /\ check-sat(CONST and ICONST and CONST' and OCONST) .
+
+  --- behavior conf for env
+  op envConf : AttributeSet Configuration ~> BehaviorConf [format (m! o)] .
+  eq envConf((connections : CONXS, currMode : L,  jumps : JUMPS,  
+              properties : PROPS,  flows : FLOWS, sampling : STS, response : RTS, ATTS), PORTS)
+   = 
+     time(real(0)) mode(L) envcon(CONXS,PORTS) prop(PROPS) 
+     sampling(STS) response(RTS) jumps(JUMPS) flows(FLOWS) const(bool(true)) .
+
+--- constraint that the envCache values are equal the received value
+ ceq finalConst(< CR : C:Env | features : PORTS, varGen : GEN, ATTS > COMPS) = ICONST and finalConst(COMPS)
+  if {PORTS',FMAP,ICONST,GEN1} := readEnvFeature(PORTS,GEN) .
+endm
+

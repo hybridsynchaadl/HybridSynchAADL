@@ -1,0 +1,71 @@
+(
+Time: 0
+FourDronesSystemimplInstance ->[
+  dr1 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> -5.1264425029806889e+3),(vely |=>
+    5.6822869870071963e+3),(x |=> 1.1056822869870071),y |=> 1.5017727799834153
+      currMode: @@default@loc@@]]
+  dr3 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> -5.1264425029806889e+3),(vely |=>
+    5.6822869870071963e+3),(x |=> 1.4946276356150925),y |=> 1.1050648024107945
+      currMode: @@default@loc@@]]
+  dr2 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> -5.1264425029806889e+3),(vely |=>
+    5.6822869870071963e+3),(x |=> -1.500197794616734),y |=> -1.10528331552988
+      currMode: @@default@loc@@]]
+  dr4 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> -5.1264425029806889e+3),(vely |=>
+    5.6822869870071963e+3),(x |=> -1.0951179754513125),y |=>
+    -1.4975900021166517
+      currMode: @@default@loc@@]]])
+
+Time: 100
+FourDronesSystemimplInstance ->[
+  dr1 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> 2.5),(vely |=> -2.5),(x |=> -1.0485226921844154e+1),
+    y |=> 1.437071412377839e+1
+      currMode: @@default@loc@@]]
+  dr3 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> 2.5),(vely |=> -2.5),(x |=> -7.4654801809519258),y
+    |=> 1.1059069279420468e+1
+      currMode: @@default@loc@@]]
+  dr2 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> 2.5),(vely |=> -2.5),(x |=> -7.5010914179595467),y
+    |=> 5.5669536028617301
+      currMode: @@default@loc@@]]
+  dr4 ->[
+    (ctrl . ctrlProc . cThread) ->[
+      variables: none
+      currState: init]
+    env ->[
+      variables: (velx |=> 2.5),(vely |=> -2.5),(x |=> -7.5046270588644779),y
+    |=> 5.6271598256940578
+      currMode: @@default@loc@@]]]

@@ -1,0 +1,10 @@
+load Drones2_impl_Instance.maude .
+mod DRONES2_IMPL_INSTANCE-MODEL-SYMBOLIC is
+    including DRONES2_IMPL_INSTANCE-MODEL .
+    including BEHAVIOR-SYMBOLIC-LOCATION .
+
+    eq init = loc(real(0)) .
+    eq setY = loc(real(1)) .
+    eq setX = loc(real(2)) .
+    eq setode = loc(real(3)) .
+endm

@@ -1,0 +1,61 @@
+
+--- Symbolic expressions, composed of variables and concrete values.
+fmod SMT-EXP is
+  including EXP .
+  protecting NAT .
+
+  sorts SMTVar SMTValue SMTExp .
+  subsort SMTValue SMTVar < SMTExp < Exp .
+
+  --- return the index of a variable
+  op getIndex : SMTVar ~> Nat [format (m! o)] .
+endfm
+
+
+--- Boolean expressions
+fmod SMT-BOOL-EXP-SYNTAX is
+  protecting STRING .
+  including BOOL-EXP .
+  including SMT-EXP .
+
+  sort SMTBoolExp .
+  subsort SMTBoolExp < BoolExp SMTExp .
+
+  --- boolean variables in constraints
+  sort SMTBoolVar .
+  subsort SMTBoolVar < SMTVar SMTBoolExp .
+  op b : Nat -> SMTBoolVar [ctor] .
+  op b : String Nat -> SMTBoolVar [ctor] .
+
+  sort SMTBoolValue .
+  subsort SMTBoolValue < SMTValue SMTBoolExp .
+endfm
+
+
+fmod SMT-REAL-EXP-SYNTAX is
+  including REAL-EXP .
+  protecting SMT-BOOL-EXP-SYNTAX .
+  protecting CONVERSION .
+
+  sort SMTRealExp .
+  subsort SMTRealExp < RealExp SMTExp .
+
+  --- real variables in constraints
+  sort SMTRealVar .
+  subsort SMTRealVar < SMTVar SMTRealExp .
+  op r : Nat -> SMTRealVar [ctor] .
+  op r : String Nat -> SMTRealVar [ctor] .
+
+  sort SMTRealValue .
+  subsort SMTRealValue < SMTValue SMTRealExp .
+endfm
+
+
+fmod SMT-UNIT-EXP is
+  including UNIT-EXP .
+  including SMT-EXP .
+
+  sort SMTUnitValue .
+  subsort SMTUnitValue < SMTValue UnitExp < Exp .
+  op * : -> SMTUnitValue [ctor] .  --- for event
+endfm

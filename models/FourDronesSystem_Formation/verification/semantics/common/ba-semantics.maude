@@ -1,0 +1,272 @@
+mod BEHAVIOR-ACTION-CONF is
+  including VAR-GEN .
+  including BEHAVIOR-CONF .
+  including BOUND .
+
+  op vargen : VarGen -> BehaviorConfItem [ctor format (b! o)] .
+  op randC : Nat -> BehaviorConfItem [ctor format (b! o)] .
+  op const : BoolExp -> BehaviorConfItem [ctor format (b! o)] .
+  op lbound : Bound -> BehaviorConfItem [ctor format(b! o)] .
+  op tbound : Bound -> BehaviorConfItem [ctor format (b! o)] .
+
+  vars CONST CONST' : BoolExp .
+  var BCF : BehaviorConf .
+
+  op addConst : BehaviorConf BoolExp ~> BehaviorConf .
+  eq addConst(const(CONST) BCF, CONST') = const(CONST and CONST') BCF .
+endm
+
+--- A behavior action may change data subcomponents or output features.
+--- Currently, we do not assume predefined functions like sin, cos, etc.
+mod BEHAVIOR-ACTION-SEMANTICS is
+  including BEHAVIOR-ACTION-SYNTAX .
+  including BEHAVIOR-ACTION-CONF .
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+
+  var N : Nat .
+  var E : Exp .
+  vars B : BoolExp .
+  var VAL : VarValuation .  
+  var FMAP : FeatureMap . 
+  var DATA : DataValuation .
+  vars PROPS : PropertyAssociation .  
+  var BCF BCF' : BehaviorConf .  
+  var CR : ComponentRef .  
+  var PI : FeatureId .  
+  var VI : VarId .
+  var A : Action .  
+  vars AS AS' AS'' : ActionGroup .
+  var ASQ : ActionSequence .  
+  var AST : ActionSet .
+  vars AE AE' : AADLExp .  
+  var ELSIFS : ElseIfs .
+  var D : DataContent . 
+  var FC : FeatureMapContent . 
+  vars BO BO' : Bound .
+
+
+--- execAction(actions, local variables | features | data | properties | loop bound | constraints)
+  op execAction : Action BehaviorConf ~> BehaviorConf [format (m! o)] .
+
+--- action blocks/sets/sequences
+
+  eq execAction({A ; ASQ}, BCF) = execAction({ASQ}, execAction(A, BCF)) .
+
+  --- allows nondeterministic choices
+  rl execAction({A & AST}, BCF) => execAction({AST}, execAction(A, BCF)) .  
+
+  eq execAction({A}, BCF) = execAction(A, BCF) .
+
+  --- empty action
+  eq execAction({skip}, BCF) = BCF . 
+
+--- Assignment: local variables, output ports/params, and data (sub)components
+--- An assignment can be executed only if the value to be assigned is defined.
+--- Note that true will be added for each flag B, while B added to CONST.
+
+  eq execAction(v{VI} := AE, BCF) =  execVarAssign(VI, eval(AE,BCF), BCF) .
+  eq execAction(f{PI} := AE, BCF) = execPortAssign(PI, eval(AE,BCF), BCF) .
+  eq execAction(c{CR} := AE, BCF) = execDataAssign(CR, eval(AE,BCF), BCF) .
+
+  op execVarAssign : VarId DataContent BehaviorConf ~> BehaviorConf [format (m! o)] .
+  eq execVarAssign(VI, E # B, local(VAL) BCF)
+   = local(insert(VI, E # bool(true), VAL)) addConst(BCF, B) .
+
+  --- output data ports (NOTE: not checked whether PI is indeed an output port)
+  op execPortAssign : FeatureId DataContent BehaviorConf ~> BehaviorConf [format (m! o)] .
+  eq execPortAssign(PI, E # B, feature(FMAP) BCF)
+   = feature(insert(PI, E # bool(true), FMAP)) addConst(BCF, B) .
+  
+ --- only basic values.
+  op execDataAssign : ComponentRef DataContent BehaviorConf ~> BehaviorConf [format (m! o)] .
+  eq execDataAssign(CR, E # B, data(DATA) BCF)
+   = data(insert(CR, E # bool(true), DATA)) addConst(BCF, B) .
+ 
+  op target : VarAADLExp ~> AssignmentTarget [format (m! o)] .
+  eq target(v[VI]) = v{VI} .
+  eq target(f[PI]) = f{PI} .
+  eq target(c[CR]) = c{CR} .
+
+--- event/event data port for the environment
+  eq execAction(PI !, BCF) = execPortAssign(PI, * # bool(true), BCF) .
+
+  eq execAction(PI !(AE), BCF) = execPortAssign(PI, eval(AE,BCF), BCF) .
+
+
+--- Branch actions: currently, all possible paths are explicitly enumerated
+--- A branch can be executed only if the condition value is defined.
+
+  --- if-then
+  crl execAction(if (AE) AS end if, BCF)
+  => execAction(AS, addConst(BCF, B)) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) .
+    
+  crl execAction(if (AE) AS end if, BCF)
+  => addConst(BCF, B) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+    
+  --- if-then-else
+  crl execAction(if (AE) AS else AS' end if, BCF)
+  => execAction(AS, addConst(BCF, B)) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) .
+
+  crl execAction(if (AE) AS else AS' end if, BCF)
+  => execAction(AS', addConst(BCF, B)) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+
+  --- elsif (single)
+  crl execAction(if (AE) AS (elsif (AE') AS') end if, BCF)
+  => execAction(AS, addConst(BCF, B)) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) . 
+
+  crl execAction(if (AE) AS (elsif (AE') AS') end if, BCF)
+  => execAction(if (AE') AS' end if, addConst(BCF, B)) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+
+  --- elsif (many)
+  crl execAction(if (AE) AS ((elsif (AE') AS') ELSIFS) end if, BCF)
+  => execAction(AS, addConst(BCF, B)) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) .
+
+  crl execAction(if (AE) AS ((elsif (AE') AS') ELSIFS) end if, BCF)
+  => execAction(if (AE') AS' ELSIFS end if, addConst(BCF, B)) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+
+  --- if-elsif-else
+  crl execAction(if (AE) AS (elsif (AE') AS') else AS'' end if, BCF)
+  => execAction(AS, addConst(BCF, B)) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) .
+
+  crl execAction(if (AE) AS (elsif (AE') AS') else AS'' end if, BCF)
+  => execAction(if (AE') AS' else AS'' end if, addConst(BCF, B)) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+
+  --- if-elsif(many)-else
+  crl execAction(if (AE) AS ((elsif (AE') AS') ELSIFS) else AS'' end if, BCF)
+  => execAction(AS, addConst(BCF, branchCD(eval(AE, BCF)))) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) .
+
+  crl execAction(if (AE) AS ((elsif (AE') AS') ELSIFS) else AS'' end if, BCF)
+  => execAction(if (AE') AS' ELSIFS else AS'' end if, addConst(BCF, B)) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+
+--- loop action. NOTE: The for loop is not supported yet.
+  crl execAction(while (AE) {AS}, lbound(BO) BCF)
+  => execAction({AS ; while (AE) {AS}}, lbound(BO') addConst(BCF, B)) 
+  if B := branchCD(eval(AE, BCF)) /\ B =/= bool(false) 
+  /\ BO' := if BO == unbounded then unbounded else sd(BO, 1) fi .
+
+  crl execAction(while (AE) {AS}, BCF)
+  => addConst(BCF, B) 
+  if B := branchCD(eval(not(AE), BCF)) /\ B =/= bool(false) .
+
+  eq execAction(do AS until (AE), BCF)
+   = execAction(while (not(AE)) {AS}, execAction({AS}, BCF)) .
+endm
+
+mod BEHAVIOR-TRANSITION-RESULT is
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+  including BEHAVIOR-ACTION-CONF .
+  protecting CHECKSAT .
+  
+  sort BATransResult .
+  op {_} : BehaviorConf -> BATransResult [ctor frozen(1)] .
+
+  var CONST : BoolExp .
+  var BCF : BehaviorConf .
+  vars LB TB : Bound .
+
+  op transBehResult : BehaviorConf ~> BATransResult .
+ ceq transBehResult(const(CONST) lbound(LB) tbound(TB) BCF) = {const(CONST) BCF}
+  if check-sat(CONST) .
+
+  op transEnvResult : BehaviorConf ~> BATransResult .
+ ceq transEnvResult(const(CONST) BCF) = {const(CONST) BCF}
+  if check-sat(CONST) .
+
+endm
+
+view BATransResult from TRIV to BEHAVIOR-TRANSITION-RESULT is
+  sort Elt to BATransResult .
+endv
+
+--- NOTE: we do not support a transition priority yet.
+mod BEHAVIOR-TRANSITION-EXEC is
+  including BEHAVIOR-ACTION-SEMANTICS .
+  including BEHAVIOR-TRANSITION-RESULT .
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+  including BEHAVIOR-TRANSITION-SET .
+
+  vars SL L L' : Location . 
+  var LS : Set{Location} .
+  vars B B' : BoolExp .
+  vars VAL VAL' : VarValuation .  
+  vars BCF BCF' : BehaviorConf .
+  vars TRS TRS' : Set{Transition} .  
+  var GUARD : TransGuard .  
+  var ACT : ActionBlock .
+  vars BO BO' : Bound .
+  var AE : AADLExp .
+  var DATA : DataValuation .
+  var FMAP : FeatureMap .
+  var PROPS : PropertyAssociation .
+
+  op location : Location -> BehaviorConfItem [ctor format (b! o)] .
+  op complete : Set{Location} -> BehaviorConfItem [ctor format (b! o)] .
+  op trans : Set{Transition} -> BehaviorConfItem [ctor format (b! o)] .
+
+--- Execute (nondeterministic) transitions until reaching a complete state,
+  op execBehTrans : BehaviorConf ~> BATransResult [format (m! o)] .
+
+  sort Tuple{Location,ActionBlock,BehaviorConf} .
+  op {_,_,_} : Location ActionBlock BehaviorConf -> Tuple{Location,ActionBlock,BehaviorConf} .
+  op chooseTrans : Location Set{Transition} BehaviorConf -> Tuple{Location,ActionBlock,BehaviorConf} .
+
+--- returns transitions from the current location
+  op outTrans : Location Set{Transition} ~> Set{Transition} .
+  eq outTrans(L, (L -[GUARD]-> L' ACT) ; TRS)
+   = (L -[GUARD]-> L' ACT) ; outTrans(L, TRS) .
+  eq outTrans(L, TRS) = empty [owise] .
+
+--- guardConst takes the current guard, other transitions, and local
+--- behavior configuration, and returns the corresponding symbolic expression.
+--- "otherwise" is also considered.
+  op guardConst : TransGuard Set{Transition} BehaviorConf ~> BoolExp .
+  eq guardConst(AE, TRS, BCF) = branchCD(eval(AE, BCF)) .
+  eq guardConst(on dispatch, TRS, BCF) = bool(true) .
+ ceq guardConst(otherwise, TRS, BCF) = conjNegGuards(TRS, BCF) if noOwise(TRS) .
+
+--- return a conjunction of the negations of all guard conditions
+  op conjNegGuards : Set{Transition} BehaviorConf ~> BoolExp .
+  eq conjNegGuards((L -[GUARD]-> L' ACT) ; TRS, BCF)
+   = not(guardConst(GUARD, empty, BCF)) and conjNegGuards(TRS, BCF) .
+  eq conjNegGuards(empty, BCF) = bool(true) .
+
+--- return true if no "otherwise" guard exists
+  op noOwise : Set{Transition} ~> Bool .
+  eq noOwise((L -[otherwise]-> L' ACT) ; TRS) = false .
+  eq noOwise(TRS) = true [owise] .
+
+--- NOTE: SL can be potentially a symbolic location
+  crl [trans]:
+     execBehTrans(location(SL) trans(TRS) tbound(BO) local(VAL) BCF)
+   =>
+     execTStep(VAL, location(L) trans(TRS) tbound(BO') execAction(ACT, BCF')) 
+   if chooseTrans(SL,TRS, local(VAL) BCF) => {L,ACT,BCF'}
+   /\ BO' := if BO == unbounded then unbounded else sd(BO, 1) fi .
+
+  op execTStep : VarValuation BehaviorConf ~> BATransResult [format (m! o)] .
+   eq execTStep(VAL, location(L) complete(LS) local(VAL') BCF) 
+    = if L in LS
+      then transBehResult(location(L) BCF) 
+      else execBehTrans(location(L) complete(LS) local(VAL) BCF) fi .
+
+endm
+
+
+mod BEHAVIOR-TRANSITION-SEMANTICS is
+  protecting BEHAVIOR-TRANSITION-EXEC .
+
+  op execTrans : BehaviorConf ~> BATransResult [format (m! o)] .
+  eq execTrans(BCF:BehaviorConf) = execBehTrans(BCF:BehaviorConf) .
+endm

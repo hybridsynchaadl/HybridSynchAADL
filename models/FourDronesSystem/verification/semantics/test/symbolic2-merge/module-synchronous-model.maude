@@ -1,0 +1,32 @@
+
+load module-component-dynamics.maude
+
+
+mod TEST-MODEL-TRANSITION-SYSTEM-MOD is
+  including MODEL-TRANSITION-SYSTEM .
+  including TEST-ENSEMBLE-DYNAMICS-MOD .
+  protecting HYBRID-SYNCHAADL-PROPERTIES .
+
+  op c4 : -> ComponentId [ctor] .
+
+  op con2 : -> Set{Connection} .
+  eq con2 =
+    (c1 .. outp --> c2 .. inp) ; 
+    (c2 .. outp --> c1 .. inp)
+  .
+
+  op props : -> PropertyAssociation .
+  eq props =
+    (TimingProperties::Period => {{60}}) ;
+    (HybridSynchAADL::Synchronous => {{true}}) .
+
+  op obj4 : -> Object [ctor] .
+  eq obj4
+   = < c4 : System |
+         features : none,
+         subcomponents : obj1 obj2,
+         properties : props,
+         connections : con2 > .
+endm
+
+

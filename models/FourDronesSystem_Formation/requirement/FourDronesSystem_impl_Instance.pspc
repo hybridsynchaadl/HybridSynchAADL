@@ -1,0 +1,20 @@
+name: FourDronesSystem_impl_Instance;
+
+model: FourDronesSystem::FourDronesSystem.impl;
+
+instance: "/FourDronesSystem_Formation/package/instances/FourDronesSystem_FourDronesSystem_impl_Instance.aaxl2";
+
+proposition [initial] : abs(drone1.environment.x + 0.1) < 0.01 and abs(drone1.environment.y + 0.1) < 0.01 and
+						abs(drone2.environment.x - 0.5) < 0.01 and abs(drone2.environment.y - 0.5) < 0.01 and
+						abs(drone3.environment.x - 2.5) < 0.01 and abs(drone3.environment.y - 2.5) < 0.01 and
+						abs(drone4.environment.x - 5.5) < 0.01 and abs(drone4.environment.y - 5.5) < 0.01 and
+						abs(refDrone.env.x - 0.3) < 0.01       and abs(refDrone.env.y - 0.3) < 0.01;
+
+proposition [collision] : (abs(drone1.environment.x-drone2.environment.x)<0.1 and abs(drone1.environment.y-drone2.environment.y)<0.1) or
+						  (abs(drone1.environment.x-drone3.environment.x)<0.1 and abs(drone1.environment.y-drone3.environment.y)<0.1) or
+						  (abs(drone1.environment.x-drone4.environment.x)<0.1 and abs(drone1.environment.y-drone4.environment.y)<0.1) or
+						  (abs(drone2.environment.x-drone3.environment.x)<0.1 and abs(drone2.environment.y-drone3.environment.y)<0.1) or
+						  (abs(drone2.environment.x-drone4.environment.x)<0.1 and abs(drone2.environment.y-drone4.environment.y)<0.1) or
+						  (abs(drone3.environment.x-drone4.environment.x)<0.1 and abs(drone3.environment.y-drone4.environment.y)<0.1) ;
+
+invariant [inv] : ?initial ==> not(?collision) in time 500;
