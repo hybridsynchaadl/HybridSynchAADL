@@ -1,0 +1,118 @@
+grammar edu.postech.aadl.xtext.propspec.PropSpec with org.osate.xtext.aadl2.properties.Properties
+
+import "http://aadl.info/AADL/2.0" as aadl2
+
+generate propSpec "http://www.postech.edu/aadl/xtext/propspec/PropSpec"
+
+
+Top:
+	('name' ':' name=ID ';')
+	&
+	('model' ':' model=[aadl2::ComponentClassifier|QCREF] ';')		
+	&
+	('instance' ':' path=STRING ';')
+	&
+	(
+		(proposition+=Proposition) 
+		| 
+		(property+=Property)
+	)*;
+	
+Property:
+	Reachability | Invariant;
+	
+Reachability:
+	'reachability' '[' name=ID ']' ':' (initCond=PSExpression '==>')? goalCond=PSExpression 'in' 'time' bound=INTVALUE ';';
+
+Invariant:
+	'invariant' '[' name=ID ']' ':' (initCond=PSExpression '==>')? goalCond=PSExpression 'in' 'time' bound=INTVALUE ';';
+	
+Proposition :
+	'proposition' '[' name=ID ']' ':' expression=PSExpression ';';	
+	
+
+
+/*
+ * Mode declaration (for internal use)
+ */
+
+Mode:
+	(SYMBOLIC| RANDOM)
+;
+
+SYMBOLIC:
+	name=("symbolic")
+;
+
+RANDOM:
+	name=("random") '(' seed=INTVALUE ')'
+;
+
+
+/* 
+ * Maude proposition language syntax
+ */
+	
+
+/*
+ * A subset of the behavior expression language
+ */
+
+
+PSExpression:
+	ScopedExpression ({BinaryExpression.left=current} op=('and'|'or'|'xor') right=PSExpression)*	
+|	Relation ({BinaryExpression.left=current} op=('and'|'or'|'xor') right=Relation)*	
+;
+    
+
+Relation returns PSExpression:
+    ModifiedExpression ({BinaryExpression.left=current} op=('='|'!='|'<'|'<='|'>'|'>=') right=ModifiedExpression)?
+|	'?' PropRef
+;
+
+ModifiedExpression returns PSExpression:
+	SimpleExpression
+|	{UnaryExpression} op=('+'|'-') child=SimpleExpression
+;
+
+SimpleExpression returns PSExpression:
+    Term ({BinaryExpression.left=current} op=('+'|'-') right=Term)*
+;
+
+Term returns PSExpression:
+   Value ({BinaryExpression.left=current} op=('*'|'/') right=Value)*
+|  {UnaryExpression} op=('abs'|'not') child=Value
+;
+
+Value returns PSExpression:
+    {Value} value=ValueConstant
+|	{Value} value=ContainmentPath
+|	'(' PSExpression ')'
+;
+
+PropRef:
+	def=[Proposition]
+;
+
+ScopedExpression:
+	path=ContainmentPath '|'  expression=PSExpression
+;
+
+/*
+ * A value constant (string, unsigned real, unsigned integer, boolean)
+ */
+ 
+ValueConstant returns aadl2::PropertyValue:
+	StringTerm | UnsignedRealTerm | UnsignedIntegerTerm | BooleanLiteral ;	// only a subset
+	
+UnsignedRealTerm returns aadl2::RealLiteral:
+	value=UnsignedReal (unit=[aadl2::UnitLiteral|ID])? ;
+	
+UnsignedIntegerTerm returns aadl2::IntegerLiteral:
+	value=UnsignedInt (unit=[aadl2::UnitLiteral|ID])? ;
+
+UnsignedReal returns aadl2::Real:
+	REAL_LIT ;
+	
+UnsignedInt returns aadl2::Integer:
+	INTEGER_LIT ;

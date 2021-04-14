@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="HybridSynchAADL"
+            id="edu.postech.aadl.synch">
+      </category>
+      <wizard
+            name="HybridSynchAADL Property Specification file"
+            icon="icons/sample.gif"
+            category="edu.postech.aadl.synch"
+            class="edu.postech.aadl.synch.wizard.RtmAadlPropertyWizard"
+            id="edu.postech.aadl.synch.wizard.RtmAadlPropertyWizard">
+      </wizard>
+   </extension>
+   
+   <extension 
+         point="org.eclipse.core.resources.markers"
+         id="edu.postech.aadl.synch.HybridSyncAadlObjectMarker"
+         name="HybridSynchAADL Constraints Error">
+      <super type="org.osate.aadl2.modelsupport.AadlObjectMarker"/>
+      <persistent value="true"/>
+   </extension>
+
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="edu.postech.aadl.maude.preferences.MaudePrefPage"
+            id="edu.postech.maude.preferences.page"
+            name="Maude Preferences">
+      </page>
+   </extension>
+
+	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+	    <launchConfigurationType
+	        name="HybridSynchAADL Analysis"
+	        delegate="edu.postech.aadl.configuration.AnalysisLaunchConfiguration"
+	        modes="run"
+	        id="edu.postech.hybridsynchaadl.analysis.launchConfigurationType">
+	    </launchConfigurationType>
+	</extension>
+	
+	<extension
+    	point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+    	<launchConfigurationTabGroup
+        	class="edu.postech.aadl.configuration.AnalysisTabGroup"
+        	id="edu.postech.hybridsynchaadl.analysis.launchConfigurationTabGroup"
+        	type="edu.postech.hybridsynchaadl.analysis.launchConfigurationType">
+    	</launchConfigurationTabGroup>
+	</extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="HybridSynchAadlMenu.commands.category"
+            name="Sample Category">
+      </category>
+      <command
+            categoryId="HybridSynchAadlMenu.commands.category"
+            name="Constraints Check"
+            id="HybridSynchAadlMenu.commands.constraintsCheck">
+      </command>
+      <command
+            categoryId="HybridSynchAadlMenu.commands.category"
+            name="Code Generation"
+            id="HybridSynchAadlMenu.commands.codeGeneration">
+      </command>
+      <command
+            categoryId="HybridSynchAadlMenu.commands.category"
+            name="Analysis"
+            id="HybridSynchAadlMenu.commands.Analysis">
+      </command>
+      <command
+            categoryId="HybridSynchAadlMenu.commands.category"
+            name="SymbolicReachability"
+            id="HybridSynchAadlMenu.commands.SymbolicReachability">
+      </command>
+            <command
+            categoryId="HybridSynchAadlMenu.commands.category"
+            name="RandomizedSimulation"
+            id="HybridSynchAadlMenu.commands.RandomizedSimulation">
+      </command>
+            <command
+            categoryId="HybridSynchAadlMenu.commands.category"
+            name="PortfolioAnalysis"
+            id="HybridSynchAadlMenu.commands.PortfolioAnalysis">
+      </command>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="edu.postech.aadl.synch.menu.ConstraintsCheck"
+            commandId="HybridSynchAadlMenu.commands.constraintsCheck">
+			<enabledWhen>
+			    <with variable="activeEditorId">
+			        <equals value="edu.postech.aadl.xtext.propspec.PropSpec"/>
+			    </with>
+			</enabledWhen>
+      </handler> 
+      <handler
+            class="edu.postech.aadl.synch.menu.CodeGeneration"
+            commandId="HybridSynchAadlMenu.commands.codeGeneration">
+			<enabledWhen>
+			    <with variable="activeEditorId">
+			        <equals value="edu.postech.aadl.xtext.propspec.PropSpec"/>
+			    </with>
+			</enabledWhen>
+      </handler> 
+      <handler
+            class="edu.postech.aadl.synch.menu.Analysis"
+            commandId="HybridSynchAadlMenu.commands.Analysis">
+           			<enabledWhen>
+			    <with variable="activeEditorId">
+			        <equals value="edu.postech.aadl.xtext.propspec.PropSpec"/>
+			    </with>
+			</enabledWhen> 
+           
+      </handler> 
+      <handler
+            class="edu.postech.aadl.synch.menu.Analysis"
+            commandId="HybridSynchAadlMenu.commands.SymbolicReachability">
+      </handler> 
+      <handler
+            class="edu.postech.aadl.synch.menu.Analysis"
+            commandId="HybridSynchAadlMenu.commands.RandomizedSimulation">
+      </handler> 
+      <handler
+            class="edu.postech.aadl.synch.menu.Analysis"
+            commandId="HybridSynchAadlMenu.commands.PortfolioAnalysis">
+      </handler> 
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="HybridSynchAadlMenu.commands.constraintsCheck"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+5">
+      </key>
+      <key
+            commandId="HybridSynchAadlMenu.commands.codeGeneration"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+      <key
+            commandId="HybridSynchAadlMenu.commands.SymbolicReachability"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+7">
+      </key>
+      <key
+            commandId="HybridSynchAadlMenu.commands.RandomizedSimulation"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+8">
+      </key>
+      <key
+            commandId="HybridSynchAadlMenu.commands.PortfolioAnalysis"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+9">
+      </key>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="HybridSynchAadlMenu.menus.simpleMenu"
+               label="HybridSynchAADL"
+               mnemonic="M">
+            <command
+                  commandId="HybridSynchAadlMenu.commands.constraintsCheck"
+                  id="HybridSynchAadlMenu.menus.constraintsCheck"
+                  label="Constraint Checking"
+                  mnemonic="S">
+            </command>
+
+            <command
+                  commandId="HybridSynchAadlMenu.commands.codeGeneration"
+                  id="HybridSynchAadlMenu.menus.codeGeneration"
+                  mnemonic="S">
+            </command>
+            <menu
+                  id="HybridSynchAadlMenu.menus.simpleMenu2"
+                  label="Formal Analysis"
+                  mnemonic="M">
+               <command
+                     commandId="HybridSynchAadlMenu.commands.SymbolicReachability"
+                     id="HybridSynchAadlMenu.menus.SymbolicReachability"
+                     label="Symbolic Reachability"
+                     mnemonic="S">
+               </command>
+               <command
+                     commandId="HybridSynchAadlMenu.commands.RandomizedSimulation"
+                     id="HybridSynchAadlMenu.menus.RandomizedSimulation"
+                     label="Randomized Simulation"
+                     mnemonic="S">
+               </command>
+               <command
+                     commandId="HybridSynchAadlMenu.commands.PortfolioAnalysis"
+                     id="HybridSynchAadlMenu.menus.PortfolioAnalysis"
+                     label="Portfolio Analysis"
+                     mnemonic="S">
+               </command>
+            </menu>
+         </menu>
+      </menuContribution>
+   </extension>
+
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="HybridSynchAADL Result"
+            id="edu.postech.aadl.synch">
+      </category>
+      <view
+            id="edu.postech.aadl.view.HybridSynchAADLView"
+            name="HybridSynchAADL Result"
+            icon="icons/sample.gif"
+            class="edu.postech.aadl.synch.view.HybridSynchAADLView"
+            category="edu.postech.aadl.synch"
+            inject="true">
+      </view>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="edu.postech.aadl.view.HybridSynchAADLView"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="right"
+               ratio="0.5">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+
+</plugin>

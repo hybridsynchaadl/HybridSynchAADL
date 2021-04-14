@@ -1,0 +1,98 @@
+mod ASYNC-MSG is
+  protecting DATA-CONTENT .
+  protecting FEATURE-REF .
+  including CONFIGURATION .
+
+  op msg_to_ : DataContent FeatureRef -> Msg [ctor] .
+endm
+
+
+
+mod ASYNC-COMPONENT is
+  protecting TIME .
+  including COMPONENT .
+---(
+  class AsyncComponent | perTimer : TimeInf,  --- period timer
+                         msgTimer : TimeInf . --- message send
+  subclass AsyncComponent < Component .
+---)
+
+  sort AsyncComponent .
+  subsort AsyncComponent < Component .
+  op AsyncComponent : -> AsyncComponent [ctor] .
+  op period`:_ : Time -> Attribute [ctor gather(&)] .
+  op perTimer`:_ : TimeInf -> Attribute [ctor gather(&) format (d d y! o)] .
+  op msgTimer`:_ : TimeInf -> Attribute [ctor gather(&) format (d d y! o)] .
+endm
+
+
+
+mod ASYNC-THREAD-COMPONENT is
+  including ASYNC-COMPONENT .
+  including THREAD-COMPONENT .
+---(
+  class AsyncThread | execTime : Time,
+                      execTimer : TimeInf .
+  subclass AsyncThread < AsyncComponent Thread .
+---)
+  sort AsyncThread .
+  subsort AsyncThread < AsyncComponent Thread .
+  op AsyncThread : -> AsyncThread [ctor] .
+  op execTime`:_ : Time -> Attribute [ctor gather(&)] .
+  op execTimer`:_ : TimeInf -> Attribute [ctor gather(&) format (d d y! o)] .
+endm
+
+
+fmod ASYNC-ENV-STATE is
+  protecting COMPONENT-ID .
+  protecting TIME .
+
+  sort EnvState .
+  op idle : -> EnvState [ctor] .
+  op __ : EnvState EnvState -> EnvState [ctor assoc id: idle] .
+
+  sort EnvStateItem .
+  subsort EnvStateItem < EnvState .
+  op [_,_] : EnvJobType ComponentId -> EnvStateItem [ctor] .
+  op [_,_,_] : EnvJobType ComponentId Time -> EnvStateItem [ctor] .
+
+  sort EnvJobType .
+  ops sampling response : -> EnvJobType .
+
+  var ET : EnvJobType .
+  var ES : EnvState .
+  var CI : ComponentId .
+  vars T T' : Time .
+
+  op lasttime : EnvState ~> Time .
+  eq lasttime(idle) = 0 .
+  eq lasttime(ES [ET,CI,T]) = T .
+
+  op timeEffect : EnvState Time ~> EnvState [format (m! o)] .
+  eq timeEffect([ET, CI, T] ES, T') = [ET, CI, T monus T'] timeEffect(ES, T') .
+  eq timeEffect([ET, CI]    ES, T') = [ET, CI]             timeEffect(ES, T') .
+  eq timeEffect(idle,           T') = idle .
+endfm
+
+
+mod ASYNC-ENV-COMPONENT is
+  including ASYNC-COMPONENT .
+  including ENV-COMPONENT .
+  including ASYNC-ENV-STATE .
+  including SET{InterTime} * (op _,_ : Set{InterTime} Set{InterTime} -> Set{InterTime} to _;_) .
+---(
+  class AsyncEnv | samplingTimes : Set{InterTime},
+                   responseTimes : Set{InterTime},
+                   envState : EnvState .
+                   envTimer : TimeInf .
+  subclass AsyncEnv < AsyncComponent Thread .
+---)
+  sort AsyncEnv .
+  subsort AsyncEnv < AsyncComponent Env .
+  op AsyncEnv : -> AsyncEnv [ctor] .
+  op samplingTimes`:_ : Set{InterTime} -> Attribute [ctor gather(&)] .
+  op responseTimes`:_ : Set{InterTime} -> Attribute [ctor gather(&)] .
+  op envState`:_ : EnvState -> Attribute [ctor gather(&)] .
+  op envTimer`:_ : TimeInf -> Attribute [ctor gather(&) format (d d y! o)] .
+endm
+

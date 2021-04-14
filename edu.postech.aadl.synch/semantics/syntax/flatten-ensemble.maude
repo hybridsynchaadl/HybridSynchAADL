@@ -1,0 +1,158 @@
+
+fmod ID-COMPOSITION is
+  including COMPONENT-REF .
+  including FEATURE-REF .
+
+  var C : ComponentId .
+  var CR : ComponentRef .
+  var P : FeatureId .
+
+  --- a flattened component/feature id
+  op pasteC : ComponentId ComponentRef ~> ComponentRef [format(m! o)] .
+  eq pasteC(C, CR) = C . CR .
+
+  --- a flattened feature id
+  op pasteF : ComponentId FeatureRef ~> FeatureRef [format(m! o)] .
+  eq pasteF(C, CR .. P) = pasteC(C,CR) .. P .
+  eq pasteF(C, P)       = C .. P .
+endfm
+
+
+--- connecting connections
+fmod CONNECTION-COMPOSITION is
+  including SET{Connection} * (op _,_ : Connection Connection -> Connection to _;_) .
+
+  var CONX : Connection . 
+  var CONXS : Set{Connection} .  
+  vars FR1 FR2 FR3 : FeatureRef .
+
+  op link : Set{Connection} ~> Set{Connection} [format(m! o)] .
+  eq link((FR1 --> FR2) ; (FR2 --> FR3) ; CONXS) 
+   = link(linkAll(FR1 --> FR2, (FR2 --> FR3) ; CONXS)) .
+  eq link(CONXS) = CONXS [owise] .
+
+  op linkAll : Connection Set{Connection} ~> Set{Connection} [format(m! o)] .
+  eq linkAll(FR1 --> FR2, (FR2 --> FR3) ; CONXS) 
+   = (FR1 --> FR3) ; linkAll(FR1 --> FR2, CONXS) .
+  eq linkAll(CONX, CONXS) = CONXS [owise] .
+endfm
+
+
+--- combine two data ports: only works **BEFORE** initialization
+mod DATA-PORT-COMPOSITION is
+  including DATA-PORT .
+
+  vars P P' : FeatureId . 
+  var D : DataContent .  
+  var PR : PropertyId .  
+  var PV : PropertyValue .  
+  vars PROPS PROPS' : PropertyAssociation .
+  var TY : DataType .
+  vars ATTS ATTS' : AttributeSet .
+
+  op combine : Object Object -> Object [format(m! o)] .
+
+  eq combine(
+       < P  : DataInPort | content : null(TY), cache : null(TY), properties : PROPS, ATTS >, 
+       < P' : DataInPort | content : D, cache : null(TY), properties : PROPS', ATTS' >)
+   = 
+       < P  : DataInPort | content : D, cache : null(TY), properties : combine(PROPS, PROPS'), ATTS > .
+
+  eq combine(
+       < P  : DataOutPort | content : null(TY), properties : PROPS, ATTS >, 
+       < P' : DataOutPort | content : D, properties : PROPS', ATTS' >)
+   = 
+       < P  : DataOutPort | content : D, properties : combine(PROPS, PROPS'), ATTS > .
+
+  op combine : PropertyAssociation PropertyAssociation ~> PropertyAssociation [format(m! o)] .
+  eq combine(PROPS, (PR => PV) ; PROPS') = combine(insert(PR, PV, PROPS), PROPS') .
+  eq combine(PROPS, none) = PROPS .
+endm
+
+
+--- flatten an ensemble with a single subcomponent 
+mod COLLAPSE-SINGLE-ENSEMBLE is
+  including ID-COMPOSITION .
+  including DATA-PORT-COMPOSITION .
+  including CONNECTION-COMPOSITION .
+  including ENSEMBLE-COMPONENT .
+
+  var OBJ' : Object . 
+  vars COMPS COMPS' PORTS PORTS' : Configuration .  
+  vars CONXS CONXS' : Set{Connection} .  
+  vars C C' : ComponentId .  
+  vars CR : ComponentRef .  
+  vars P P' : FeatureId . 
+  vars FR1 FR2 : FeatureRef .
+  var CLASS : Cid . 
+  vars PROPS PROPS' : PropertyAssociation .
+  vars ATTS ATTS' ATTS'' : AttributeSet . 
+
+  op collapse : Object ~> Object [format(m! o)] .
+  eq collapse(< C : C:Ensemble | subcomponents : COMPS, ATTS > COMPS')
+   = open(< C : C:Ensemble | subcomponents : collapse(COMPS), ATTS >) collapse(COMPS') .
+  eq collapse(COMPS) = COMPS [owise] .
+
+  op open : Object ~> Object [format(m! o)] .
+
+  --- open an sub-ensemble with a single subcomponent
+  eq open(
+      < C : C:Ensemble |
+          connections : CONXS,
+          subcomponents : 
+              < C' : C':Ensemble | features : PORTS',
+                                   properties : PROPS',
+                                   connections : CONXS', 
+                                   subcomponents : OBJ' > COMPS, ATTS >)
+   = 
+     open(
+       < C : C:Ensemble | 
+          connections : link(CONXS ; sub(C', CONXS')), 
+          subcomponents : 
+              sub(C', PROPS', transFeature(PORTS',CONXS',OBJ')) COMPS, ATTS >) .
+
+  eq open(< C : C:Component | ATTS >) = < C : C:Component | ATTS > [owise] .
+
+
+--- level-up identifiers
+  op sub : ComponentId Set{Connection} ~> Set{Connection} [format(m! o)] .
+  eq sub(C, (FR1 --> FR2) ; CONXS) = (pasteF(C,FR1) --> pasteF(C,FR2)) ; sub(C, CONXS) .
+  eq sub(C, empty) = empty .
+
+  op sub : ComponentId PropertyAssociation Configuration ~> Configuration [format(m! o)] .
+  eq sub(C, PROPS, < CR : CLASS | properties : PROPS', ATTS > COMPS) 
+   = < pasteC(C,CR) : CLASS | properties : combine(PROPS', PROPS), ATTS > sub(C,PROPS,COMPS) .
+  eq sub(C, PROPS, none) = none .
+
+--- transfer feature properties, e.g., initial values
+  op transFeature : Configuration Set{Connection} Configuration ~> Configuration [format(m! o)] .
+
+  eq transFeature(
+       < P : C:Feature | ATTS > PORTS, 
+       (P --> (CR .. P')) ; CONXS,
+       < CR : C:Component | 
+           features : < P' : C':Feature | ATTS' > PORTS', ATTS'' > COMPS)
+   = 
+     transFeature(
+       < P : C:Feature | ATTS > PORTS,
+       CONXS,
+       < CR : C:Component | 
+           features : combine(< P' : C':Feature | ATTS' >, 
+                              < P  : C:Feature  | ATTS  >) PORTS', ATTS'' > COMPS) .
+
+  eq transFeature(
+       < P : C:Feature | ATTS > PORTS, 
+       ((CR .. P') --> P) ; CONXS,
+       < CR : C:Component | 
+           features : < P' : C':Feature | ATTS' > PORTS', ATTS'' > COMPS)
+   = 
+     transFeature(
+       < P : C:Feature | ATTS > PORTS,
+       CONXS,
+       < CR : C:Component | 
+           features : combine(< P' : C':Feature | ATTS' >, 
+                              < P  : C':Feature | ATTS  >) PORTS', ATTS'' > COMPS) .
+    
+  eq transFeature(PORTS, CONXS, COMPS) = COMPS [owise] .
+endm
+

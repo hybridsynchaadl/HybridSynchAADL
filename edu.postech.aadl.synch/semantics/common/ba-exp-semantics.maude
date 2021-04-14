@@ -1,0 +1,161 @@
+
+--- For a behavior annex language, a configuration consists of a set of 
+--- local variables, a set of (data) subcomponents, a set of port, 
+--- and a set of property values, together with symbolic constraints.
+mod BEHAVIOR-CONF is
+  including VAR-VALUATION .
+  including FEATURE-MAP .
+  including DATA-VALUATION .
+  including AADL-PROPERTY-ASSOCIATION .
+  protecting BOOL-EXP .
+
+  sort BehaviorConf .
+  op none : -> BehaviorConf [ctor] .
+  op __ : BehaviorConf BehaviorConf -> BehaviorConf [ctor comm assoc id: none] .
+
+  sort BehaviorConfItem .
+  subsort BehaviorConfItem < BehaviorConf .
+endm
+
+
+fmod DATA-CONTENT-EVAL is
+  including DATA-CONTENT .
+
+--- the value is defined only if both subexpressions are defined.
+
+  vars E E1 E2 : Exp .
+  vars B B1 B2 : BoolExp .
+
+  op _and_ : DataContent DataContent -> DataContent .
+  op _or_ : DataContent DataContent -> DataContent .
+  op _xor_ : DataContent DataContent -> DataContent .
+
+  eq (E1 # B1) and (E2 # B2) = (E1 and E2) # (B1 and B2) .
+  eq (E1 # B1) or  (E2 # B2) = (E1 or  E2) # (B1 and B2) .
+  eq (E1 # B1) xor (E2 # B2) = (E1 xor E2) # (B1 and B2) .
+
+  op _=_ : DataContent DataContent -> DataContent .
+  op _!=_ : DataContent DataContent -> DataContent .
+  op _<_ : DataContent DataContent -> DataContent .
+  op _<=_ : DataContent DataContent -> DataContent .
+  op _>_ : DataContent DataContent -> DataContent .
+  op _>=_ : DataContent DataContent -> DataContent .
+
+  eq ((E1 # B1) =  (E2 # B2)) = (E1 ===  E2) # (B1 and B2) .
+  eq  (E1 # B1) != (E2 # B2)  = (E1 =/== E2) # (B1 and B2) .
+  eq  (E1 # B1) <  (E2 # B2)  = (E1 <    E2) # (B1 and B2) .
+  eq  (E1 # B1) <= (E2 # B2)  = (E1 <=   E2) # (B1 and B2) .
+  eq  (E1 # B1) >  (E2 # B2)  = (E1 >    E2) # (B1 and B2) .
+  eq  (E1 # B1) >= (E2 # B2)  = (E1 >=   E2) # (B1 and B2) .
+
+  op _+_ : DataContent DataContent -> DataContent .
+  op _-_ : DataContent DataContent -> DataContent .
+  op _*_ : DataContent DataContent -> DataContent .
+  op _/_ : DataContent DataContent -> DataContent .
+
+  eq (E1 # B1) + (E2 # B2) = (E1 + E2) # (B1 and B2) .
+  eq (E1 # B1) - (E2 # B2) = (E1 - E2) # (B1 and B2) .
+  eq (E1 # B1) * (E2 # B2) = (E1 * E2) # (B1 and B2) .
+  eq (E1 # B1) / (E2 # B2) = (E1 / E2) # (B1 and B2) .
+
+  op not : DataContent -> DataContent .
+  op plus : DataContent -> DataContent .
+  op minus : DataContent -> DataContent .
+  op abs : DataContent -> DataContent .
+
+  eq not   (E1 # B1) = (not(E1)) # B1 .
+  eq plus  (E1 # B1) = E1 # B1 .
+  eq minus (E1 # B1) = (- E1) # B1 .
+  eq abs   (E1 # B1) = (E1 >= real(0) ? E1 : - E1) # B1 .
+endfm
+
+
+mod BEHAVIOR-EXPRESSION-CONF is
+  including BEHAVIOR-CONF .
+
+  op local : VarValuation -> BehaviorConfItem [ctor format (b! o)] .
+  op feature : FeatureMap -> BehaviorConfItem [ctor format (b! o)] .
+  op data : DataValuation -> BehaviorConfItem [ctor format (b! o)] .
+  op prop : PropertyAssociation -> BehaviorConfItem [ctor format (b! o)] .
+endm
+
+
+--- There is no side effect for expressions.  We assume that there is no ambiguity
+--- caused by duplicated identifiers.
+mod BEHAVIOR-EXPRESSION-SEMANTICS is
+  including BEHAVIOR-EXPRESSION-SYNTAX .
+  including DATA-CONTENT-EVAL .
+  protecting BEHAVIOR-EXPRESSION-CONF .
+
+  var D : DataContent .
+  vars E E1 E2 : Exp .
+  vars B B1 B2 : BoolExp .
+  vars AE1 AE2 : AADLExp .
+  var VAL : VarValuation .  
+  var FMAP : FeatureMap . 
+  var DATA : DataValuation .
+  var PROPS : PropertyAssociation .  
+  vars BCF BCF' : BehaviorConf . 
+  var CR : ComponentRef .  
+  var PI : FeatureId .  
+  var VI : VarId .
+  var PR : PropertyId .  
+  var PV : PropertyValue .  
+  var N : Nat .
+
+--- eval returns a pair (e # b), where b denotes if the value e is defined.
+  op eval : AADLExp BehaviorConf ~> DataContent [format (m! o)] .
+
+--- AADL values. We only consider booleans, integers, and float-point numbers.
+--- We assume that there no char or string values in the behavioral spec.
+  eq eval([[B:Bool]],  BCF) = bool(B:Bool) # bool(true) .
+  eq eval([[I:Int]],   BCF) = real(I:Int)  # bool(true) .
+  eq eval([[F:Float]], BCF) = real(F:Float) # bool(true) .
+
+--- variable expressions
+  eq eval(v[VI], local(VAL) BCF)    = VAL[VI] .                     --- local variables
+  eq eval(f[PI], feature(FMAP) BCF) = getData(FMAP[PI]) .           --- input ports
+  eq eval(c[CR], data(DATA) BCF)    = DATA[CR] .                    --- only basic values
+  eq eval(p[PR], prop(PROPS) BCF)   = eval(value(PROPS[PR]), BCF) . --- properties
+
+  eq eval(count(PI), feature(FMAP) BCF) = count(FMAP[PI]) .
+  eq eval(fresh(PI), feature(FMAP) BCF) = fresh(FMAP[PI]) .
+
+  --- 1 if PI is present, or 0; the value is defined only if PI is. 
+  op count : FeatureMapContent -> DataContent  .
+  eq count(E # B1 : B) = (B ? real(1) : real(0)) # B1 .  
+
+  --- true if PI is present; the value is defined only if PI is.
+  op fresh : FeatureMapContent -> DataContent  .
+  eq fresh(E # B1 : B) = B # B1 .
+
+--- logical binary expressions
+  eq eval(AE1 and AE2, BCF) = eval(AE1, BCF) and eval(AE2, BCF) .
+  eq eval(AE1 or  AE2, BCF) = eval(AE1, BCF) or  eval(AE2, BCF) .
+  eq eval(AE1 xor AE2, BCF) = eval(AE1, BCF) xor eval(AE2, BCF) .
+
+--- relational expressions
+  eq eval(AE1 =  AE2, BCF) = (eval(AE1, BCF) =  eval(AE2, BCF)) .
+  eq eval(AE1 != AE2, BCF) = (eval(AE1, BCF) != eval(AE2, BCF)) .
+  eq eval(AE1 <  AE2, BCF) = (eval(AE1, BCF) <  eval(AE2, BCF)) .
+  eq eval(AE1 <= AE2, BCF) = (eval(AE1, BCF) <= eval(AE2, BCF)) .
+  eq eval(AE1 >  AE2, BCF) = (eval(AE1, BCF) >  eval(AE2, BCF)) .
+  eq eval(AE1 >= AE2, BCF) = (eval(AE1, BCF) >= eval(AE2, BCF)) .
+
+--- numeric binary expressions
+--- Currently, we do not support mod, rem, and exp (**) operators.
+  eq eval(AE1 + AE2, BCF) = eval(AE1, BCF) + eval(AE2, BCF) .
+  eq eval(AE1 - AE2, BCF) = eval(AE1, BCF) - eval(AE2, BCF) .
+  eq eval(AE1 * AE2, BCF) = eval(AE1, BCF) * eval(AE2, BCF) .
+  eq eval(AE1 / AE2, BCF) = eval(AE1, BCF) / eval(AE2, BCF) .
+
+--- unary operators
+  eq eval(not(AE1),   BCF) = not   (eval(AE1, BCF)) .
+  eq eval(plus(AE1),  BCF) = plus  (eval(AE1, BCF)) .
+  eq eval(minus(AE1), BCF) = minus (eval(AE1, BCF)) .
+  eq eval(abs(AE1),   BCF) = abs   (eval(AE1, BCF)) .
+
+--- branch condition
+  op branchCD : DataContent ~> BoolExp [format (m! o)] .
+  eq branchCD(E # B) = E and B .
+endm

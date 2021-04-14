@@ -1,0 +1,174 @@
+--- An environment component for concrete semantics
+mod ENV-WITH-TIMER-COMPONENT is
+  including ENV-COMPONENT .
+  including LIST{ComponentRef} .
+
+  ---(
+  class EnvWithTimer | timer .
+  subclass EnvWithTimer < Env .
+  ---)
+  sort EnvWithTimer .
+  subsort EnvWithTimer < Env .
+  op EnvWithTimer : -> EnvWithTimer [ctor] .
+  op timer`:_ : Rat -> Attribute [ctor gather(&)] .
+  op samplingIDs`:_ : List{ComponentRef} -> Attribute [ctor gather(&)] .
+  op responseIDs`:_ : List{ComponentRef} -> Attribute [ctor gather(&)] .
+endm
+
+
+fmod SAMPLER is
+  protecting RAT .
+  protecting RANDOM .
+  including LIST{ComponentRef} .
+
+  vars LT UT : Rat .
+  var N : Nat .
+  var CR : ComponentRef .
+  vars CRL CRL' : List{ComponentRef} .
+
+  op rand : Rat Rat Nat ~> Rat .
+  eq rand(LT,UT,N) = LT + (UT + - LT) * (random(N) / 4294967295) .
+
+  op randomPick : List{ComponentRef} Nat ~> List{ComponentRef} .
+  eq randomPick(CRL, N) = pickNth(CRL, nil, floor((random(N) / 4294967295) * size(CRL))) .
+
+  op pickNth : List{ComponentRef} List{ComponentRef} Nat ~> ComponentRef .
+  eq pickNth(CR CRL, CRL', 0)    = CR CRL CRL' .
+  eq pickNth(CR CRL, CRL', s(N)) = pickNth(CRL, CR CRL', N) .
+endfm
+
+mod ENV-TRANSITION-SEMANTICS is
+  including ENV-CHOOSE-FLOWS .
+  including ENV-WITH-TIMER-COMPONENT .
+  including ENV-CONTINUOUS-SEMANTICS .
+  including BEHAVIOR-TRANSITION-RESULT .
+  including ENV-TRANSITION-AUX .
+  including SAMPLER .
+  protecting DEFAULT-PROPERTIES .
+  protecting HYBRID-SYNCHAADL-PROPERTIES .
+  protecting CONC-CHECKSAT .
+
+  vars L L' : Location .
+  vars T T' LT UT : Rat .
+  vars SIT SIT' : Set{InterTiming} .
+  vars CRL CRL' : List{ComponentRef} .
+  var JUMPS : Set{EnvJump} .
+  var FLOW : FlowItem .
+  var FLOWS : Set{EnvFlow} .
+  var FMAP : FeatureMap .
+  var D : DataContent .
+  vars E E' : Exp .
+  vars B B' B'' : BoolExp .
+  vars SK PER : RealExp .
+  var CONXS : Set{Connection} .
+  vars DATA DATA' : DataValuation .
+  var CI : ComponentId .
+  var PI : FeatureId .
+  var PRS : Set{FeatureRef} .
+  var CR : ComponentRef .
+  vars ECF ECF' ECF'' : BehaviorConf .
+  vars PORTS PORTS' : Configuration .
+  var PROPS : PropertyAssociation .
+  var ATTS : AttributeSet .
+  var N : Nat .
+
+  op time : Rat -> BehaviorConfItem [ctor format (b! o)] .
+  op sIds : List{ComponentRef} -> BehaviorConfItem [ctor format (b! o)] .
+  op rIds : List{ComponentRef} -> BehaviorConfItem [ctor format (b! o)] .
+  op randC : Nat -> BehaviorConfItem [ctor format (b! o)] .
+
+
+--- sample step; assume no symbolic variable
+  op execSample : BehaviorConf ~> BATransResult [format (m! o)] .
+  op execSample : BehaviorConf ComponentRef Rat ~> BATransResult [format (m! o)] .
+
+  --- use frewrite for fair simulation of choosing CR
+ ceq [env-sample]: 
+     execSample(time(T) prop(PROPS) sampling((CR : (LT,UT), SIT)) sIds(CRL) randC(N) ECF) 
+   = execSample(time(T) prop(PROPS) sampling(SIT) sIds(CRL') randC(s s N) ECF, CR, T') 
+  if PER # B := eval(p[TimingProperties::Period], prop(PROPS))
+  /\ SK # B' := eval(p[HybridSynchAADL::MaxClockDeviation], prop(PROPS)) 
+  /\ check-true(B and B')
+  /\ CR CRL' := randomPick(CRL, N) 
+  /\ T' := rand(max(LT,T), min(UT + 2 * rval(SK), rval(PER)), s N) .
+
+  eq chooseFlows((L FLOW) ; FLOWS, L) = {L FLOW, bool(true)} .
+
+ ceq execSample(time(T)  mode(L) flows(FLOWS) ECF, CR, T')
+   = execSample(time(T') mode(L) flows(FLOWS) ECF') 
+  if {L FLOW, B} := chooseFlows(FLOWS, L) 
+  /\ check-true(B) 
+  /\ DATA := execFlow(FLOW, real(T' + - T), ECF) 
+  /\ ECF' := updateEnvFeature(CR, updateEnvData(DATA,ECF)) .
+
+  eq execSample(sampling(empty) ECF) 
+   = transEnvResult(sampling(empty) ECF) .
+
+--- response step (sampling should be already empty)
+  op execResp : BehaviorConf ~> BATransResult [format (m! o)] .
+  op execResp : BehaviorConf ComponentRef Rat ~> BATransResult [format (m! o)] .
+
+ ceq [env-resp]: 
+     execResp(time(T) prop(PROPS) response((CR : (LT,UT), SIT)) rIds(CRL) randC(N) ECF)
+   = execResp(time(T) prop(PROPS) response(SIT) rIds(CRL') randC(s s N) ECF, CR, T') 
+  if CR CRL' := randomPick(CRL, N) 
+  /\ PER # B := eval(p[TimingProperties::Period], prop(PROPS))
+  /\ SK # B' := eval(p[HybridSynchAADL::MaxClockDeviation], prop(PROPS)) 
+  /\ check-true(B and B')
+  /\ T' := rand(max(LT,T), min(UT + 2 * rval(SK), rval(PER)), s N) .
+
+   --- a command has arrived at port PI from controller CR, together with other data ports connected to CR
+   --- NOTE: assume the mode transition is deterministic.
+ ceq execResp(time(T)  mode(L)  ECF, CR, T')
+   = execResp(time(T') mode(L') ECF'')
+  if jumps((L -[ PI, PRS ]-> L') ; JUMPS) flows(FLOWS) ECF' := ECF 
+  /\ {L' FLOW, B} := chooseFlows(FLOWS, L')
+  /\ check-true(B)
+  /\ validTarget(PI, CR, ECF) 
+  /\ check-true(isPortPresent(PI, ECF)) 
+  /\ DATA := execFlow(FLOW, real(T' + - T), ECF) 
+  /\ ECF'' := updateEnvData(DATA, updateResponseData(CR, ECF)) .
+
+   --- when no command has arrived from controller CR
+   --- No mode change, but DATA are updated by data input from CR
+ ceq execResp(time(T)  mode(L) ECF, CR, T')
+   = execResp(time(T') mode(L) ECF'')
+  if jumps(JUMPS) flows(FLOWS) ECF' := ECF 
+  /\ {L FLOW, B} := chooseFlows(FLOWS, L)
+  /\ check-true(B)
+  /\ check-true(allPortsAbsent(L, CR, ECF)) 
+  /\ DATA := execFlow(FLOW, real(T' + - T), ECF) 
+  /\ ECF'' := updateEnvData(DATA, updateResponseData(CR, ECF)) .
+
+ ceq execResp(time(T) mode(L) prop(PROPS) response(empty) flows((L FLOW) ; FLOWS) ECF)
+   = transEnvResult(mode(L) prop(PROPS) updateEnvData(DATA,ECF))  
+  if PER # B := eval(p[TimingProperties::Period], prop(PROPS))
+  /\ check-true(B)
+  /\ DATA := execFlow(FLOW, PER + real(- T), ECF) .
+
+
+  ---  update a conf from DATA at once; no constraint maintained 
+  op updateEnvData : DataValuation BehaviorConf ~> BehaviorConf .
+ ceq updateEnvData((CR |=> E # B, DATA), data(DATA') ECF)
+   = updateEnvData(DATA, data(insert(CR, E # bool(true), DATA')) ECF)
+    if check-true(B) .
+  eq updateEnvData(empty, ECF) = ECF .
+
+  --- update the data from input ports connected to CR; for absent data ports,
+  --- previous values are used (i.e. no change on data components)
+  op updateResponseData : ComponentRef BehaviorConf ~> BehaviorConf [format (m! o)] .
+  op updateResponseData : Set{Connection} ComponentRef FeatureMap BehaviorConf ~> BehaviorConf [format (m! o)] .
+
+  eq updateResponseData(CR, envcon(CONXS,PORTS) feature(FMAP) ECF)
+   = updateResponseData(CONXS, CR, FMAP, envcon(CONXS,PORTS) feature(FMAP) ECF) .
+  ceq updateResponseData((PI =>> CI) ; CONXS, CR, FMAP, data(DATA) ECF)
+    = updateResponseData(CONXS, CR, FMAP, data(DATA') ECF)
+   if validTarget(PI, CR, ECF)
+   /\ E  # B : B'' := FMAP[PI]   --- NOTE: B'' (freshness) is always true
+   /\ E' # B' := DATA[CI] 
+   /\ DATA' := insert(CI, (B ? E : E') # (B or B'), DATA)
+  /\ check-true(B'' and (B or B')) .
+  eq updateResponseData(CONXS, CR, FMAP, ECF) = ECF [owise] . 
+endm
+
+

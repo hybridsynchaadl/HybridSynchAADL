@@ -1,0 +1,70 @@
+
+fmod SMT-TRANS-ATOM is
+  protecting META-LEVEL .
+  protecting CONVERSION .
+
+  vars T T' : Term .
+
+  sort Nat? .
+  subsort Nat < Nat? .
+  op error : -> Nat? [ctor] .  --- error term for translation
+
+--- create a Boolean/rational term
+  op trAtom : Term -> TermQid [memo] .
+
+  eq trAtom('true.Bool)  =  'true.Boolean .
+  eq trAtom('false.Bool) = 'false.Boolean .
+
+  eq trAtom('_/_[T,T']) 
+   = qid(string(downTerm(T,error),10) + "/" + string(downTerm(T',error),10) + ".Real") .
+
+  eq trAtom(T) = qid(string(downTerm(T,error),10) + "/1.Real") [owise] .
+endfm
+
+
+fmod SMT-TRANS is
+  protecting SMT-TRANS-ATOM .
+
+  var N     : Nat .
+  vars I I' : Int .
+  var C     : Constant .
+  vars T T' : Term .
+  vars S S' : String .
+  var F     : Qid .
+  var TL    : TermList .
+  var NL    : NeTermList .
+
+--- translate constraints to SMT formulas for Maude-SMT
+  op tr : Term -> Term .
+  eq tr('`[_`][T]) = trAtom(T) .              --- Boolean/rational constants
+  eq tr('b[T])     = trVar(T, "Boolean") .    --- Boolean variables
+  eq tr('b[C,T])   = trVar(T, C, "Boolean") . --- Boolean variables (localized)
+  eq tr('r[T])     = trVar(T, "Real") .       --- real variables
+  eq tr('r[C,T])   = trVar(T, C, "Real") .    --- real variables (localized)
+
+  eq tr('_and_[NL]) = trGather('_and_, NL) .
+  eq tr( '_or_[NL]) = trGather( '_or_, NL) .
+  eq tr('_xor_[NL]) = trGather('_xor_, NL) .
+  eq tr(  '_+_[NL]) = trGather(  '_+_, NL) .
+  eq tr(  '_*_[NL]) = trGather(  '_*_, NL) .
+
+  eq tr(F[TL]) = F[trList(TL)] [owise] .
+
+--- translate a term list
+  op trList : TermList -> TermList .
+  eq trList((T,TL)) = tr(T), trList(TL) .
+  eq trList(empty)  = empty .
+
+--- deal with AC operators
+  op trGather : Qid NeTermList -> Term .
+  eq trGather(F, (T,NL)) = F[tr(T),trGather(F,NL)] .
+  eq trGather(F, T)      = tr(T) .
+
+--- create a variable term
+  op trVar : GroundTerm String -> Variable [memo] .
+  eq trVar(T, S) = qid("V##" + string(downTerm(T,error),10) + ":" + S) .
+
+  op trVar : GroundTerm Constant String -> Variable [memo] .
+  eq trVar(T, C, S) 
+   = qid("V#" + string(getName(C)) + "#" + string(downTerm(T,error),10) + ":" + S) .
+endfm

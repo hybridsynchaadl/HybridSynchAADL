@@ -1,0 +1,199 @@
+mod ENV-CONF is
+  including BEHAVIOR-EXPRESSION-CONF .
+  including INTERACTION-TIMING-SET .
+  including ENV-JUMP-SET .
+  including ENV-FLOW-SET .
+  protecting ENV-PORT .
+  protecting CONNECTION-SET .
+  protecting ENV-CONNECTION .
+
+  op sampling : Set{InterTiming} -> BehaviorConfItem [ctor format (b! o)] .
+  op response : Set{InterTiming} -> BehaviorConfItem [ctor format (b! o)] .
+  op jumps : Set{EnvJump} -> BehaviorConfItem [ctor format (b! o)] .
+  op flows : Set{EnvFlow} -> BehaviorConfItem [ctor format (b! o)] .
+  op mode : Location -> BehaviorConfItem [ctor format (b! o)] .
+  op envcon : Set{Connection} Configuration -> BehaviorConfItem [ctor format (b! o)] .
+endm
+
+
+
+mod ENV-CONTINUOUS-SEMANTICS is
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+  including BEHAVIOR-ACTION-CONF .
+  including ENV-FLOW-SET .
+  including ENV-CONF .
+
+  var VI : VarId .
+  var L : Location .
+  vars AE AE' AE'' : AADLExp .
+  var T : RealExp .
+  var D : DataContent .
+  vars CR CR' CR'' : ComponentRef .
+  var FLOW : FlowItem .
+  var FLOWS : Set{EnvFlow} .
+  var FUNCS : Set{AADLEnvFunc} . 
+  vars DATA : DataValuation .
+  var ECF : BehaviorConf .
+
+  var F : Float .
+  var N : Nat .
+  vars ODES ORIGINAL_ODES NEXT_ODE LEFT_ODES : Set{AADLDiffEq} .
+  var VAE : AADLExp .
+
+
+  ---NOTE: flow can use values in properties and data components. But it should not use
+  --- values in input ports, because ports values are not persistent in a round.
+
+  --- returns resulting values (to be added to the behavior conf later)
+  op execFlow : FlowItem RealExp BehaviorConf ~> DataValuation .
+  eq execFlow([FUNCS], T, ECF) = execFuncFlow(FUNCS, T, empty, ECF) .
+  ceq execFlow([ODES], T, ECF) = execFuncFlow(FUNCS, T, empty, ECF) 
+   if FUNCS := getFuncs(ODES) .
+
+---
+  op execFuncFlow : Set{AADLEnvFunc} RealExp DataValuation BehaviorConf ~> DataValuation .
+
+ ceq execFuncFlow((CR(VI) = AE) ; FUNCS, T, DATA, ECF)
+   = execFuncFlow(FUNCS, T, insert(CR, D, DATA), ECF)
+  if D := eval(AE, local(VI |-> T # bool(true)) ECF) .
+
+  eq execFuncFlow(empty, T, DATA, ECF) = DATA .
+
+--- ODE 
+--- Transform simple ODE form into continuous function
+--- time should be defined as 't'
+  op t : -> VarId [ctor] .
+
+  op getFuncs : Set{AADLDiffEq} -> Set{AADLEnvFunc} .
+  op getFuncs : Set{AADLDiffEq} Set{AADLDiffEq} -> Set{AADLEnvFunc} .
+  op transODE : Set{AADLDiffEq} Set{AADLDiffEq} -> Set{AADLEnvFunc} .
+  op transODE : Set{AADLDiffEq} Set{AADLDiffEq} AADLEnvFunc Nat -> Set{AADLEnvFunc} .
+
+  eq getFuncs(ODES) = getFuncs(ODES, ODES) .
+
+  ceq getFuncs((d/dt[CR] = AE) ; ODES, ORIGINAL_ODES) = FUNCS ; getFuncs(ODES, ORIGINAL_ODES) 
+   if FUNCS := transODE(d/dt[CR] = AE, ORIGINAL_ODES) .
+
+  eq getFuncs(empty, ORIGINAL_ODES) = empty .
+
+  eq transODE(empty, empty, FUNCS, N) = FUNCS .
+
+  ceq transODE(d/dt[CR] = AE, ODES) = transODE(NEXT_ODE, LEFT_ODES, CR(t) = c[CR] + ((AE) * v[t]), 2) 
+   if NEXT_ODE  := nextODE(AE, ODES)
+   /\ LEFT_ODES := leftODE(AE, ODES) .
+
+  ceq transODE(d/dt[CR] = AE, ODES, CR'(t) = AE', N) = transODE(NEXT_ODE, LEFT_ODES, CR'(t) = AE' + ((AE * VAE) / [[F]]), s N) 
+   if NEXT_ODE   := nextODE(AE, ODES)
+   /\ LEFT_ODES  := leftODE(AE, ODES) 
+   /\ VAE        := calculateExp(N) 
+   /\ F          := float(calculateN(N)) .
+
+
+--- Auxilarly Function
+  op nextODE : AADLExp Set{AADLDiffEq} -> Set{AADLDiffEq} .
+  op leftODE : AADLExp Set{AADLDiffEq} -> Set{AADLDiffEq} .
+  op calculateExp : Nat -> AADLExp .
+  op calculateN : Nat -> Nat .
+
+  eq nextODE(c[CR], (d/dt[CR] = AE) ; ODES) = (d/dt[CR] = AE) .
+  eq nextODE(c[CR] * [[F]], (d/dt[CR] = AE) ; ODES) = (d/dt[CR] = AE) .
+  eq nextODE([[F]] * c[CR], (d/dt[CR] = AE) ; ODES) = (d/dt[CR] = AE) .
+  eq nextODE(minus(c[CR]), (d/dt[CR] = AE) ; ODES) = (d/dt[CR] = AE) .
+  eq nextODE(minus(c[CR] * [[F]]), (d/dt[CR] = AE) ; ODES) = (d/dt[CR] = AE) .
+  eq nextODE(minus([[F]] * c[CR]), (d/dt[CR] = AE) ; ODES) = (d/dt[CR] = AE) .
+  eq nextODE(AE, ODES) = empty [owise] .
+
+  eq leftODE(c[CR], (d/dt[CR] = AE) ; ODES) = ODES .
+  eq leftODE(c[CR] * [[F]], (d/dt[CR] = AE) ; ODES) = ODES .
+  eq leftODE([[F]] * c[CR], (d/dt[CR] = AE) ; ODES) = ODES .
+  eq leftODE(minus(c[CR]), (d/dt[CR] = AE) ; ODES) = ODES .
+  eq leftODE(minus(c[CR] * [[F]]), (d/dt[CR] = AE) ; ODES) = ODES .
+  eq leftODE(minus([[F]] * c[CR]), (d/dt[CR] = AE) ; ODES) = ODES .
+  eq leftODE(AE, ODES) = empty [owise] .
+ 
+  eq calculateExp(1) = v[t] . 
+  eq calculateExp(N) = v[t] * calculateExp(N - 1) .
+
+  eq calculateN(1) = 1 .
+  eq calculateN(N) = N * calculateN(N - 1) .
+endm
+
+mod ENV-TRANSITION-AUX is
+  including ENV-CONF .
+
+  var E : Exp .
+  var PI : FeatureId .
+  var PRS : Set{FeatureRef} .
+  var CI : ComponentId .
+  var CR : ComponentRef .
+  vars L L' : Location .
+  vars CONST B B' : BoolExp .
+  var FMAP : FeatureMap .
+  var DATA : DataValuation .
+  var CONXS : Set{Connection} .
+  var JUMPS : Set{EnvJump} .
+  var ECF : BehaviorConf .
+  var ATTS : AttributeSet .
+  var PORTS : Configuration .
+
+--- check if a port has a given target .
+  op validTarget : FeatureId ComponentRef BehaviorConf ~> Bool [format (m! o)] .
+  op validTarget : FeatureId ComponentRef Configuration ~> Bool [format (m! o)] .
+
+  eq validTarget(PI, CR, envcon(CONXS,PORTS) ECF) = validTarget(PI, CR, PORTS) .
+  eq validTarget(PI, CR, < PI : C:EnvPort | target : CR, ATTS > PORTS) = true .
+  eq validTarget(PI, CR, PORTS) = false [owise] .
+
+
+--- check if a port is present
+  op isPortPresent : FeatureId BehaviorConf ~> BoolExp [format (m! o)] .
+  eq isPortPresent(PI, feature(FMAP) ECF) = isPortPresent(PI, FMAP) .
+
+  op isPortPresent : FeatureId FeatureMap ~> BoolExp [format (m! o)] .
+  eq isPortPresent(PI, (PI |-> (E # B : B'), FMAP)) = B and B' .
+
+--- check if for each transition from L, the related port is absent, provided the port is connected to CR
+  op allPortsAbsent : Location ComponentRef BehaviorConf ~> BoolExp [format (m! o)] .
+  eq allPortsAbsent(L, CR, jumps(JUMPS) ECF)
+   = allPortsAbsent(L, JUMPS, CR, ECF) .
+
+  op allPortsAbsent : Location Set{EnvJump} ComponentRef BehaviorConf  ~> BoolExp [format (m! o)] .
+  op allPortsAbsent : Location Set{EnvJump} ComponentRef BehaviorConf  BoolExp ~> BoolExp [format (m! o)] .
+
+  eq allPortsAbsent(L, JUMPS, CR, ECF) = allPortsAbsent(L, JUMPS, CR, ECF, bool(true)) .
+  eq allPortsAbsent(L, (L -[ PRS ]-> L') ; JUMPS, CR, ECF, CONST)
+   = allPortsAbsent(L, JUMPS, CR, ECF, CONST and allPortsAbsent(PRS, CR, ECF)) .
+  eq allPortsAbsent(L, JUMPS, CR, ECF, CONST) = CONST [owise] .
+
+  --- all ports with target CR whose ids are in PRS are absent
+  op allPortsAbsent : Set{FeatureRef} ComponentRef BehaviorConf ~> BoolExp [format (m! o)] .
+ ceq allPortsAbsent((PI, PRS), CR, ECF) 
+   = not isPortPresent(PI,ECF) and allPortsAbsent(PRS, CR, ECF)
+   if validTarget(PI, CR, ECF) .
+  eq allPortsAbsent(PRS, CR, ECF) = bool(true) [owise] .
+
+--- update the feature map according to the data and the connection
+--- only connections related to CR are considered!
+  op updateEnvFeature : ComponentRef BehaviorConf ~> BehaviorConf .
+  eq updateEnvFeature(CR, envcon(CONXS,PORTS) ECF)
+   = updateEnvFeature(CONXS, CR, envcon(CONXS,PORTS) ECF) .
+
+  op updateEnvFeature : Set{Connection} ComponentRef BehaviorConf ~> BehaviorConf .
+ ceq updateEnvFeature((CI ==> PI) ; CONXS, CR, data(DATA) feature(FMAP) ECF)
+                      
+   = updateEnvFeature(CONXS, CR, data(DATA) feature(insert(PI, DATA[CI], FMAP)) ECF)
+   if validTarget(PI, CR, ECF) .
+                      
+  eq updateEnvFeature(CONXS, CR, ECF) = ECF [owise] .
+endm
+
+mod ENV-CHOOSE-FLOWS is
+  including ENV-FLOW-SET . 
+  including CHECKSAT .
+
+  sort Pair{EnvFlow,BoolExp} .
+  op {_,_} : EnvFlow BoolExp -> Pair{EnvFlow,BoolExp} .
+  op chooseFlows : Set{EnvFlow} Location -> Pair{EnvFlow,BoolExp} .
+
+endm
+

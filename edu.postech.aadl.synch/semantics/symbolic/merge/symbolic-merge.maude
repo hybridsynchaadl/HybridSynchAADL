@@ -1,0 +1,227 @@
+
+--- We first define the function symMerge that symbolically combines two terms
+--- into a single term with a constraint. These two terms must be identical except
+--- subterms of built-in sorts.
+
+fmod SYM-MERGE-EXP is
+  protecting REAL-EXP .
+  protecting VAR-GEN .
+
+  sort ResultExpMerge .
+  op {_,_,_,_} : Exp BoolExp BoolExp VarGen -> ResultExpMerge [ctor] .
+
+  vars V E E' : Exp .
+  var GEN GEN' GEN# : VarGen .
+
+  --- Symbolically merge exp e with exp e', where:
+  --- symMerge(e, e', current var-gen, previous var-gen) 
+  --- The previous var-gen is used to check whether given
+  --- variables are newly generated in the current round or not. 
+  op symMerge : Exp Exp VarGen VarGen ~> ResultExpMerge .
+
+  eq symMerge(E, E, GEN, GEN#) = {E, bool(true), bool(true), GEN} .
+
+ ceq symMerge(V, E, GEN, GEN#) = {V, bool(true), V === E, GEN} 
+  if V =/= E /\ fresh?(V, GEN#) /\ type(V) == type(E) .
+
+ ceq symMerge(E, E', GEN, GEN#) = {V, V === E, V === E', GEN'} 
+  if {V,GEN'} := gen(GEN,type(E))  --- Note: E can be a unit
+  /\ type(E) == type(E') [owise] .
+endfm
+
+
+
+fmod SYM-MERGE-LOCATION is
+  including BEHAVIOR-SYMBOLIC-LOCATION .
+  including SYM-MERGE-EXP .
+
+  sort ResultLocationMerge .
+  op {_,_,_,_} : Location BoolExp BoolExp VarGen -> ResultLocationMerge [ctor] .
+
+  var L : Location .
+  vars R R' R'' : RealExp .
+  vars CS CS' : BoolExp .
+  var GEN GEN' GEN# : VarGen .
+
+  op symMerge : Location Location VarGen VarGen ~> ResultLocationMerge .
+
+  eq symMerge(L, L, GEN, GEN#) = {L, bool(true), bool(true), GEN} .
+
+ ceq symMerge(loc(R), loc(R'), GEN, GEN#) = {loc(R''), CS, CS', GEN'}
+  if {R'', CS, CS', GEN'} := symMerge(R, R', GEN, GEN#) [owise] .
+endfm
+
+
+
+fmod SYM-MERGE-DATA-CONTENT is
+  including DATA-CONTENT .
+  including SYM-MERGE-EXP .
+
+  sort ResultDataContentMerge .
+  op {_,_,_,_} : DataContent BoolExp BoolExp VarGen -> ResultDataContentMerge [ctor] .
+
+  var D : DataContent .
+  vars E E' E'' : Exp .
+  vars B B' B'' CS1 CS1' CS2 CS2' : BoolExp .
+  var GEN GEN1 GEN2 GEN# : VarGen .
+
+  op symMerge : DataContent DataContent VarGen VarGen ~> ResultDataContentMerge .
+
+  eq symMerge(D, D, GEN, GEN#) = {D, bool(true), bool(true), GEN} .
+
+ ceq symMerge(E # B, E' # B', GEN, GEN#) = {E'' # B'', CS1 and CS2, CS1' and CS2', GEN2}
+  if {E'', CS1, CS1', GEN1} := symMerge(E, E', GEN,  GEN#)
+  /\ {B'', CS2, CS2', GEN2} := symMerge(B, B', GEN1, GEN#) [owise] .
+endfm
+
+
+
+fmod SYM-MERGE-FEATURE-MAP-CONTENT is
+  including FEATURE-MAP-CONTENT .
+  including SYM-MERGE-DATA-CONTENT .
+
+  sort ResultFeatureMapContentMerge .
+  subsort ResultDataContentMerge < ResultFeatureMapContentMerge .
+  op {_,_,_,_} : FeatureMapContent BoolExp BoolExp VarGen -> ResultFeatureMapContentMerge [ctor] .
+
+  var F : FeatureMapContent .
+  vars D D' D'' : DataContent .
+  vars B B' B'' CS1 CS1' CS2 CS2' : BoolExp .
+  var GEN GEN1 GEN2 GEN# : VarGen .
+
+  op symMerge : FeatureMapContent FeatureMapContent VarGen VarGen ~> ResultFeatureMapContentMerge .
+
+  eq symMerge(F, F, GEN, GEN#) = {F, bool(true), bool(true), GEN} .
+
+ ceq symMerge(D : B, D' : B', GEN, GEN#) = {D'' : B'', CS1 and CS2, CS1' and CS2', GEN2}
+  if {D'', CS1, CS1', GEN1} := symMerge(D, D', GEN,  GEN#)
+  /\ {B'', CS2, CS2', GEN2} := symMerge(B, B', GEN1, GEN#) [owise] .
+endfm
+
+
+
+fmod SYM-MERGE-FEATURE-MAP is
+  including FEATURE-MAP .
+  including SYM-MERGE-FEATURE-MAP-CONTENT .
+
+  sort ResultFeatureMapMerge .
+  op {_,_,_,_} : FeatureMap BoolExp BoolExp VarGen -> ResultFeatureMapMerge [ctor] .
+
+  vars FC FC' FC'' : FeatureMapContent .
+  vars CS CS' CS1 CS1' : BoolExp .
+  vars FMAP FMAP' FMAP'' : FeatureMap . 
+  var PI : FeatureId .
+  var GEN GEN' GEN# : VarGen .
+
+  op symMerge : FeatureMap FeatureMap VarGen VarGen ~> ResultFeatureMapMerge .
+  op symMerge : FeatureMap FeatureMap FeatureMap BoolExp BoolExp VarGen VarGen ~> ResultFeatureMapMerge .
+
+  eq symMerge(FMAP, FMAP', GEN, GEN#) = symMerge(FMAP, FMAP', empty, bool(true), bool(true), GEN, GEN#) .
+
+  eq symMerge((PI |-> FC, FMAP), (PI |-> FC, FMAP'), FMAP'', CS, CS', GEN, GEN#)
+   = symMerge(FMAP, FMAP', (FMAP'', PI |-> FC), CS, CS', GEN, GEN#) .
+
+ ceq symMerge((PI |-> FC, FMAP), (PI |-> FC', FMAP'), FMAP'', CS, CS', GEN, GEN#)
+   = symMerge(FMAP, FMAP', (FMAP'', PI |-> FC''), CS and CS1, CS' and CS1', GEN', GEN#) 
+  if {FC'', CS1, CS1', GEN'} := symMerge(FC, FC', GEN, GEN#) [owise] .
+
+  eq symMerge(empty, empty, FMAP, CS, CS', GEN, GEN#) = {FMAP,CS,CS',GEN} .
+endfm
+
+
+
+mod SYM-MERGE-DATA-VALUATION is
+  including DATA-VALUATION .
+  including SYM-MERGE-DATA-CONTENT .
+
+  sort ResultDataValuationMerge .
+  op {_,_,_,_} : DataValuation BoolExp BoolExp VarGen -> ResultDataValuationMerge [ctor] .
+
+  vars D D' D'' : DataContent .
+  vars CS CS' CS1 CS1' : BoolExp .
+  vars DATA DATA' DATA'' : DataValuation . 
+  var CR : ComponentRef .  
+  var GEN GEN' GEN# : VarGen .
+
+  --- create new variables
+  op symMerge : DataValuation DataValuation VarGen VarGen ~> ResultDataValuationMerge .
+  op symMerge : DataValuation DataValuation DataValuation BoolExp BoolExp VarGen VarGen 
+                  ~> ResultDataValuationMerge .
+
+  eq symMerge(DATA, DATA', GEN, GEN#) = symMerge(DATA, DATA', empty, bool(true), bool(true), GEN, GEN#) .
+
+  eq symMerge((CR |=> D, DATA), (CR |=> D, DATA'), DATA'', CS, CS', GEN, GEN#)
+   = symMerge(DATA, DATA', (DATA'', CR |=> D), CS, CS', GEN, GEN#) .
+
+ ceq symMerge((CR |=> D, DATA), (CR |=> D', DATA'), DATA'', CS, CS', GEN, GEN#)
+   = symMerge(DATA, DATA', (DATA'', CR |=> D''), CS and CS1, CS' and CS1', GEN', GEN#)
+  if {D'', CS1, CS1', GEN'} := symMerge(D, D', GEN, GEN#) [owise] .
+
+  eq symMerge(empty, empty, DATA, CS, CS', GEN, GEN#) = {DATA,CS,CS',GEN} .
+endm
+
+
+
+mod SYM-MERGE-TRANSITION-RESULT is
+  protecting SET{BATransResult} * (op _,_ : Set{BATransResult} Set{BATransResult} -> Set{BATransResult} to _;;_) .
+  including ENV-CONF .
+  including BEHAVIOR-TRANSITION-EXEC .
+  including SYM-MERGE-LOCATION .
+  including SYM-MERGE-FEATURE-MAP .
+  including SYM-MERGE-DATA-VALUATION .
+
+  var BTR : BATransResult .
+  var BTRS : Set{BATransResult} .
+  vars L L' L'' : Location .
+  vars FMAP FMAP' FMAP'' : FeatureMap .
+  vars DATA DATA' DATA'' : DataValuation .
+  vars CCS CCS' CS CS' NCS NCS' : BoolExp .
+  vars GEN GEN' GEN'' GEN# : VarGen .
+  vars BCF BCF' BCF'' : BehaviorConf .
+  vars LB LB' TB TB' : Bound .
+
+--- symbolically merge transition results
+  op symMerge : NeSet{BATransResult} ~> BATransResult [format (m! o)] .
+  op symMerge : BATransResult Set{BATransResult} VarGen VarGen ~> BATransResult [format (m! o)] .
+
+  ceq symMerge(BTR ;; BTRS) = symMerge(BTR, BTRS, GEN, GEN)
+   if GEN := maxGen(BTR ;; BTRS) .
+
+  ceq symMerge({BCF}, {BCF'} ;; BTRS, GEN, GEN#) = symMerge({vargen(GEN') BCF''}, BTRS, GEN', GEN#) 
+   if {vargen(GEN') BCF''} := symMergeTwo({BCF}, {BCF'}, GEN, GEN#) . 
+  eq symMerge({BCF}, empty, GEN, GEN#) = {BCF} .
+
+  op symMergeTwo : BATransResult BATransResult VarGen VarGen -> BATransResult .
+  op symMergeTwo : BATransResult BATransResult BATransResult BoolExp BoolExp VarGen VarGen -> BATransResult .
+  eq symMergeTwo({const(CS) BCF}, {const(CS') BCF'}, GEN, GEN#) = symMergeTwo({BCF}, {BCF'}, { none }, CS, CS', GEN, GEN#) .
+ 
+  ceq symMergeTwo({location(L) BCF}, {location(L') BCF'}, {BCF''}, CS, CS', GEN, GEN#)
+   = symMergeTwo({BCF}, {BCF'}, {location(L'') BCF''}, (CS and NCS), (CS' and NCS'), GEN', GEN#) 
+   if {L'', NCS, NCS', GEN'} := symMerge(L, L', GEN, GEN#) . 
+
+  ceq symMergeTwo({mode(L) BCF}, {mode(L') BCF'}, {BCF''}, CS, CS', GEN, GEN#)
+   = symMergeTwo({BCF}, {BCF'}, {mode(L'') BCF''}, (CS and NCS), (CS' and NCS'), GEN', GEN#) 
+   if {L'', NCS, NCS', GEN'} := symMerge(L, L', GEN, GEN#) . 
+
+  ceq symMergeTwo({feature(FMAP) BCF}, {feature(FMAP') BCF'}, {BCF''}, CS, CS', GEN, GEN#)
+   = symMergeTwo({BCF}, {BCF'}, {feature(FMAP'') BCF''}, (CS and NCS), (CS' and NCS'), GEN', GEN#) 
+   if {FMAP'', NCS, NCS', GEN'} := symMerge(FMAP, FMAP', GEN, GEN#) . 
+
+  ceq symMergeTwo({data(DATA) BCF}, {data(DATA') BCF'}, {BCF''}, CS, CS', GEN, GEN#)
+   = symMergeTwo({BCF}, {BCF'}, {data(DATA'') BCF''}, (CS and NCS), (CS' and NCS'), GEN', GEN#) 
+   if {DATA'', NCS, NCS', GEN'} := symMerge(DATA, DATA', GEN, GEN#) . 
+
+  eq symMergeTwo({vargen(GEN) BCF}, {vargen(GEN') BCF'}, {BCF''}, CS, CS', GEN'', GEN#)
+   = symMergeTwo({BCF}, {BCF'}, {vargen(GEN'') BCF''}, CS, CS', GEN'', GEN#) .
+
+  eq symMergeTwo({BCF}, {BCF}, {BCF''}, CS, CS', GEN, GEN#) = {const(CS or CS') BCF BCF''} [owise] .
+
+--- find maximal vargen
+  op maxGen : NeSet{BATransResult} ~> VarGen [format (m! o)] .
+  op maxGen : Set{BATransResult} VarGen ~> VarGen [format (m! o)] .
+
+  eq maxGen(({vargen(GEN) BCF}) ;; BTRS) = maxGen(BTRS, GEN) .
+  eq maxGen(({vargen(GEN) BCF}) ;; BTRS, GEN') = maxGen(BTRS, max(GEN,GEN')) .
+  eq maxGen(empty, GEN) = GEN .
+
+endm

@@ -1,0 +1,36 @@
+
+mod BEHAVIOR-CHOOSE-TRANS is
+  including BEHAVIOR-TRANSITION-EXEC .
+  including LIST{Transition} .
+  including RANDOM .
+
+  vars L L' L'' SL : Location .
+  var GUARD : TransGuard .
+  var ACT : ActionBlock .
+  var TR : Transition .
+  vars TRS TRS' : Set{Transition} .
+  var TRL : List{Transition} .
+  var BCF : BehaviorConf .
+  vars N Nth : Nat .
+
+  crl chooseTrans(L, TRS, randC(N) BCF) => {L', ACT, randC(s N) BCF} 
+   if TRL := getProperTransList(L, TRS, BCF)  
+   /\ L -[GUARD]-> L' ACT := randomPick(TRL, N) .
+
+  op getProperTransList : Location Set{Transition} BehaviorConf -> List{Transition} .
+  eq getProperTransList(L, empty, BCF) = nil .
+  ceq getProperTransList(L, ((L' -[GUARD]-> L'' ACT) ; TRS), BCF) = getProperTransList(L, TRS, BCF) 
+   if L =/= L' .
+  ceq getProperTransList(L, ((L -[GUARD]-> L' ACT) ; TRS), BCF) = (L -[GUARD]-> L' ACT) getProperTransList(L, TRS, BCF) 
+   if guardConst(GUARD, outTrans(L, TRS), BCF) =/= bool(false) . 
+  eq getProperTransList(L, ((L -[GUARD]-> L' ACT) ; TRS), BCF) = getProperTransList(L, TRS, BCF) [owise] .
+
+  op randomPick : List{Transition} Nat -> Transition .
+  ceq randomPick(TRL, N) = pickNth(TRL, Nth) 
+   if Nth := floor((random(N) / 4294967295) * size(TRL)) .
+  
+  op pickNth : List{Transition} Nat -> Transition .
+  eq pickNth(TR TRL, s N) = pickNth(TRL, N) .
+  eq pickNth(TR TRL, 0) = TR .
+    
+endm

@@ -1,0 +1,177 @@
+--- In AADL, a software component is one of systems, processes, thread groups,
+--- thread, subprogram groups, subprograms, and data. All of them can have
+--- subcomponents, connections, and properties. A system component can be used
+--- to specify physical environments in HybridSynchAADL, and is defined as an
+--- instance of the Environment class here. 
+--- Note: All components should have the same period.
+
+fmod CONNECTION is
+  including FEATURE-REF .
+  including AADL-PROPERTY-ASSOCIATION .
+
+  sort Connection .
+  op _-->_ : FeatureRef FeatureRef -> Connection [ctor] .
+endfm
+
+
+--- for env only: data component ==> output data port 
+fmod ENV-CONNECTION is
+  including CONNECTION .
+
+  sort EnvConnection .
+  subsort EnvConnection < Connection .
+  op _==>_ : ComponentId FeatureId -> EnvConnection [ctor] . --- sampling
+  op _=>>_ : FeatureId ComponentId -> EnvConnection [ctor] . --- response
+endfm
+
+
+
+view Connection from TRIV to CONNECTION is
+  sort Elt to Connection .
+endv
+
+
+
+fmod CONNECTION-SET is
+  including SET{Connection} * (op _,_ : Connection Connection -> Connection to _;_) .
+endfm
+
+
+
+mod COMPONENT is
+  including FEATURE .
+  including CONNECTION-SET .
+
+---(
+  class Component | features : Configuration,
+                    subcomponents : Configuration,
+                    connections : Set{Connection},
+                    properties : PropertyAssociation .
+---)
+  sort Component .
+  subsort Component < Cid .
+  op Component : -> Component [ctor] .
+  op features`:_ : Configuration -> Attribute [ctor gather(&)] .
+  op subcomponents`:_ : Configuration -> Attribute [ctor gather(&)] .
+  op connections`:_ : Set{Connection}-> Attribute [ctor gather(&)] .
+  op properties`:_ : PropertyAssociation -> Attribute [ctor gather(&)] .
+
+  subsort ComponentRef < Oid .
+endm
+
+
+--- a container class whose behavior is defined by its subcomponents.
+mod ENSEMBLE-COMPONENT is
+  including COMPONENT .
+
+---(
+  class Ensemble .
+  subclass Ensemble < Component .
+---)
+  sort Ensemble .
+  subsort Ensemble < Component .
+  op Ensemble : -> Ensemble [ctor] .
+
+---(
+  class System .
+  class Process .
+  class ThreadGroup .
+  subclass System Process ThreadGroup < Ensemble .
+---)
+  sorts System Process ThreadGroup .
+  subsorts System Process ThreadGroup < Ensemble .
+  op System : -> System [ctor] .
+  op Process : -> Process [ctor] .
+  op ThreadGroup : -> ThreadGroup [ctor] .
+endm
+
+
+--- a thread or an environment, which has a variable generator.
+mod BEHAVIORAL-COMPONENT is
+  protecting VAR-GEN .
+  including COMPONENT .
+---(
+  class BehComponent | varGen : VarGen .
+  subclass BehComponent < Component .
+---)
+  sort BehComponent .
+  subsort BehComponent < Component .
+  op varGen`:_ : VarGen -> Attribute [ctor gather(&)] .
+endm
+
+
+--- We assume that each thread has its behavior specification.
+mod THREAD-COMPONENT is
+  including BOUND .
+  including DATA-PORT .
+  including BEHAVIORAL-COMPONENT .
+  including BEHAVIOR-TRANSITION-SET .
+  including MAP{VarId,DataType} * (op _|->_ : VarId DataType -> Entry{VarId,DataType} to _:_,
+                                   op _,_ : Map{VarId,DataType} Map{VarId,DataType} -> Map{VarId,DataType} to _;_) .
+
+---(
+  class Thread | currState : Location,
+                 completeStates : Set{Location},
+                 variables : Map{VarId,DataType},
+                 transitions : Set{Transition} 
+                 loopBound : Bound,
+                 transBound : Bound .
+  subclass Thread < VarGenerator .
+---)
+  sort Thread .
+  subsort Thread < BehComponent .
+  op Thread : -> Thread [ctor] .
+  op currState`:_ : Location -> Attribute [ctor gather(&)] .
+  op completeStates`:_ : Set{Location} -> Attribute [ctor gather(&)] .
+  op variables`:_ : Map{VarId,DataType} -> Attribute [ctor gather(&)] .
+  op transitions`:_ : Set{Transition} -> Attribute [ctor gather(&)] .
+  op loopBound`:_ : Bound -> Attribute [ctor gather(&)] .
+  op transBound`:_ : Bound -> Attribute [ctor gather(&)] .
+endm
+
+
+--- A data component has a value.
+mod DATA-COMPONENT is
+  including COMPONENT .
+  including DATA-CONTENT .
+  including LIST{DataContent} .
+
+---(
+  class Data | value : DataContent .
+  subclass Data < Component .
+---)
+  sort Data .
+  subsort Data < Component .
+  op Data : -> Data [ctor] .
+  op value`:_ : DataContent -> Attribute [ctor gather(&)] .
+  op valueArray`:_ : List{DataContent} -> Attribute [ctor gather(&)] .
+endm
+
+
+--- An environment component
+mod ENV-COMPONENT is
+  including ENV-PORT .
+  including ENV-CONNECTION .
+  including BEHAVIORAL-COMPONENT .
+  including INTERACTION-TIMING-SET .
+  including ENV-FLOW-SET .
+  including ENV-JUMP-SET .
+
+  ---(
+  class Env | currMode : Location,
+              jumps : Set{EnvJump},
+              flows : Set{EnvFlow},
+              sampling : Set{InterTiming},
+              response : Set{InterTiming} .
+  subclass Env < BehComponent .
+  ---)
+  sort Env .
+  subsort Env < BehComponent .
+  op Env : -> Env [ctor] .
+  op currMode`:_ : Location -> Attribute [ctor gather(&)] .
+  op jumps`:_ : Set{EnvJump} -> Attribute [ctor gather(&)] .
+  op flows`:_ : Set{EnvFlow} -> Attribute [ctor gather(&)] .
+  op sampling`:_ : Set{InterTiming} -> Attribute [ctor gather(&)] .
+  op response`:_ : Set{InterTiming} -> Attribute [ctor gather(&)] .
+endm
+

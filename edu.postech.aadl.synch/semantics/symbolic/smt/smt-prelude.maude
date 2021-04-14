@@ -1,0 +1,39 @@
+--- Re-defining BOOL-OPS in prelude.maude to avoid xor expansion
+fmod BOOL-OPS is
+  protecting TRUTH-VALUE .
+  op _and_ : Bool Bool -> Bool [assoc comm prec 55] .
+  op _or_ : Bool Bool -> Bool [assoc comm prec 59] .
+  op _xor_ : Bool Bool -> Bool [assoc comm prec 57] .
+  op not_ : Bool -> Bool [prec 53] .
+  op _implies_ : Bool Bool -> Bool [gather (e E) prec 61] .
+
+  vars A B C : Bool .
+
+  --- the following are exactly same as those in prelude.maude
+  eq true and A = A .
+  eq false and A = false .
+  eq A and A = A .
+  eq false xor A = A .
+  eq A xor A = false .
+  eq A and (B xor C) = A and B xor A and C .
+
+  --- the following equations in prelude.maude are commented out.
+---(
+  eq not A = A xor true .
+  eq A or B = A and B xor A xor B .
+  eq A implies B = not(A xor A and B) .
+---)
+
+  --- new equations 
+  eq true or A = true .
+  eq false or A = A .
+  eq A or A = A .
+
+  eq not false = true .
+  eq not true  = false .
+  eq not (not A) = A .
+
+  eq A implies B = (not A) or B .
+endfm
+
+

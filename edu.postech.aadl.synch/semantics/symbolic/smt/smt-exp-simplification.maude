@@ -1,0 +1,155 @@
+
+--- Some simplification rules for Boolean constraints
+fmod BOOL-EXP-SIMPLIFICATION is
+  including SMT-BOOL-EXP .
+  including META-LEVEL .
+
+  vars B B1 B2 : BoolExp .
+  vars C C1 C2 : Bool .
+
+--- simplifying concrete exps
+  eq not [C]       = [not C] .
+  eq [C1] and [C2] = [C1 and C2] .
+  eq [C1] xor [C2] = [C1 xor C2] .
+  eq [C1] or  [C2] = [C1 or  C2] .
+
+  eq [C1] implies [C2] = [C1 implies C2] .
+  eq [C1] ===     [C2] = [C1 == C2] .  --- only work for ground terms
+  eq [C1] =/==    [C2] = [C1 =/= C2] . --- only work for ground terms
+
+--- simplifying true/false
+  eq [true]  and B = B .
+  eq [false] and B = [false] .
+
+  eq [true]  or B = [true] .
+  eq [false] or B = B .
+
+--- idempotent operations
+  eq B and B = B .
+  eq B or  B = B .
+
+--- simplyfing negations
+  eq not (not B) = B .
+
+  eq (not B) or  B = [true] .
+  eq (not B) and B = [false] .
+
+  eq not (B1 and B2)   = (not B1) or  (not B2) .
+  eq not (B1 or  B2)   = (not B1) and (not B2) .
+
+--- equalities and disequalities
+  eq B1 =/== B2 = not (B1 === B2) .
+
+  eq B ===  B = [true] .
+
+  eq B === [true] = B .
+  eq [true] === B = B .
+
+  eq B === [false] = not B .
+  eq [false] === B = not B .
+
+  --- this may reduce the number of rewriting, but may increase SMT solving time
+---  eq (B and B1) or (B and B2) = B and (B1 or B2) .
+endfm
+
+
+
+--- Some simplification rules for Real constraints
+--- Note: Real ops are neither associative nor commutative
+fmod REAL-EXP-SIMPLIFICATION is
+  including SMT-REAL-EXP .
+  including META-LEVEL .
+
+  vars C C1 C2 : Rat .
+  vars R R1 R2 R3 R4 : RealExp .
+  vars RC1 RC2 : SMTRealValue .
+  var RV : SMTRealVar .
+  var  B : BoolExp .
+
+--- simplification rules for rational constants
+  eq - [C] = [- C] .
+
+  eq [C1] + [C2] = [C1 + C2] .
+  eq [C1] * [C2] = [C1 * C2] .
+  eq [C1] - [C2] = [C1 + (- C2)] .
+  eq [C1] / [C2] = [C1 / C2] .
+
+  eq [C1] <  [C2] = [C1 <  C2] .
+  eq [C1] <= [C2] = [C1 <= C2] .
+  eq [C1] >  [C2] = [C1 >  C2] .
+  eq [C1] >= [C2] = [C1 >= C2] .
+
+--- relational operator simplification (only allow < and ===)
+  eq R1 <=   R2 = not (R1 >   R2) .
+  eq R1 >=   R2 = not (R1 <   R2) .
+  eq R1 >    R2 =      R2 <   R1  .
+  eq R1 =/== R2 = not (R1 === R2) .
+
+--- removing binary -
+  eq    R1 - R2  =    R1  + (- R2) .
+  eq - (R1 + R2) = (- R1) + (- R2) .
+
+
+--- useful simplification rules
+  eq R * [0]   = [0] .
+  eq R + (- R) = [0] .
+  eq R + [0]   = R .
+
+  eq - (R * RV) = R * (- RV) .
+
+  eq R * (R1 + R2) = R * R1 + R * R2 .
+  eq (R1 + R2) / R = R1 / R + R2 / R .
+
+  eq RC1 * R + RC2 * R = (RC1 + RC2) * R .
+
+  eq R / RC1 / RC2 = R / (RC1 * RC2) .
+
+--- rules for equalities and disequalities
+  eq R ===  R = [true] .
+  eq R =/== R = [false] .
+  eq R <    R = [false] .
+
+--- right-hand side simplification: do we need this?
+---(
+  eq R <   R1 + R2 = R + (- R2) <   R1 .
+  eq R === R1 + R2 = R + (- R2) === R1 .
+ ceq R <   R1      = R + (- R1) < [0]   if R1 =/= [0] .
+ ceq R === R1      = R + (- R1) === [0] if R1 =/= [0] .
+---)
+endfm
+
+
+
+fmod COND-EXP-SIMPLIFICATION is
+  including SMT-UNIT-EXP .
+  including SMT-REAL-EXP .
+
+  var C : Bool .
+  vars E E1 E2 E3 E4 : Exp .
+  vars B B1 B2 : BoolExp .
+  vars R R1 R2 : RealExp .
+
+  eq [C] ? E1 : E2 = if C then E1 else E2 fi .
+  eq   B ? E1 : E1 = E1 .
+
+  eq      B  and (B ? E1 : E2) = E1 .
+  eq (not B) and (B ? E1 : E2) = E2 .
+
+
+  eq not (B ? B1 : B2) = B ? not B1 : not B2 .
+  eq   - (B ? R1 : R2) = B ?   - R1 :   - R2 .
+
+--- extra simplification rules
+---(
+  eq B ? (B ? E1 : E2) : (B ? E3 : E4) = B ? E1 : E4 .
+
+  eq (B ? B1 : [false]) = B and B1 .
+  eq (B ? [false] : B2) = not B and B2 .
+
+  eq R + (B ? R1 : R2) = B ? R + R1 : R + R2 .
+  eq (B ? R1 : R2) + R = B ? R + R1 : R + R2 .
+
+  eq (B ? R1 : R2) <   [0] = B ? (R1 <   [0]) : (R2 <   [0]) .
+  eq (B ? R1 : R2) === [0] = B ? (R1 === [0]) : (R2 === [0]) .
+---)
+endfm

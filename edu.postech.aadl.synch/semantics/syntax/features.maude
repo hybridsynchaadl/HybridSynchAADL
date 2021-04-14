@@ -1,0 +1,138 @@
+--- This file specifies a feature in AADL; for Hybrid Synchronous AADL,
+--- currently we only consider ports.
+
+
+fmod DATA-CONTENT is
+  protecting UNIT-EXP .
+  protecting REAL-EXP .
+
+  sort DataContent .
+  op _#_ : Exp BoolExp -> DataContent [ctor] .  --- no value if the flag is false
+
+  --- only before initialization (for symbolic)
+  ops null param : DataType -> DataContent [ctor] .      
+
+  --- create "no value" of a given type
+  op bot : DataType ~> DataContent [ctor] .  
+  eq bot(Boolean) = bool(false) # bool(false) .
+  eq bot(Real) = real(0) # bool(false) .
+  eq bot(Unit) = * # bool(false) .
+endfm
+
+view DataContent from TRIV to DATA-CONTENT is
+  sort Elt to DataContent .
+endv
+
+mod FEATURE is
+  including FEATURE-ID .
+  including AADL-PROPERTY-ASSOCIATION .
+  including CONFIGURATION .
+
+---(
+  class Feature | properties : PropertyAssociation .
+---)
+  sort Feature .
+  subsort Feature < Cid .
+  op Feature : -> Feature [ctor] .
+  op properties`:_ : PropertyAssociation -> Attribute [ctor gather(&)] .
+
+  subsort FeatureId < Oid .
+endm
+
+--- A port is either an input or an output port. We do not consider in-out ports 
+--- in HybridSynchAAADL. Because we only consider single-rate systems, a port can have 
+--- only a single data content, unlike MR-SynchAADL.
+mod PORT is
+  including FEATURE .
+  including DATA-CONTENT .
+
+---(
+  class Port | content : DataContent .
+  subclass Port < Feature .
+---)
+  sort Port .
+  subsort Port < Feature .
+  op Port : -> Port [ctor] .
+  op content`:_ : DataContent -> Attribute [ctor gather(&)] .
+
+
+---(
+  class InPort .
+  class OutPort .
+  subclass InPort OutPort < Port .
+---)
+  sorts InPort OutPort .
+  subsort InPort OutPort < Port .
+  op InPort : -> InPort [ctor] .
+  op OutPort : -> OutPort [ctor] .
+endm
+
+
+--- a data port is a port for a controller component. When no value has been 
+--- received in a data input port, then the previously received value can be 
+--- used in AADL.
+mod DATA-PORT is
+  including PORT .
+---(
+   class DataPort .
+   subclass DataPort < Port .
+---)
+  sort DataPort .
+  subsort DataPort < Port .
+  op DataPort : -> DataPort [ctor] .
+
+---(
+  class DataInPort | cache : DataContent .
+  subclass DataInPort < InPort DataPort .
+---)
+  sort DataInPort .
+  subsort DataInPort < DataPort InPort .
+  op DataInPort : -> DataInPort [ctor] .
+  op cache`:_ : DataContent -> Attribute [ctor gather(&)] .
+
+---(
+  class DataOutPort .
+  subclass DataOutPort < OutPort DataPort .
+---)
+  sort DataOutPort .
+  subsort DataOutPort < DataPort OutPort .
+  op DataOutPort : -> DataOutPort [ctor] .
+endm
+
+
+--- Because the behavior of an environment depends on the timing of 
+--- its controller component, an environment port keeps its target (connected) 
+--- component id. Also, *immediate* connections are used for environments; 
+--- to symbolically simulate such immediate behaviors, we use envCache that 
+--- contains a data content in the previous round.
+mod ENV-PORT is
+  including PORT .
+  including COMPONENT-REF .
+
+---(
+  class EnvPort | envCache : DataContent,
+                  target : ComponentRef .
+  subclass EnvPort < Port .
+---)
+  sort EnvPort .
+  subsort EnvPort < Port .
+  op EnvPort : -> EnvPort [ctor] .
+  op envCache`:_ : DataContent -> Attribute [ctor gather(&)] .
+  op target`:_ : ComponentRef -> Attribute [ctor gather(&)] .
+
+---(
+  class EnvInPort .
+  subclass EnvInPort < EnvPort InPort .
+---)
+  sort EnvInPort .
+  subsort EnvInPort < EnvPort InPort .
+  op EnvInPort : -> EnvInPort [ctor] .
+
+---(
+  class EnvOutPort .
+  subclass EnvOutPort < EnvPort OutPort .
+---)
+  sort EnvOutPort .
+  subsort EnvOutPort < EnvPort OutPort .
+  op EnvOutPort : -> EnvOutPort [ctor] .
+endm

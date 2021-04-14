@@ -1,0 +1,17 @@
+mod BEHAVIOR-CHOOSE-TRANS is
+  including BEHAVIOR-TRANSITION-EXEC .
+  including LIST{Transition} .
+  including RANDOM .
+
+  vars L L' : Location .
+  var GUARD : TransGuard .
+  var ACT : ActionBlock .
+  var TRS : Set{Transition} .
+  var BCF : BehaviorConf .
+  var B : BoolExp .
+
+  crl chooseTrans(L, ((L -[GUARD]-> L' ACT); TRS), BCF) => {L', ACT, BCF}
+   if B := guardConst(GUARD, outTrans(L, TRS), BCF)  
+   /\ B =/= bool(false) .
+
+endm

@@ -1,0 +1,176 @@
+mod ENV-CONF is
+  including BEHAVIOR-EXPRESSION-CONF .
+  including INTERACTION-TIMING-SET .
+  including ENV-JUMP-SET .
+  including ENV-FLOW-SET .
+  protecting ENV-PORT .
+  protecting CONNECTION-SET .
+  protecting ENV-CONNECTION .
+
+  op time : RealExp -> BehaviorConfItem [ctor format (b! o)] .
+  op sampling : Set{InterTiming} -> BehaviorConfItem [ctor format (b! o)] .
+  op response : Set{InterTiming} -> BehaviorConfItem [ctor format (b! o)] .
+  op jumps : Set{EnvJump} -> BehaviorConfItem [ctor format (b! o)] .
+  op flows : Set{EnvFlow} -> BehaviorConfItem [ctor format (b! o)] .
+  op mode : Location -> BehaviorConfItem [ctor format (b! o)] .
+  op envcon : Set{Connection} Configuration -> BehaviorConfItem [ctor format (b! o)] .
+endm
+
+mod ENV-CHOICE is
+  including ENV-CONF .
+  including BEHAVIOR-ACTION-CONF .
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+  including DEFAULT-PROPERTIES .
+  including HYBRID-SYNCHAADL-PROPERTIES .
+
+  sort EnvBehavior .
+  ops sampleStep responseStep : ComponentRef -> EnvBehavior . 
+  op emptyStep : -> EnvBehavior .
+
+  sort Pair{BehaviorConf,EnvBehavior} .
+  op {_,_} : BehaviorConf EnvBehavior -> Pair{BehaviorConf,EnvBehavior} [ctor] .
+  op choice : BehaviorConfItem -> Pair{BehaviorConf,EnvBehavior} .
+
+  var CR : ComponentRef .
+  vars T T' : RealExp .
+  vars LT UT : Rat . 
+  vars SIT SIT' : Set{InterTiming} .
+  var PROPS : PropertyAssociation .
+  var ECF : BehaviorConf .
+  vars SK PER : RealExp .
+  vars B : BoolExp .
+  vars GEN GEN' : VarGen .
+
+  crl choice(time(T) sampling((CR : (LT,UT), SIT)) prop(PROPS) vargen(GEN) ECF)
+   => {time(T') sampling(SIT) prop(PROPS) vargen(GEN') addConst(ECF, B and T <= T'), sampleStep(CR)}
+   if {T',GEN'} := gen(GEN,Real)
+   /\ B := timeConst(T', LT, UT, prop(PROPS)) . 
+
+  crl choice(time(T) sampling(SIT') response((CR : (LT,UT), SIT)) prop(PROPS) vargen(GEN) ECF)
+   => {time(T') sampling(SIT') response(SIT) prop(PROPS) vargen(GEN') addConst(ECF, B and T <= T'), responseStep(CR)}
+   if not CR in SIT'
+   /\ {T',GEN'} := gen(GEN,Real)
+   /\ B := timeConst(T', LT, UT, prop(PROPS)) . 
+
+  ceq choice(time(T) sampling(empty) response(empty) prop(PROPS) vargen(GEN) ECF)
+   = {time(T') sampling(empty) response(empty) prop(PROPS) vargen(GEN') addConst(ECF, (((T' === PER) and B) and T <= T')), emptyStep}
+   if {T',GEN'} := gen(GEN,Real)
+   /\ PER # B := eval(p[TimingProperties::Period], prop(PROPS)) .
+
+  op timeConst : RealExp Rat Rat BehaviorConf ~> BoolExp .
+  ceq timeConst(T, LT, UT, prop(PROPS) ECF)
+   = (real(LT) <= T) and (T <= real(UT) + real(2) * SK) and B
+   if SK # B := eval(p[HybridSynchAADL::MaxClockDeviation], prop(PROPS)) .
+
+endm
+
+mod ENV-TRANSITION-EXEC is
+  including ENV-TRANSITION-AUX .
+  including ENV-CONTINUOUS-SEMANTICS .
+  including ENV-CHOOSE-FLOWS .
+  including ENV-CHOICE .
+  including BEHAVIOR-SYMBOLIC-LOCATION .
+  including BEHAVIOR-TRANSITION-RESULT .
+
+  vars T T' : RealExp .
+  vars SL L L' : Location .
+  var JUMPS : Set{EnvJump} .
+  var FLOW : FlowItem .
+  var FLOWS : Set{EnvFlow} .
+  vars SSIT RSIT SSIT' RSIT' : Set{InterTiming} .
+  vars B B' B'' : BoolExp .
+  vars R SR : RealExp .
+  vars E E' : Exp .
+  var PI : FeatureId .
+  var PRS : Set{FeatureRef} .
+  var CR : ComponentRef .
+  var CI : ComponentId .
+  vars ECF ECF' ECF'' : BehaviorConf .
+  vars DATA DATA' : DataValuation .
+  var EB : EnvBehavior .
+  var CONXS : Set{Connection} .
+  var PORTS : Configuration .
+  var FMAP : FeatureMap .
+
+  op execEnvTrans  : BehaviorConf ~> BATransResult [format (m! o)] .
+  
+  crl chooseFlows((loc(R) FLOW) ; FLOWS, loc(SR)) => {loc(R) FLOW, B}
+   if B := (R === SR)
+   /\ check-sat(B) .  
+
+  crl [env-cont]:
+     execEnvTrans(time(T) sampling(SSIT) response(RSIT) mode(SL) flows(FLOWS) ECF) 
+	=> envStep(time(T') sampling(SSIT') response(RSIT') mode(L) flows(FLOWS) addConst(ECF'', B), EB)
+  if chooseFlows(FLOWS, SL) => {(L FLOW), B}
+  /\ choice(time(T) sampling(SSIT) response(RSIT) ECF) 
+		=> {time(T') sampling(SSIT') response(RSIT') ECF',EB} 
+  /\ DATA := execFlow(FLOW, T' - T, ECF')
+  /\ ECF'' := updateEnvData(DATA, ECF') .
+
+  op envStep : BehaviorConf EnvBehavior ~> BATransResult [format (m! o)] .
+
+  crl [env-samp]:
+     envStep(ECF, sampleStep(CR)) => execEnvTrans(ECF')
+  if ECF' := updateEnvFeature(CR,ECF) .
+
+   --- a command has arrived at port PI from controller CR, together with other data ports connected to CR
+  crl [env-resp-move]:
+     envStep(mode(L) ECF, responseStep(CR)) => execEnvTrans(mode(L') addConst(ECF', B))
+  if jumps((L -[ PI, PRS ]-> L') ; JUMPS) ECF'' := ECF
+  /\ validTarget(PI, CR, ECF)
+  /\ B := isPortPresent(PI, ECF)
+  /\ B =/= bool(false) 
+  /\ ECF' := updateResponseData(CR, ECF) .
+
+   --- when no (event/event data) command has arrived from controller CR 
+   --- No mode change, but DATA are updated by data input from CR
+  crl [env-resp-stay]:
+     envStep(mode(L) ECF, responseStep(CR)) => execEnvTrans(mode(L) addConst(ECF', B))
+  if B := allPortsAbsent(L, CR, ECF)
+  /\ B =/= bool(false)
+  /\ ECF' := updateResponseData(CR, ECF) . 
+
+  eq envStep(ECF, emptyStep) = transEnvResult(ECF) .
+
+--- update the feature map according to the data and the connection
+--- only connections related to CR are considered!
+  op updateEnvFeature : ComponentRef BehaviorConf ~> BehaviorConf .
+  eq updateEnvFeature(CR, envcon(CONXS,PORTS) ECF)
+   = updateEnvFeature(CONXS, CR, envcon(CONXS,PORTS) ECF) .
+
+  op updateEnvFeature : Set{Connection} ComponentRef BehaviorConf ~> BehaviorConf .
+ ceq updateEnvFeature((CI ==> PI) ; CONXS, CR, data(DATA) feature(FMAP) ECF)
+                      
+   = updateEnvFeature(CONXS, CR, data(DATA) feature(insert(PI, DATA[CI], FMAP)) ECF)
+   if validTarget(PI, CR, ECF) .
+                      
+  eq updateEnvFeature(CONXS, CR, ECF) = ECF [owise] .
+
+  ---  update a conf from DATA at once; no constraint maintained 
+  op updateEnvData : DataValuation BehaviorConf ~> BehaviorConf .
+  eq updateEnvData((CR |=> E # B, DATA), data(DATA') ECF)
+   = updateEnvData(DATA, data(insert(CR, E # bool(true), DATA')) addConst(ECF, B)) .
+  eq updateEnvData(empty, ECF) = ECF .
+
+  --- update the data from input ports connected to CR; for absent data ports,
+  --- previous values are used (i.e. no change on data components)
+  op updateResponseData : ComponentRef BehaviorConf ~> BehaviorConf [format (m! o)] .
+  op updateResponseData : Set{Connection} ComponentRef FeatureMap BehaviorConf ~> BehaviorConf [format (m! o)] .
+
+  eq updateResponseData(CR, envcon(CONXS,PORTS) feature(FMAP) ECF)
+   = updateResponseData(CONXS, CR, FMAP, envcon(CONXS,PORTS) feature(FMAP) ECF) .
+  ceq updateResponseData((PI =>> CI) ; CONXS, CR, FMAP, data(DATA) ECF)
+    = updateResponseData(CONXS, CR, FMAP, data(DATA') addConst(ECF, B'' and (B or B')))
+   if validTarget(PI, CR, ECF)
+   /\ E  # B : B'' := FMAP[PI]   --- NOTE: B'' (freshness) is always true
+   /\ E' # B' := DATA[CI]
+   /\ DATA' := insert(CI, (B ? E : E') # (B or B'), DATA) .
+  eq updateResponseData(CONXS, CR, FMAP, ECF) = ECF [owise] . 
+endm
+
+mod ENV-TRANSITION-SEMANTICS is
+  protecting ENV-TRANSITION-EXEC .
+
+  op execEnv  : BehaviorConf ~> BATransResult [format (m! o)] .
+  eq execEnv(BCF:BehaviorConf) = execEnvTrans(BCF:BehaviorConf) .
+endm

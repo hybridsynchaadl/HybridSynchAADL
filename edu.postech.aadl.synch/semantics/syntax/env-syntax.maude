@@ -1,0 +1,112 @@
+--- This file defines the syntax of a language to describe a physical
+--- environment in HybridSynchAADL. 
+
+fmod ENV-DIFF-EQ-SYNTAX is
+  including BEHAVIOR-EXPRESSION-SYNTAX .
+
+  sort AADLDiffEq .
+  op d/dt[_]=_ : ComponentRef AADLExp -> AADLDiffEq [ctor] .
+endfm
+
+
+fmod ENV-FUNC-DECL-SYNTAX is
+  including BEHAVIOR-EXPRESSION-SYNTAX .
+
+  --- Declaration of a continuous function, such as 
+  ---   x(t) = t * t + 1 + x(0)
+  --- Note that t is a var id expression, and x(0) is written as just x 
+  --- in the right hand side as a component id expression.
+
+  sort AADLEnvFunc .
+  op _(_)=_ : ComponentRef VarId AADLExp -> AADLEnvFunc [ctor] .
+endfm
+
+
+view AADLDiffEq from TRIV to ENV-DIFF-EQ-SYNTAX is
+  sort Elt to AADLDiffEq .
+endv
+
+
+view AADLEnvFunc from TRIV to ENV-FUNC-DECL-SYNTAX is
+  sort Elt to AADLEnvFunc .
+endv
+
+
+fmod ENV-ODE-SYNTAX is
+  including SET{AADLDiffEq} * (op _,_ : Set{AADLDiffEq} Set{AADLDiffEq} -> Set{AADLDiffEq} to _;_) .
+endfm
+
+
+fmod ENV-FUNCS-SYNTAX is
+  including SET{AADLEnvFunc} * (op _,_ : Set{AADLEnvFunc} Set{AADLEnvFunc} -> Set{AADLEnvFunc} to _;_) .
+endfm
+
+
+fmod ENV-FLOW is
+  including ENV-ODE-SYNTAX .
+  including ENV-FUNCS-SYNTAX .
+  including BEHAVIOR-LOCATION-ID .
+
+  sort FlowItem .
+  op [_] : NeSet{AADLDiffEq} -> FlowItem [ctor] .
+  op [_] : NeSet{AADLEnvFunc} -> FlowItem [ctor] .
+
+  sort EnvFlow .
+  op __ : Location FlowItem -> EnvFlow [ctor] .
+endfm
+
+
+fmod ENV-JUMP is
+  including SET{FeatureRef} .
+  including BEHAVIOR-LOCATION-ID .
+
+  sort EnvJump .
+  op _-[_]->_ : Location NeSet{FeatureRef} Location -> EnvJump [ctor] .
+endfm
+
+
+fmod INTERACTION-TIMING is
+  including COMPONENT-ID .
+  protecting RAT .
+
+  sort InterTiming .
+  op _:(_,_) : ComponentId Rat Rat -> InterTiming [ctor] .
+endfm
+
+
+view EnvFlow from TRIV to ENV-FLOW is
+  sort Elt to EnvFlow .
+endv
+
+
+view EnvJump from TRIV to ENV-JUMP is
+  sort Elt to EnvJump .
+endv
+
+
+view InterTiming from TRIV to INTERACTION-TIMING is
+  sort Elt to InterTiming .
+endv
+
+
+fmod INTERACTION-TIMING-SET is
+  including SET{InterTiming} .
+
+  var CI : ComponentId .
+  vars LT UT : Rat .
+  var SIT : Set{InterTiming} .
+
+  op _in_ : ComponentId Set{InterTiming} ~> Bool .
+  eq CI in ((CI : (LT,UT)), SIT) = true .
+  eq CI in SIT = false [owise] .
+endfm
+
+
+fmod ENV-FLOW-SET is
+  including SET{EnvFlow} * (op _,_ : Set{EnvFlow} Set{EnvFlow} -> Set{EnvFlow} to _;_) .
+endfm
+
+
+fmod ENV-JUMP-SET is
+  including SET{EnvJump} * (op _,_ : Set{EnvJump} Set{EnvJump} -> Set{EnvJump} to _;_) .
+endfm

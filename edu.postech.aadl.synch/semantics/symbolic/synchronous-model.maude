@@ -1,0 +1,169 @@
+mod MODEL-INIT is
+  including DATA-PORT .
+  including ENV-PORT .
+  including ENV-COMPONENT .
+  including DATA-COMPONENT .
+  including THREAD-COMPONENT .
+  including ENSEMBLE-COMPONENT .
+  including BEHAVIOR-EXPRESSION-SEMANTICS .
+  protecting DEFAULT-PROPERTIES .
+  protecting HYBRID-SYNCHAADL-PROPERTIES .
+  protecting SMT-VAR-GEN .
+  
+
+  var V E : Exp .
+  vars B BV : BoolExp .
+  var TY : DataType .
+  var CR : ComponentRef .
+  var PI : FeatureId .
+  var PROPS : PropertyAssociation .
+  vars PORTS PORTS' COMPS COMPS' CONF CONF' : Configuration .
+  vars GEN GEN' GEN'' GEN# : VarGen .
+  var S : String .
+  var ATTS : AttributeSet .
+  vars D D' : DataContent .
+  vars LD LD' : List{DataContent} .
+
+  op initialize : Configuration ~> Configuration .
+  op * : -> VarGen [ctor] . --- a dummy variable generator.
+
+ ceq initialize(CONF) = CONF' if {CONF',*} := initialize(CONF, *) .
+
+
+  sort Tuple{Configuration,VarGen} .
+  op {_,_} : Configuration VarGen -> Tuple{Configuration,VarGen} [ctor] .
+
+  op initialize : Configuration VarGen ~> Tuple{Configuration,VarGen} [format (m! o)] .
+  op initialize : Configuration Configuration VarGen ~> Tuple{Configuration,VarGen} [format (m! o)] .
+
+  eq initialize(CONF, GEN) = initialize(CONF, none, GEN) .
+
+  --- for an ensemble, initialize its ports and subcomponents.
+ ceq initialize(< CR : C:Ensemble | features : PORTS,
+                                    subcomponents : COMPS, ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < CR : C:Ensemble | features : PORTS',
+                                          subcomponents : COMPS', ATTS > CONF', GEN'')
+  if {PORTS',GEN'}  := initialize(PORTS,GEN)
+  /\ {COMPS',GEN''} := initialize(COMPS,GEN') .
+
+  --- for a thread or an environment, initialize its ports and data subcomponents using its variable generator
+ ceq initialize(< CR : C:BehComponent | features : PORTS,
+                                        subcomponents : COMPS,
+                                        varGen : GEN, ATTS > CONF, CONF', GEN#)
+   = initialize(CONF, < CR : C:BehComponent | features : PORTS',
+                                              subcomponents : COMPS',
+                                              varGen : GEN'', ATTS > CONF', GEN#)
+  if {PORTS',GEN'}  := initialize(PORTS, init(GEN))
+  /\ {COMPS',GEN''} := initialize(COMPS,GEN') .
+
+
+  --- all data components, except parameters, must be initialized using given initial values.
+ ceq initialize(< CR : C:Data | value : null(TY),
+                                properties : PROPS, ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < CR : C:Data | value : E # B,
+                                      properties : PROPS, ATTS > CONF', GEN)
+  if E # B := eval(p[DataModel::InitialValue], prop(PROPS)) /\ TY == type(E) .
+
+  --- parameter data components are initialized as variables
+ ceq initialize(< CR : C:Data | value : param(TY), ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < CR : C:Data | value : V # [true], ATTS > CONF', GEN')
+  if {V,GEN'} := gen(GEN,TY) .
+
+  --- all input ports are initialized as bots
+  eq initialize(< PI : C:DataInPort | content : null(TY),
+                                      cache : null(TY), ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < PI : C:DataInPort | content : bot(TY),
+                                            cache : bot(TY), ATTS > CONF', GEN) .
+
+  --- output ports with given initial values are initialized as the values.
+ ceq initialize(< PI : C:DataOutPort | content : null(TY),
+                                       properties : PROPS, ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < PI : C:DataOutPort | content : E # B,
+                                             properties : PROPS, ATTS > CONF', GEN)
+  if E # B := eval(p[DataModel::InitialValue], prop(PROPS)) /\ TY == type(E) .
+
+  --- all other output parts are initialized as bots
+
+ ceq initialize(< PI : C:DataOutPort | content : null(TY),
+                                       properties : PROPS, ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < PI : C:DataOutPort | content : bot(TY),
+                                             properties : PROPS, ATTS > CONF', GEN)
+  if not $hasMapping(PROPS, DataModel::InitialValue) .
+
+  --- for an env input port, its envCache is initialized as a variable.
+ ceq initialize(< PI : C:EnvInPort | content : null(TY),
+                                     envCache : null(TY), ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < PI : C:EnvInPort | content : bot(TY),
+                                           envCache : V # BV, ATTS > CONF', GEN'')
+  if {V,GEN'}   := gen(GEN,TY)
+  /\ {BV,GEN''} := gen(GEN',Boolean) .
+
+  --- for an env output port, both content and envCacne are initialized as the SAME variable.
+ ceq initialize(< PI : C:EnvOutPort | content : null(TY),
+                                      envCache : null(TY), ATTS > CONF, CONF', GEN)
+   = initialize(CONF, < PI : C:EnvOutPort | content : V # BV,
+                                            envCache : V # BV, ATTS > CONF', GEN'')
+  if {V,GEN'}   := gen(GEN,TY)
+  /\ {BV,GEN''} := gen(GEN',Boolean) .
+
+  eq initialize(none, CONF, GEN) = {CONF,GEN} .
+
+
+  --- Auxilarly Fuction
+  op typeCheck : List{DataContent} Exp -> Bool .
+  eq typeCheck(nil, E) = true .
+  eq typeCheck(null(TY) LD, E) = TY == type(E) and typeCheck(LD, E) .
+
+  op replaceAll : List{DataContent} DataContent -> List{DataContent} .
+  eq replaceAll(nil, D') = nil .
+  eq replaceAll(D LD, D') = D' replaceAll(LD, D') .
+endm
+
+
+
+--- We assume that there is no port in the top-level component;
+--- otherwise, we need to clear the output ports for each step
+mod MODEL-TRANSITION-SYSTEM is
+  including ENV-DYNAMICS .
+  including DATA-DYNAMICS .
+  including THREAD-DYNAMICS .
+  including ENSEMBLE-DYNAMICS .
+  including MODEL-INIT .
+  protecting SMT-CHECKSAT .
+  including COLLAPSE-SINGLE-ENSEMBLE .
+  including TIME .
+
+  var CR : ComponentRef .
+  vars OBJ OBJ' : Object .
+  vars B CONST CONST' : BoolExp .
+  var ATTS : AttributeSet .
+  var T : Time .
+  var NT : NzTime .
+  var TI : TimeInf .
+  var PER : RealExp .
+  var PROPS : PropertyAssociation .
+
+  sort GlobalSystem .
+  op {_|_|_} : ConstConfig Time TimeInf -> GlobalSystem [ctor] .
+
+  sort GlobalSystemList .
+  subsort GlobalSystem < GlobalSystemList .
+  op none : -> GlobalSystemList [ctor] .
+  op errorGlobalSystemList : -> GlobalSystemList [ctor] .
+  op _,_ : GlobalSystemList GlobalSystemList -> GlobalSystemList [ctor assoc id: none] .
+
+  crl [step]:
+      {CONST || OBJ | T | TI}
+   =>
+      {simplify(CONST and CONST') || OBJ' | T + NT | TI}
+   if
+      < CR : C:System | features : none, properties : PROPS, ATTS > := OBJ
+   /\ PER # B := eval(p[TimingProperties::Period], prop(PROPS))
+   /\ NT := rval(PER)
+   /\ T + NT <= TI
+   /\ executeStep(CONST, OBJ) => CONST' || OBJ' [print "Debug " CONST] .
+
+  --- final condition
+  op finalConst : GlobalSystem ~> BoolExp .
+  eq finalConst({CONST || OBJ | T | TI}) = CONST and finalConst(OBJ) .
+endm

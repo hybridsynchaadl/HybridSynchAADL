@@ -1,0 +1,91 @@
+
+--- if the given port is a source (i.e., output port or input of an ensemble),
+--- its destination is given as an attribute. (otherwise empty destination)
+mod ASYNC-PORT is
+  including PORT .
+  protecting SET{FeatureRef} .
+---(
+  class AsyncPort | destination : Set{FeatureRef} .
+  subclass AsyncPort < Port .
+---)
+  sort AsyncPort .
+  subsort AsyncPort < Port .
+  op AsyncPort : -> AsyncPort [ctor] .
+  op destination`:_ : Set{FeatureRef} -> Attribute [ctor gather(&)] . 
+
+---(
+  class AsyncInPort .
+  subclass AsyncInPort < AsyncPort InPort .
+---)
+  sort AsyncInPort .
+  subsort AsyncInPort < AsyncPort InPort .
+  op AsyncInPort : -> AsyncInPort [ctor] .
+
+---(
+  class AsyncOutPort .
+  subclass AsyncOutPort < AsyncPort OutPort .
+---)
+  sort AsyncOutPort .
+  subsort AsyncOutPort < AsyncPort OutPort .
+  op AsyncOutPort : -> AsyncOutPort [ctor] .
+endm
+
+
+
+mod ASYNC-DATA-PORT is
+  including ASYNC-PORT .
+  including DATA-PORT .
+---(
+   class AsyncDataPort .
+   subclass AsyncDataPort < AsyncPort .
+---)
+  sort AsyncDataPort .
+  subsort AsyncDataPort < AsyncPort .
+  op AsyncDataPort : -> AsyncDataPort [ctor] .
+
+---(
+  class AsyncDataInPort .
+  subclass AsyncDataInPort < AsyncInPort AsyncDataPort .
+---)
+  sort AsyncDataInPort .
+  subsort AsyncDataInPort < AsyncDataPort DataInPort AsyncInPort .
+  op AsyncDataInPort : -> AsyncDataInPort [ctor] .
+
+---(
+  class AsyncDataOutPort .
+  subclass AsyncDataOutPort < AsyncOutPort AsyncDataPort .
+---)
+  sort AsyncDataOutPort .
+  subsort AsyncDataOutPort < AsyncDataPort DataOutPort AsyncOutPort .
+  op AsyncDataOutPort : -> AsyncDataOutPort [ctor] .
+endm
+
+
+mod ASYNC-ENV-PORT is
+  including ASYNC-PORT .
+  including ENV-PORT .
+
+---(
+  class AsyncEnvPort .
+  subclass AsyncEnvPort < AsyncPort .
+---)
+  sort AsyncEnvPort .
+  subsort AsyncEnvPort < AsyncPort .
+  op AsyncEnvPort : -> AsyncEnvPort [ctor] .
+
+---(
+  class AsyncEnvInPort .
+  subclass AsyncEnvInPort < AsyncEnvPort AsyncInPort .
+---)
+  sort AsyncEnvInPort .
+  subsort AsyncEnvInPort < AsyncEnvPort EnvInPort AsyncInPort .
+  op AsyncEnvInPort : -> AsyncEnvInPort [ctor] .
+
+---(
+  class AsyncEnvOutPort .
+  subclass AsyncEnvOutPort < AsyncEnvPort AsyncOutPort .
+---)
+  sort AsyncEnvOutPort .
+  subsort AsyncEnvOutPort < AsyncEnvPort EnvOutPort AsyncOutPort .
+  op AsyncEnvOutPort : -> AsyncEnvOutPort [ctor] .
+endm

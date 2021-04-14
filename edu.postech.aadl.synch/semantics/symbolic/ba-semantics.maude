@@ -1,0 +1,30 @@
+fmod BEHAVIOR-SYMBOLIC-LOCATION is
+  including BEHAVIOR-LOCATION-ID .
+  including REAL-EXP .
+  including QID .
+
+  --- locations are encoded as natural numbers 0, 1, ..., n
+  op loc : RealExp -> Location [ctor] .
+  
+  --- actual ids are given by locName, declared by codegen	
+  op locName : Location ~> Qid [format (m! o)] .
+endfm
+
+mod BEHAVIOR-TRANSITION-TRANS is
+  including BEHAVIOR-SYMBOLIC-LOCATION .
+  including BEHAVIOR-TRANSITION-EXEC .
+
+  vars R SR : RealExp .
+  var L  : Location .
+  var GUARD : TransGuard .
+  var ACT : ActionBlock .
+  var TRS : Set{Transition} .
+  vars B B' : BoolExp .
+  var BCF : BehaviorConf .
+
+  crl chooseTrans(loc(SR), ((loc(R) -[GUARD]-> L ACT) ; TRS), BCF) => {L, ACT, addConst(BCF, B and B')} 
+   if B := (R === SR) 
+   /\ check-sat(B) 
+   /\ B' := guardConst(GUARD, outTrans(loc(R), TRS), BCF) .  
+
+endm

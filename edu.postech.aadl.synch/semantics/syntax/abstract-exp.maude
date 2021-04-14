@@ -1,0 +1,154 @@
+
+fmod DATA-TYPE is
+  sort DataType .
+endfm
+
+
+fmod EXP is
+  including DATA-TYPE .
+  sort Exp .
+  op type : Exp ~> DataType [format (m! o)] .  --- a data type of a given exp
+endfm
+
+
+fmod BOOL-EXP is
+  protecting BOOL .
+  including EXP .
+  sort BoolExp .
+  subsort BoolExp < Exp .
+  op bool : Bool ~> BoolExp [format (r! o)] .
+  op bval : BoolExp ~> Bool [format (r! o)] .
+
+  op Boolean : -> DataType [ctor] .
+  eq type(B:BoolExp) = Boolean .
+
+--- Boolean operators (from BOOLEAN in smt.maude)
+  op not_ : BoolExp -> BoolExp [prec 53] .
+  op _and_ : BoolExp BoolExp -> BoolExp [assoc comm prec 55] .
+  op _xor_ : BoolExp BoolExp -> BoolExp [assoc comm prec 57] .
+  op _or_ : BoolExp BoolExp -> BoolExp [assoc comm prec 59] .
+  op _implies_ : BoolExp BoolExp -> BoolExp [gather (e E) prec 61] .
+
+  op _===_ : BoolExp BoolExp -> BoolExp [gather (e E) prec 51] .
+  op _=/==_ : BoolExp BoolExp -> BoolExp [gather (e E) prec 51] .
+  op _?_:_ : BoolExp BoolExp BoolExp -> BoolExp [gather (e e e) prec 71] .
+endfm
+
+
+fmod REAL-EXP is
+  protecting RAT .
+  protecting FLOAT .
+  including BOOL-EXP .
+  sort RealExp .
+  subsort RealExp < Exp .
+  op real : Rat   ~> RealExp [format (r! o)] .
+  op real : Float ~> RealExp [format (r! o)] .
+
+  op fval : RealExp ~> Float [format (r! o)] .
+  op rval : RealExp ~> Rat [format (r! o)] .
+
+  op Real : -> DataType [ctor] .
+  eq type(R:RealExp) = Real .
+
+--- real operators (from REAL in smt.maude)
+  op -_ : RealExp -> RealExp .
+  op _+_ : RealExp RealExp -> RealExp [assoc comm prec 33] .
+  op _*_ : RealExp RealExp -> RealExp [assoc comm prec 31] .
+  op _-_ : RealExp RealExp -> RealExp [gather (E e) prec 33] .
+  op _/_ : RealExp RealExp -> RealExp [gather (E e) prec 31] .
+
+  op _<_ : RealExp RealExp -> BoolExp [prec 37] .
+  op _<=_ : RealExp RealExp -> BoolExp [prec 37] .
+  op _>_ : RealExp RealExp -> BoolExp [prec 37] .
+  op _>=_ : RealExp RealExp -> BoolExp [prec 37] .
+
+  op _===_ : RealExp RealExp -> BoolExp [gather (e E) prec 51] .
+  op _=/==_ : RealExp RealExp -> BoolExp [gather (e E) prec 51] .
+  op _?_:_ : BoolExp RealExp RealExp -> RealExp [gather (e e e) prec 71] .
+endfm
+
+
+fmod UNIT-EXP is
+  including BOOL-EXP .
+  sort UnitExp .
+  subsort UnitExp < Exp .
+  op * : -> UnitExp [ctor] .  --- for event
+
+  op Unit : -> DataType [ctor] .
+  eq type(U:UnitExp) = Unit .
+
+  op _===_ : UnitExp UnitExp -> BoolExp [gather (e E) prec 51] .
+  op _=/==_ : UnitExp UnitExp -> BoolExp [gather (e E) prec 51] .
+  op _?_:_ : BoolExp UnitExp UnitExp -> UnitExp [gather (e e e) prec 71] .
+
+  eq * ===  * = bool(true) .
+  eq * =/== * = bool(false) .
+  eq B:BoolExp ? * : * = * .
+endfm
+
+
+fmod CHECKSAT is
+  protecting BOOL .
+  protecting REAL-EXP .
+
+  var B  : BoolExp .
+
+  --- checks if the given Boolean expression is satisfiable
+  op check-sat : BoolExp ~> Bool [format (m! o)] .
+
+  --- simplify a given Boolean expression (intended for the extended Maude-SMT)
+  op simplify : BoolExp ~> BoolExp [format (m! o)] .
+
+  --- checks if the given Boolean expression is true (no SMT solving)
+  op check-true : BoolExp ~> Bool [format (m! o)] .
+ ceq check-true(B) = true if bool(true) == B .
+
+  --- checks if the given Boolean expression is false (no SMT solving)
+  op check-false : BoolExp ~> Bool [format (m! o)] .
+ ceq check-false(B) = true if bool(false) == B .
+endfm
+
+
+fmod VAR-GEN is
+  protecting EXP .
+  protecting STRING .
+  sort VarGen .
+  op <_> : String -> VarGen [ctor] .  --- to be replaced by init
+
+  sort Pair{Exp,VarGen} .
+  op {_,_} : Exp VarGen -> Pair{Exp,VarGen} [ctor] .
+
+--- The following functions should be defined later if necessary
+
+  --- create a concrete vargen
+  op init : VarGen ~> VarGen [format (r! o)] .
+
+  --- generate a variable of the same type with the given exp
+  op gen : VarGen DataType ~> Pair{Exp,VarGen} [format (m! o)] .
+
+  --- return true if a given variable is fresh with respect to VarGen
+  op fresh? : Exp VarGen ~> Bool [format (m! o)] .
+
+  --- return a vargen with a greater index
+  op max : VarGen VarGen ~> VarGen [format (m! o)] .
+endfm
+
+
+view DataType from TRIV to DATA-TYPE is
+  sort Elt to DataType .
+endv
+
+
+view Exp from TRIV to EXP is
+  sort Elt to Exp .
+endv
+
+
+view BoolExp from TRIV to BOOL-EXP is
+  sort Elt to BoolExp .
+endv
+
+
+view RealExp from TRIV to REAL-EXP is
+  sort Elt to RealExp .
+endv
